@@ -9,17 +9,67 @@ public class Meter {
 	private Time timeInEffect;		
 	private boolean creditCard;
 	private String type;
-	private int timeLimit;			// making hour class? (could be int)
+	private TimeLimit timeLimit;			// making hour class? (could be int)
 	
-	public Meter(int number, double lat, double lon, double rate, Time inEffect, boolean creditCard, String type, int timeLimit) {
+	public Meter(int number) {
 		this.number = number;
-		this.latitude = lat;
-		this.longitude = lon;
+	}
+
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+
+	public double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
+
+	public double getRate() {
+		return rate;
+	}
+
+	public void setRate(double rate) {
 		this.rate = rate;
-		this.timeInEffect = inEffect;
+	}
+
+	public Time getTimeInEffect() {
+		return timeInEffect;
+	}
+
+	public void setTimeInEffect(Time timeInEffect) {
+		this.timeInEffect = timeInEffect;
+	}
+
+	public boolean isCreditCard() {
+		return creditCard;
+	}
+
+	public void setCreditCard(boolean creditCard) {
 		this.creditCard = creditCard;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
 		this.type = type;
+	}
+
+	public TimeLimit getTimeLimit() {
+		return timeLimit;
+	}
+
+	public void setTimeLimit(TimeLimit timeLimit) {
 		this.timeLimit = timeLimit;
 	}
+	
 	
 }
