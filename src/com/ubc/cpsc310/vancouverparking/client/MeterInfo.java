@@ -1,33 +1,22 @@
-package com.ubc.cpsc310.vancouverparking.server;
+package com.ubc.cpsc310.vancouverparking.client;
 
-import javax.jdo.annotations.IdGeneratorStrategy;
-import javax.jdo.annotations.IdentityType;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
+import java.io.Serializable;
 
-@PersistenceCapable(identityType = IdentityType.APPLICATION)
-public class Meter {
+import com.ubc.cpsc310.vancouverparking.server.TimeInEffect;
+import com.ubc.cpsc310.vancouverparking.server.TimeLimit;
 
-	@PrimaryKey
-	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+public class MeterInfo implements Serializable {
+
 	private int number;
-	@Persistent
 	private double latitude;
-	@Persistent
 	private double longitude;
-	@Persistent
 	private double rate;
-	@Persistent
 	private TimeInEffect timeInEffect;
-	@Persistent
 	private boolean creditCard;
-	@Persistent
 	private String type;
-	@Persistent
 	private TimeLimit timeLimit; // making hour class? (could be int)
 
-	public Meter(int number) {
+	public MeterInfo(int number) {
 		this.number = number;
 	}
 
@@ -87,4 +76,5 @@ public class Meter {
 		this.timeLimit = timeLimit;
 	}
 
+	
 }

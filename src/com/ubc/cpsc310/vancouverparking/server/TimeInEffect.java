@@ -8,16 +8,18 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 @PersistenceCapable
-public class TimeLimit {
+public class TimeInEffect {
 	@PrimaryKey
     @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
     private Key key;
 	@Persistent
-	private double hour;
+	private double start;
+	@Persistent
+	private double end;
 	
-	public TimeLimit(double s){
-		this.hour = s;
+	public TimeInEffect(double s, double e){
+		this.start = s;
+		this.end = e;
 	}
 	
 }
-

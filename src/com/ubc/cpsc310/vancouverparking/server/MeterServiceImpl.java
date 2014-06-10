@@ -1,48 +1,117 @@
 package com.ubc.cpsc310.vancouverparking.server;
 
-import com.ubc.cpsc310.vancouverparking.client.GreetingService;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.jdo.JDOHelper;
+import javax.jdo.PersistenceManager;
+import javax.jdo.PersistenceManagerFactory;
+import javax.jdo.Query;
+
+import com.ubc.cpsc310.vancouverparking.client.MeterService;
 import com.ubc.cpsc310.vancouverparking.shared.FieldVerifier;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+
 
 /**
  * The server-side implementation of the RPC service.
  */
 @SuppressWarnings("serial")
 public class MeterServiceImpl extends RemoteServiceServlet implements
-    GreetingService {
+		MeterService {
 
-  public String greetServer(String input) throws IllegalArgumentException {
-    // Verify that the input is valid. 
-    if (!FieldVerifier.isValidName(input)) {
-      // If the input is not valid, throw an IllegalArgumentException back to
-      // the client.
-      throw new IllegalArgumentException(
-          "Name must be at least 4 characters long");
-    }
+	private static final Logger LOG = Logger.getLogger(MeterServiceImpl.class
+			.getName());
 
-    String serverInfo = getServletContext().getServerInfo();
-    String userAgent = getThreadLocalRequest().getHeader("User-Agent");
+	private static final PersistenceManagerFactory PMF = JDOHelper
+			.getPersistenceManagerFactory("transactions-optional");
 
-    // Escape data from the client to avoid cross-site script vulnerabilities.
-    input = escapeHtml(input);
-    userAgent = escapeHtml(userAgent);
 
-    return "Hello, " + input + "!<br><br>I am running " + serverInfo
-        + ".<br><br>It looks like you are using:<br>" + userAgent;
-  }
+	public void addMeter(Meter m) {
+		PersistenceManager pm = getPersistenceManager();
+		try {
+	        // ... do stuff with pm ...
+	    } finally {
+	        pm.close();
+	    }
+		// TODO Auto-generated method stub
+	}
+	
+	public void removeMeter(Meter m) {
+		PersistenceManager pm = getPersistenceManager();
+		try {
+	        // ... do stuff with pm ...
+	    } finally {
+	        pm.close();
+	    }
+		// TODO Auto-generated method stub
+	}
 
-  /**
-   * Escape an html string. Escaping data received from the client helps to
-   * prevent cross-site script vulnerabilities.
-   * 
-   * @param html the html string to escape
-   * @return the escaped string
-   */
-  private String escapeHtml(String html) {
-    if (html == null) {
-      return null;
-    }
-    return html.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(
-        ">", "&gt;");
-  }
+	public List<Meter> getMeters() {
+		PersistenceManager pm = getPersistenceManager();
+		try {
+	        // ... do stuff with pm ...
+	    } finally {
+	        pm.close();
+	    }
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	private PersistenceManager getPersistenceManager() {
+		return PMF.getPersistenceManager();
+	}
+	
+//	public void addStock(String symbol) throws NotLoggedInException {
+//		checkLoggedIn();
+//		PersistenceManager pm = getPersistenceManager();
+//		try {
+//			pm.makePersistent(new Stock(getUser(), symbol));
+//		} finally {
+//			pm.close();
+//		}
+//	}
+//
+//	public void removeStock(String symbol) throws NotLoggedInException {
+//		checkLoggedIn();
+//		PersistenceManager pm = getPersistenceManager();
+//		try {
+//			long deleteCount = 0;
+//			Query q = pm.newQuery(Stock.class, "user == u");
+//			q.declareParameters("com.google.appengine.api.users.User u");
+//			List<Stock> stocks = (List<Stock>) q.execute(getUser());
+//			for (Stock stock : stocks) {
+//				if (symbol.equals(stock.getSymbol())) {
+//					deleteCount++;
+//					pm.deletePersistent(stock);
+//				}
+//			}
+//			if (deleteCount != 1) {
+//				LOG.log(Level.WARNING, "removeStock deleted " + deleteCount
+//						+ " Stocks");
+//			}
+//		} finally {
+//			pm.close();
+//		}
+//	}
+//
+//	public String[] getStocks() throws NotLoggedInException {
+//		checkLoggedIn();
+//		PersistenceManager pm = getPersistenceManager();
+//		List<String> symbols = new ArrayList<String>();
+//		try {
+//			Query q = pm.newQuery(Stock.class, "user == u");
+//			q.declareParameters("com.google.appengine.api.users.User u");
+//			q.setOrdering("createDate");
+//			List<Stock> stocks = (List<Stock>) q.execute(getUser());
+//			for (Stock stock : stocks) {
+//				symbols.add(stock.getSymbol());
+//			}
+//		} finally {
+//			pm.close();
+//		}
+//		return (String[]) symbols.toArray(new String[0]);
+//	}
+
 }
