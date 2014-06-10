@@ -12,14 +12,21 @@ public class Meter {
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private int number;
+	@Persistent
 	private double latitude;
+	@Persistent
 	private double longitude;
+	@Persistent
 	private double rate;
-	private Time timeInEffect;		
+	@Persistent
+	private Time timeInEffect;
+	@Persistent
 	private boolean creditCard;
+	@Persistent
 	private String type;
-	private TimeLimit timeLimit;			// making hour class? (could be int)
-	
+	@Persistent
+	private TimeLimit timeLimit; // making hour class? (could be int)
+
 	public Meter(int number) {
 		this.number = number;
 	}
@@ -79,6 +86,5 @@ public class Meter {
 	public void setTimeLimit(TimeLimit timeLimit) {
 		this.timeLimit = timeLimit;
 	}
-	
-	
+
 }
