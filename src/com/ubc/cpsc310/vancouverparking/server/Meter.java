@@ -14,6 +14,10 @@ public class Meter {
 	public Meter(int number) {
 		this.number = number;
 	}
+	
+	public int getNumber() {
+		return number;
+	}
 
 	public double getLatitude() {
 		return latitude;
