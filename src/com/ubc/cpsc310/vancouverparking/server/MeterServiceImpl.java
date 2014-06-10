@@ -31,7 +31,8 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 	public void addMeter(Meter m) {
 		PersistenceManager pm = getPersistenceManager();
 		try {
-	        // ... do stuff with pm ...
+	        
+			// ... do stuff with pm ...
 	    } finally {
 	        pm.close();
 	    }

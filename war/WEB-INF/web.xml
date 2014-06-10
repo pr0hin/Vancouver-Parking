@@ -6,19 +6,6 @@
          xmlns="http://java.sun.com/xml/ns/javaee">
 
   <!-- Servlets -->
-  <servlet>
-    <servlet-name>greetServlet</servlet-name>
-<<<<<<< HEAD
-    <servlet-class>cs310.vancouverparking.server.GreetingServiceImpl</servlet-class>
-=======
-    <servlet-class>com.ubc.cpsc310.vancouverparking.server.GreetingServiceImpl</servlet-class>
->>>>>>> 273301041be2af4b31627adc808c299b354c7919
-  </servlet>
-  
-  <servlet-mapping>
-    <servlet-name>greetServlet</servlet-name>
-    <url-pattern>/vancouverparking/greet</url-pattern>
-  </servlet-mapping>
   
   <!-- Default page to serve -->
   <welcome-file-list>
