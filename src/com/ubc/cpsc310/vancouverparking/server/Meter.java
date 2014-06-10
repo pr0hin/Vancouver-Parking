@@ -6,7 +6,7 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-@PersistenceCapable(identityType = IdentityType.APPLICATION)
+@PersistenceCapable
 public class Meter {
 
 	@PrimaryKey
@@ -24,11 +24,15 @@ public class Meter {
 	private boolean creditCard;
 	@Persistent
 	private String type;
-	@Persistent
-	private TimeLimit timeLimit; // making hour class? (could be int)
+	//@Persistent
+	//private TimeLimit timeLimit; // making hour class? (could be int)
 
 	public Meter(int number) {
 		this.number = number;
+	}
+	
+	public int getNumber() {
+		return number;
 	}
 
 	public double getLatitude() {
@@ -79,12 +83,12 @@ public class Meter {
 		this.type = type;
 	}
 
-	public TimeLimit getTimeLimit() {
-		return timeLimit;
-	}
-
-	public void setTimeLimit(TimeLimit timeLimit) {
-		this.timeLimit = timeLimit;
-	}
+//	public TimeLimit getTimeLimit() {
+//		return timeLimit;
+//	}
+//
+//	public void setTimeLimit(TimeLimit timeLimit) {
+//		this.timeLimit = timeLimit;
+//	}
 
 }
