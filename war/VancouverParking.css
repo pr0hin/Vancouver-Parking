@@ -10,7 +10,12 @@ h1 {
   text-align: center;
 }
 
-.sendButton {
+.addButton {
+  display: block;
+  font-size: 16pt;
+}
+
+.removeButton {
   display: block;
   font-size: 16pt;
 }
