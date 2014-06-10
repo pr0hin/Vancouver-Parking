@@ -2,8 +2,8 @@ package com.ubc.cpsc310.vancouverparking.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.sample.stockwatcher.client.LoginService;
-import com.google.gwt.sample.stockwatcher.client.LoginServiceAsync;
+import com.ubc.cpsc310.vancouverparking.client.LoginService;
+import com.ubc.cpsc310.vancouverparking.client.LoginServiceAsync;
 
 
 /**
