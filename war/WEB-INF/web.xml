@@ -8,7 +8,7 @@
   <!-- Servlets -->
   	<servlet>
 		<servlet-name>loginService</servlet-name>
-		<servlet-class>com.google.gwt.sample.vancouverparking.server.LoginServiceImpl</servlet-class>
+		<servlet-class>com.ubc.cpsc310.vancouverparking.server.LoginServiceImpl</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
@@ -18,12 +18,12 @@
 
 	<servlet>
 		<servlet-name>meterService</servlet-name>
-		<servlet-class>com.google.gwt.sample.vancouverparking.server.MeterServiceImpl</servlet-class>
+		<servlet-class>com.ubc.cpsc310.vancouverparking.server.MeterServiceImpl</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>meterService</servlet-name>
-		<url-pattern>/vancouverparking/stock</url-pattern>
+		<url-pattern>/vancouverparking/meter</url-pattern>
 	</servlet-mapping>
   
   <!-- Default page to serve -->
