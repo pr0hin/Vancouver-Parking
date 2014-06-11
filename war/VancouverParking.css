@@ -1,5 +1,59 @@
 /** Add css rules here for your application. */
+html {
+	height: 100%
+}
+body {
+	margin: 0px;
+	padding: 0px;
+	font-family: 'Source Sans Pro', sans-serif;
+	height: 100%
+}
 
+#navBar {
+	width: 100%;
+	height: 5%;
+	background-color: #7ab94e;
+	color: white;
+	text-align: center;
+	padding-top:10px;
+	font-size: 1.2em;
+	border-bottom: 1px solid #6d9154;
+}
+
+#map_canvas {
+	width:78%; 
+	height:95%;
+	position: absolute;
+	float: left;
+}
+
+#list_view {
+	width:22%; 
+	height:500px;
+	position: relative;
+	float: right;
+	background-color: #fff;
+	overflow-y: scroll;
+}
+
+.cell {
+	border-bottom: 1px solid #ddd;
+	padding: 20px;
+}
+.meter_number {
+	font-weight: 700;
+	font-size: 0.95em;
+	color: #323232;
+}
+
+.meter_data {
+	font-weight: 200;
+	font-size: 0.95em;
+	color: #aaaaaa
+}
+.light {
+	font-weight: 100;
+}
 
 /** Example rules used by the template application (remove for your app) */
 h1 {
@@ -23,6 +77,11 @@ h1 {
 /** Most GWT widgets already have a style name defined */
 .gwt-DialogBox {
   width: 400px;
+}
+
+.gwt-TextCell {
+  background-color: white;
+  color: #fff;
 }
 
 .dialogVPanel {

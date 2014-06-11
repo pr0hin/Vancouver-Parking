@@ -2,24 +2,30 @@ package com.ubc.cpsc310.vancouverparking.client;
 
 import java.io.Serializable;
 
-import com.ubc.cpsc310.vancouverparking.server.TimeInEffect;
-import com.ubc.cpsc310.vancouverparking.server.TimeLimit;
+//import com.ubc.cpsc310.vancouverparking.server.TimeInEffect;
+//import com.ubc.cpsc310.vancouverparking.server.TimeLimit;
 
 public class MeterInfo implements Serializable {
 
+	/**
+	 * 
+	 */
 	private int number;
 	private double latitude;
 	private double longitude;
 	private double rate;
-	private TimeInEffect timeInEffect;
+	// private TimeInEffect timeInEffect;
 	private boolean creditCard;
 	private String type;
-	private TimeLimit timeLimit; // making hour class? (could be int)
+	//private TimeLimit timeLimit; // making hour class? (could be int)
 
 	public MeterInfo(int number) {
 		this.number = number;
 	}
-
+	
+	public int getNumber() {
+		return number;
+	}
 	public double getLatitude() {
 		return latitude;
 	}
@@ -44,13 +50,13 @@ public class MeterInfo implements Serializable {
 		this.rate = rate;
 	}
 
-	public TimeInEffect getTimeInEffect() {
-		return timeInEffect;
-	}
-
-	public void setTimeInEffect(TimeInEffect timeInEffect) {
-		this.timeInEffect = timeInEffect;
-	}
+//	public TimeInEffect getTimeInEffect() {
+//		return timeInEffect;
+//	}
+//
+//	public void setTimeInEffect(TimeInEffect timeInEffect) {
+//		this.timeInEffect = timeInEffect;
+//	}
 
 	public boolean isCreditCard() {
 		return creditCard;
@@ -67,14 +73,14 @@ public class MeterInfo implements Serializable {
 	public void setType(String type) {
 		this.type = type;
 	}
-
-	public TimeLimit getTimeLimit() {
-		return timeLimit;
-	}
-
-	public void setTimeLimit(TimeLimit timeLimit) {
-		this.timeLimit = timeLimit;
-	}
+//
+//	public TimeLimit getTimeLimit() {
+//		return timeLimit;
+//	}
+//
+//	public void setTimeLimit(TimeLimit timeLimit) {
+//		this.timeLimit = timeLimit;
+//	}
 
 	
 }
