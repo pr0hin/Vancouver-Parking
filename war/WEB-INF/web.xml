@@ -6,6 +6,25 @@
          xmlns="http://java.sun.com/xml/ns/javaee">
 
   <!-- Servlets -->
+  	<servlet>
+		<servlet-name>loginService</servlet-name>
+		<servlet-class>com.google.gwt.sample.vancouverparking.server.LoginServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>loginService</servlet-name>
+		<url-pattern>/vancouverparking/login</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>meterService</servlet-name>
+		<servlet-class>com.google.gwt.sample.vancouverparking.server.MeterServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>meterService</servlet-name>
+		<url-pattern>/vancouverparking/stock</url-pattern>
+	</servlet-mapping>
   
   <!-- Default page to serve -->
   <welcome-file-list>
