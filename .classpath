@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="war/WEB-INF/lib/gwt-maps.jar"/>
+	<classpathentry exported="true" kind="lib" path="war/WEB-INF/lib/gwt-maps.jar" sourcepath="/Users/rohinpatel/.m2/repository/com/github/rwl/gwt-maps/3.8.0-pre1/gwt-maps-3.8.0-pre1-sources.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/JavaAPIforKml.jar" sourcepath="/Users/rohinpatel/Downloads/javaapiforkml-master/target/JavaAPIforKml-sources.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxb-api.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxb-core-javadoc.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxb-core.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxb-impl-javadoc.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxb-impl.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxb-jxc-javadoc.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxb-jxc.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxb-xjc-javadoc.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxb-xjc.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" output="test-classes" path="test"/>
 	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER"/>

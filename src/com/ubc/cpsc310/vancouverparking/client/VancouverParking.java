@@ -1,9 +1,14 @@
 package com.ubc.cpsc310.vancouverparking.client;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.maps.gwt.client.GoogleMap;
+import com.google.maps.gwt.client.LatLng;
+import com.google.maps.gwt.client.MapOptions;
+import com.google.maps.gwt.client.MapTypeId;
 
 
 
@@ -35,7 +40,15 @@ public class VancouverParking implements EntryPoint {
 		final Button removeButton = new Button("Remove meter");
 		final TextBox nameField = new TextBox();
 		nameField.setText("Meter Number");
-
+		
+		// Initializing the map
+	    LatLng myLatLng = LatLng.create(49.2569777, -123.123904);
+	    MapOptions myOptions = MapOptions.create();
+	    myOptions.setZoom(10.0);
+	    myOptions.setCenter(myLatLng);
+	    myOptions.setMapTypeId(MapTypeId.ROADMAP);
+	    final GoogleMap map = GoogleMap.create(Document.get().getElementById("map_canvas"), myOptions);
+	    
 		// We can add style names to widgets
 		addButton.addStyleName("addButton");
 		removeButton.addStyleName("removeButton");
