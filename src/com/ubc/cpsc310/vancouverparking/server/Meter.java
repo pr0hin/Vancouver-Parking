@@ -1,43 +1,71 @@
 package com.ubc.cpsc310.vancouverparking.server;
 
+import java.util.Date;
+
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-@PersistenceCapable
+@PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class Meter {
 
 	@PrimaryKey
-	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	private int number;
+	@Persistent//(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	private long number;
+	
 	@Persistent
 	private double latitude;
+	
 	@Persistent
 	private double longitude;
+	
+//	@Persistent
+//	private LatLng latlng;
+	
 	@Persistent
 	private double rate;
+	
 	@Persistent
 	private TimeInEffect timeInEffect;
+	
 	@Persistent
 	private boolean creditCard;
+	
 	@Persistent
 	private String type;
+	
 	@Persistent
 	private TimeLimit timeLimit; // making hour class? (could be int)
+	
+	@Persistent
+	private Date createDate;
+
+	public Meter() {
+		this.createDate = new Date();
+	}
 
 	public Meter(int number) {
+		this();
 		this.number = number;
 	}
-	
-	public int getNumber() {
+
+	public long getNumber() {
 		return number;
 	}
 
 	public double getLatitude() {
 		return latitude;
 	}
+	
+//	public void setLatlng(double lat, double lng){
+//		this.latlng = LatLng.create(lat, lng);
+//	}
+//	
+//	public LatLng getLatlng(){
+//		return this.latlng;
+//	}
 
 	public void setLatitude(double latitude) {
 		this.latitude = latitude;

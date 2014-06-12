@@ -21,7 +21,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/appengine-api-stubs-1.5.2.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/appengine-testing-1.4.0.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/appengine-java-sdk-1.9.4/lib/impl/appengine-api-stubs.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/appengine-java-sdk-1.9.4/lib/testing/appengine-testing.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

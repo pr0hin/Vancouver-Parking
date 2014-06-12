@@ -1,5 +1,6 @@
 package com.ubc.cpsc310.vancouverparking.server;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,7 +30,7 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 
 
 	public void addMeter(Meter m) {
-		PersistenceManager pm = getPersistenceManager();
+		PersistenceManager pm = PMF.getPersistenceManager();
 		try {
 	        
 			// ... do stuff with pm ...
@@ -40,7 +41,7 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 	}
 	
 	public void removeMeter(Meter m) {
-		PersistenceManager pm = getPersistenceManager();
+		PersistenceManager pm = PMF.getPersistenceManager();
 		try {
 	        // ... do stuff with pm ...
 	    } finally {
@@ -50,20 +51,35 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 	}
 
 	public List<Meter> getMeters() {
-		PersistenceManager pm = getPersistenceManager();
+		PersistenceManager pm = PMF.getPersistenceManager();
+		List<Meter> meters = new LinkedList<Meter>();
 		try {
+			Query q = pm.newQuery(Meter.class);
+			meters = (List<Meter>) q.execute();
 	        // ... do stuff with pm ...
 	    } finally {
 	        pm.close();
 	    }
-		// TODO Auto-generated method stub
-		return null;
+		return meters;
 	}
 	
-	private PersistenceManager getPersistenceManager() {
-		return PMF.getPersistenceManager();
-	}
-	
+//	public String[] getStocks() throws NotLoggedInException {
+//		checkLoggedIn();
+//		PersistenceManager pm = getPersistenceManager();
+//		List<String> symbols = new ArrayList<String>();
+//		try {
+//			Query q = pm.newQuery(Stock.class, "user == u");
+//			q.declareParameters("com.google.appengine.api.users.User u");
+//			q.setOrdering("createDate");
+//			List<Stock> stocks = (List<Stock>) q.execute(getUser());
+//			for (Stock stock : stocks) {
+//				symbols.add(stock.getSymbol());
+//			}
+//		} finally {
+//			pm.close();
+//		}
+//		return (String[]) symbols.toArray(new String[0]);
+//	}
 //	public void addStock(String symbol) throws NotLoggedInException {
 //		checkLoggedIn();
 //		PersistenceManager pm = getPersistenceManager();
@@ -97,22 +113,6 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 //		}
 //	}
 //
-//	public String[] getStocks() throws NotLoggedInException {
-//		checkLoggedIn();
-//		PersistenceManager pm = getPersistenceManager();
-//		List<String> symbols = new ArrayList<String>();
-//		try {
-//			Query q = pm.newQuery(Stock.class, "user == u");
-//			q.declareParameters("com.google.appengine.api.users.User u");
-//			q.setOrdering("createDate");
-//			List<Stock> stocks = (List<Stock>) q.execute(getUser());
-//			for (Stock stock : stocks) {
-//				symbols.add(stock.getSymbol());
-//			}
-//		} finally {
-//			pm.close();
-//		}
-//		return (String[]) symbols.toArray(new String[0]);
-//	}
+//
 
 }
