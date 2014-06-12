@@ -28,10 +28,21 @@ import com.google.maps.gwt.client.Size;
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class VancouverParking implements EntryPoint {
-	
+	// FIELDS
+	// ========================
+	// UI related fields
 	private MeterCell metercell = new MeterCell();
 	private CellList<MeterInfo> cellList = new CellList<MeterInfo>(metercell);
+	
+	// Data related fields
+	private List<MeterInfo> meters = new ArrayList<MeterInfo>();
+
+	//Map related fields
 	private GoogleMap map;
+	private MarkerImage icon = MarkerImage.create("/mapIcon.png");
+    private LatLng myLatLng = LatLng.create(49.2569777, -123.123904);
+    private MapOptions myOptions = MapOptions.create();
+    private final Size iconsize = Size.create(5.0, 5.0);
 	/**
 	 * The message displayed to the user when the server cannot be reached or
 	 * returns an error.
@@ -46,7 +57,8 @@ public class VancouverParking implements EntryPoint {
 	 */
 	// private final MeterServiceAsync meterService = GWT
 	// .create(MeterService.class);
-
+	
+	
 	/**
 	 * This is the entry point method.
 	 */
@@ -57,7 +69,6 @@ public class VancouverParking implements EntryPoint {
 		nameField.setText("Meter Number");
 		
 		// Some test list of meters to put into the cellList
-		List<MeterInfo> meters = new ArrayList<MeterInfo>();
 		for (int i = 0; i<200;i++) {
 			MeterInfo meter = new MeterInfo(378625 + i);
 			meter.setCreditCard(true);
@@ -82,17 +93,14 @@ public class VancouverParking implements EntryPoint {
 		RootPanel.get("list_view").add(cellList);
 		
 		// Initializing the map
-	    LatLng myLatLng = LatLng.create(49.2569777, -123.123904);
-	    MapOptions myOptions = MapOptions.create();
 	    myOptions.setZoom(10.0);
 	    myOptions.setCenter(myLatLng);
 	    myOptions.setMapTypeId(MapTypeId.ROADMAP);
 	    map = GoogleMap.create(Document.get().getElementById("map_canvas"), myOptions);
 	    
 	    // creating markers and putting them in map
-	    MarkerImage icon = MarkerImage.create("/mapIcon.png");
-	    Size size = Size.create(5.0, 5.0);
-	    icon.setScaledSize(size);
+	    icon.setScaledSize(iconsize);
+	    
 	    for (MeterInfo meter: meters) {
 	    	LatLng latlon = LatLng.create(meter.getLatitude(), meter.getLongitude());
 	    	MarkerOptions newMarkerOpts = MarkerOptions.create();
@@ -116,6 +124,18 @@ public class VancouverParking implements EntryPoint {
 		RootPanel.get("nameFieldContainer").add(nameField);
 		RootPanel.get("addButtonContainer").add(addButton);
 		RootPanel.get("removeButtonContainer").add(removeButton);
+	}
+	
+	public void loadMeters() {
+		// Add implementation here
+	}
+	
+	public void plotMeters() {
+		// Add implementation here
+	}
+	
+	public void reloadList(){
+		// Add implementation here
 	}
 
 }
