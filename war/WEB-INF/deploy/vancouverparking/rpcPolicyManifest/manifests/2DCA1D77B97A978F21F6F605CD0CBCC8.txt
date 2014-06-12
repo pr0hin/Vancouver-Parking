@@ -1,0 +1,2 @@
+serviceClass: com.ubc.cpsc310.vancouverparking.client.MeterService
+path: E2A5AAEFD7EF30C34EFADC7D92390E30.gwt.rpc

@@ -6,6 +6,7 @@ import com.google.gwt.safecss.shared.SafeStyles;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.ubc.cpsc310.vancouverparking.server.Meter;
 
 public class MeterCell extends AbstractCell<MeterInfo>{
 	
