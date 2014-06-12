@@ -12,7 +12,7 @@ import com.ubc.cpsc310.vancouverparking.server.Meter;
  */
 @RemoteServiceRelativePath("meter")
 public interface MeterService extends RemoteService {
-  public List<Meter> getMeters();// throws NotLoggedInException;
-  public void addMeter(Meter m);
-  public void removeMeter(Meter m);
+  public List<MeterInfo> getMeters();// throws NotLoggedInException;
+  //public void addMeter();
+  //public void removeMeter(MeterInfo m);
 }
