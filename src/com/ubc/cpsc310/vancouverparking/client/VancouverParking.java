@@ -64,21 +64,6 @@ public class VancouverParking implements EntryPoint {
 		loadMeters();
 	}
 
-	// // Some test list of meters to put into the cellList
-	// List<MeterInfo> meters = new ArrayList<MeterInfo>();
-	// for (int i = 0; i<200;i++) {
-		// MeterInfo meter = new MeterInfo(378625 + i);
-		// meter.setCreditCard(true);
-		// if (i%2 == 0) {
-		// meter.setRate(2.00);
-		// }
-		// meter.setType("Public");
-		// double latitude = 49.2569777 - (Math.random() * 0.1);
-		// double longitude = -123.123904 - (Math.random() * 0.1);
-		// meter.setLatitude(latitude);
-		// meter.setLongitude(longitude);
-		// meters.add(meter);
-	// }
 	
 	private void loadMeters() {
 		meterService.getMeters(new AsyncCallback<List<MeterInfo>>() {
