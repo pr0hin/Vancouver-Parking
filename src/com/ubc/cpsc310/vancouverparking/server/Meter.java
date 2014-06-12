@@ -18,14 +18,14 @@ public class Meter {
 	private double longitude;
 	@Persistent
 	private double rate;
-	@Persistent
-	private TimeInEffect timeInEffect;
+	//@Persistent
+	//private TimeInEffect timeInEffect;
 	@Persistent
 	private boolean creditCard;
 	@Persistent
 	private String type;
-	@Persistent
-	private TimeLimit timeLimit; // making hour class? (could be int)
+//	@Persistent
+//	private TimeLimit timeLimit; // making hour class? (could be int)
 
 	public Meter(int number) {
 		this.number = number;
@@ -59,13 +59,13 @@ public class Meter {
 		this.rate = rate;
 	}
 
-	public TimeInEffect getTimeInEffect() {
-		return timeInEffect;
-	}
-
-	public void setTimeInEffect(TimeInEffect timeInEffect) {
-		this.timeInEffect = timeInEffect;
-	}
+//	public TimeInEffect getTimeInEffect() {
+//		return timeInEffect;
+//	}
+//
+//	public void setTimeInEffect(TimeInEffect timeInEffect) {
+//		this.timeInEffect = timeInEffect;
+//	}
 
 	public boolean isCreditCard() {
 		return creditCard;
@@ -83,12 +83,12 @@ public class Meter {
 		this.type = type;
 	}
 
-	public TimeLimit getTimeLimit() {
-		return timeLimit;
-	}
-
-	public void setTimeLimit(TimeLimit timeLimit) {
-		this.timeLimit = timeLimit;
-	}
+//	public TimeLimit getTimeLimit() {
+//		return timeLimit;
+//	}
+//
+//	public void setTimeLimit(TimeLimit timeLimit) {
+//		this.timeLimit = timeLimit;
+//	}
 
 }
