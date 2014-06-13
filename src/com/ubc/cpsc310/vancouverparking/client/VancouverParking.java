@@ -6,9 +6,12 @@ import java.util.List;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.maps.gwt.client.GoogleMap;
@@ -30,16 +33,19 @@ public class VancouverParking implements EntryPoint {
 
 	private MeterCell metercell = new MeterCell();
 	private CellList<MeterInfo> cellList = new CellList<MeterInfo>(metercell);
-	
+	private Button loadMetersButton = new Button("Load Meters");
+	private Button getMetersButton = new Button("Get Meters");
+	private HorizontalPanel panel = new HorizontalPanel();
+
 	// Data related fields
 	private List<MeterInfo> meters = new ArrayList<MeterInfo>();
 
-	//Map related fields
+	// Map related fields
 	private GoogleMap map;
 	private MarkerImage icon = MarkerImage.create("/mapIcon.png");
-    private LatLng myLatLng = LatLng.create(49.2569777, -123.123904);
-    private MapOptions myOptions = MapOptions.create();
-    private final Size iconsize = Size.create(5.0, 5.0);
+	private LatLng myLatLng = LatLng.create(49.2569777, -123.123904);
+	private MapOptions myOptions = MapOptions.create();
+	private final Size iconsize = Size.create(5.0, 5.0);
 	/**
 	 * The message displayed to the user when the server cannot be reached or
 	 * returns an error.
@@ -60,26 +66,54 @@ public class VancouverParking implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
-		//meterService.addMeter(null);
-		loadMeters();
+		displayMap();
+		panel.addStyleName("panel");
+		loadMetersButton.addStyleName("loadButton");
+		getMetersButton.addStyleName("getButton");
+		panel.add(loadMetersButton);
+		panel.add(getMetersButton);
+
+		loadMetersButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				loadMeters();
+			}
+		});
+		getMetersButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				getMeters();
+			}
+		});
+		RootPanel.get("list_view").add(panel);
+		// getMeters();
 	}
 
-	
 	private void loadMeters() {
+		meterService.loadMeters(new AsyncCallback<Boolean>() {
+			public void onFailure(Throwable error) {
+				// TODO
+			}
+
+			public void onSuccess(Boolean res) {
+
+			}
+		});
+	}
+
+	private void getMeters() {
 		meterService.getMeters(new AsyncCallback<List<MeterInfo>>() {
 			public void onFailure(Throwable error) {
 				// TODO
 			}
 
 			public void onSuccess(List<MeterInfo> meters) {
-				displayMeters(meters);
+				if (meters != null)
+					displayMeters(meters);
 			}
 
 		});
 	}
 
 	private void displayMeters(List<MeterInfo> meters) {
-
 
 		// Adding meters to the cellList
 		cellList.setPageSize(meters.size());
@@ -88,15 +122,6 @@ public class VancouverParking implements EntryPoint {
 
 		// Add cellList to list_view
 		RootPanel.get("list_view").add(cellList);
-
-		// Initializing the map
-
-		myOptions.setZoom(10.0);
-		myOptions.setCenter(myLatLng);
-		myOptions.setMapTypeId(MapTypeId.ROADMAP);
-		map = GoogleMap.create(Document.get().getElementById("map_canvas"),
-				myOptions);
-
 		// creating markers and putting them in map
 		icon.setScaledSize(iconsize);
 		for (MeterInfo meter : meters) {
@@ -112,14 +137,24 @@ public class VancouverParking implements EntryPoint {
 			Marker.create(newMarkerOpts);
 		}
 
-
 	}
-	
+
+	private void displayMap() {
+
+		// Initializing the map
+
+		myOptions.setZoom(10.0);
+		myOptions.setCenter(myLatLng);
+		myOptions.setMapTypeId(MapTypeId.ROADMAP);
+		map = GoogleMap.create(Document.get().getElementById("map_canvas"),
+				myOptions);
+	}
+
 	public void plotMeters() {
 		// Add implementation here
 	}
-	
-	public void reloadList(){
+
+	public void reloadList() {
 		// Add implementation here
 	}
 

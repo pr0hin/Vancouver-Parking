@@ -21,33 +21,33 @@ public class Meter {
 	@Persistent
 	private double longitude;
 	
-//	@Persistent
-//	private LatLng latlng;
-	
 	@Persistent
 	private double rate;
-
-	//@Persistent
-	//private TimeInEffect timeInEffect;
 
 	@Persistent
 	private boolean creditCard;
 	
 	@Persistent
 	private String type;
-
+ 
 	@Persistent
 	private Date createDate;
 
+	@Persistent
+	private double tieStart;
+	
+	@Persistent
+	private double tieEnd;
+	
+	@Persistent
+	private double timeLimit;
+	
 	public Meter() {
 		this.createDate = new Date();
 	}
 
-//	@Persistent
-//	private TimeLimit timeLimit; // making hour class? (could be int)
 
-
-	public Meter(int number) {
+	public Meter(long number) {
 		this();
 		this.number = number;
 	}
@@ -60,14 +60,6 @@ public class Meter {
 		return latitude;
 	}
 	
-//	public void setLatlng(double lat, double lng){
-//		this.latlng = LatLng.create(lat, lng);
-//	}
-//	
-//	public LatLng getLatlng(){
-//		return this.latlng;
-//	}
-
 	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}
@@ -88,14 +80,6 @@ public class Meter {
 		this.rate = rate;
 	}
 
-//	public TimeInEffect getTimeInEffect() {
-//		return timeInEffect;
-//	}
-//
-//	public void setTimeInEffect(TimeInEffect timeInEffect) {
-//		this.timeInEffect = timeInEffect;
-//	}
-
 	public boolean isCreditCard() {
 		return creditCard;
 	}
@@ -112,12 +96,35 @@ public class Meter {
 		this.type = type;
 	}
 
-//	public TimeLimit getTimeLimit() {
-//		return timeLimit;
-//	}
-//
-//	public void setTimeLimit(TimeLimit timeLimit) {
-//		this.timeLimit = timeLimit;
-//	}
 
+	public double getTieStart() {
+		return tieStart;
+	}
+
+
+	public void setTieStart(double tieStart) {
+		this.tieStart = tieStart;
+	}
+
+
+	public double getTieEnd() {
+		return tieEnd;
+	}
+
+
+	public void setTieEnd(double tieEnd) {
+		this.tieEnd = tieEnd;
+	}
+
+
+	public double getTimeLimit() {
+		return timeLimit;
+	}
+
+
+	public void setTimeLimit(double timeLimit) {
+		this.timeLimit = timeLimit;
+	}
+
+	
 }
