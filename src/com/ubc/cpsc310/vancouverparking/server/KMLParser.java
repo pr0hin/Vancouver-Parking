@@ -56,17 +56,25 @@ public class KMLParser {
 		if (headtype.find()) {
 			System.out.println(headtype.group(0));
 		}
-		Matcher timelimit = Pattern.compile("([1-9])|30").matcher(tokens[2]);
-		if (timelimit.find()) {
-			System.out.println(timelimit.group(0));
-		}
 		Matcher hours = Pattern.compile("[$][1-9].[0-9][0-9]").matcher(tokens[3]);
 		if (hours.find()) {
 			
 		System.out.println(hours.group(0));
 		}
+		Matcher timelimit = Pattern.compile("([1-9])|30").matcher(tokens[2]);
+		if (timelimit.find()) {
+			System.out.println(timelimit.group(0));
+		}
 		
 		
+		Matcher creditcard = Pattern.compile("CREDIT_CARD").matcher(tokens[4]);
+		if (creditcard.find()) {
+			System.out.println(creditcard.group(0));
+		}
+		Matcher timeineffect = Pattern.compile("[1-9]:[0-9][0-9]\\s(P|A)?M\\sTO\\s[1-9]?[0-9]:[0-9][0-9]\\s(P|A)?M").matcher(tokens[5]);
+		if (timeineffect.find()){
+			System.out.println(timeineffect.group(0));
+		}
 		
 		
 	}
