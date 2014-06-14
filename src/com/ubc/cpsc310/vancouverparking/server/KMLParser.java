@@ -3,6 +3,8 @@ package com.ubc.cpsc310.vancouverparking.server;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.jdo.annotations.Persistent;
 
@@ -22,10 +24,10 @@ public class KMLParser {
 	private double latitude;
 	private double longitude;
 	private double rate;
-	private TimeInEffect timeInEffect;
+	private String timeineffect;
 	private boolean creditCard;
 	private String type;
-	private TimeLimit timeLimit;
+	private float timelimit;
 	private Meter meter;
 	private List<Meter> meters = new ArrayList<Meter>();
 
@@ -50,7 +52,23 @@ public class KMLParser {
 		for (int i = 1; i < tokens.length; i++) {
 		System.out.println(tokens[i]);
 		}
-
+		Matcher headtype = Pattern.compile("Single|Twin").matcher(tokens[1]);
+		if (headtype.find()) {
+			System.out.println(headtype.group(0));
+		}
+		Matcher timelimit = Pattern.compile("([1-9])|30").matcher(tokens[2]);
+		if (timelimit.find()) {
+			System.out.println(timelimit.group(0));
+		}
+		Matcher hours = Pattern.compile("[$][1-9].[0-9][0-9]").matcher(tokens[3]);
+		if (hours.find()) {
+			
+		System.out.println(hours.group(0));
+		}
+		
+		
+		
+		
 	}
 
 //	private List<Meter> parse() {
@@ -70,7 +88,8 @@ public class KMLParser {
 //	}
 //
 //	private void parseDescription(String description) {
-//		// TODO Auto-generated method stub
+//		String delims = "<br>";
+//		String [] tokens = desc.split(delims);
 //
 //	}
 }
