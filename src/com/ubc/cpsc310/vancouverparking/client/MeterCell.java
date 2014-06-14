@@ -6,6 +6,7 @@ import com.google.gwt.safecss.shared.SafeStyles;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.ubc.cpsc310.vancouverparking.server.Meter;
 
 public class MeterCell extends AbstractCell<MeterInfo>{
 	
@@ -28,7 +29,7 @@ public class MeterCell extends AbstractCell<MeterInfo>{
       		+ "<span class='meter_number'>{0}</span><br>"
     		+ "<span class='meter_data'>{1} | {2}</span>"
       		+ "</div>")
-      SafeHtml cell(int meterNum, double rate, String paymentType, String iconStyle);
+      SafeHtml cell(long meterNum, double rate, String paymentType, String iconStyle);
     }
     
     
@@ -53,7 +54,7 @@ public class MeterCell extends AbstractCell<MeterInfo>{
 	      }
 	      
 	      // Use the template to create the Cell's html.
-	      int meterNum = value.getNumber();
+	      long meterNum = value.getNumber();
 	      double rate = value.getRate();
 	      String paymentType;
 	      if (value.isCreditCard()) {
