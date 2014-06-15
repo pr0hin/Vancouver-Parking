@@ -12,27 +12,28 @@ import javax.jdo.annotations.PrimaryKey;
 public class Meter {
 
 	@PrimaryKey
-	@Persistent//(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	@Persistent
+	// (valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private long number;
-	
+
 	@Persistent
 	private double latitude;
-	
+
 	@Persistent
 	private double longitude;
-	
-//	@Persistent
-//	private LatLng latlng;
-	
+
+	// @Persistent
+	// private double latlng;
+
 	@Persistent
 	private double rate;
 
-	//@Persistent
-	//private TimeInEffect timeInEffect;
+	@Persistent
+	private String timeInEffect;
 
 	@Persistent
 	private boolean creditCard;
-	
+
 	@Persistent
 	private String type;
 
@@ -43,13 +44,16 @@ public class Meter {
 		this.createDate = new Date();
 	}
 
-//	@Persistent
-//	private TimeLimit timeLimit; // making hour class? (could be int)
+	@Persistent
+	private float timeLimit; // making hour class? (could be int)
 
-
-	public Meter(int number) {
-		this();
+	public Meter(int number, String type, double rate, float timeLimit, boolean creditCard, String timeInEffect) {
 		this.number = number;
+		this.type = type;
+		this.rate = rate;
+		this.timeLimit = timeLimit;
+		this.creditCard = creditCard;
+		this.timeInEffect = timeInEffect;
 	}
 
 	public long getNumber() {
@@ -59,14 +63,14 @@ public class Meter {
 	public double getLatitude() {
 		return latitude;
 	}
-	
-//	public void setLatlng(double lat, double lng){
-//		this.latlng = LatLng.create(lat, lng);
-//	}
-//	
-//	public LatLng getLatlng(){
-//		return this.latlng;
-//	}
+
+	// public void setLatlng(double lat, double lng){
+	// this.latlng = LatLng.create(lat, lng);
+	// }
+	//
+	// public LatLng getLatlng(){
+	// return this.latlng;
+	// }
 
 	public void setLatitude(double latitude) {
 		this.latitude = latitude;
@@ -88,13 +92,13 @@ public class Meter {
 		this.rate = rate;
 	}
 
-//	public TimeInEffect getTimeInEffect() {
-//		return timeInEffect;
-//	}
-//
-//	public void setTimeInEffect(TimeInEffect timeInEffect) {
-//		this.timeInEffect = timeInEffect;
-//	}
+	// public TimeInEffect getTimeInEffect() {
+	// return timeInEffect;
+	// }
+	//
+	// public void setTimeInEffect(TimeInEffect timeInEffect) {
+	// this.timeInEffect = timeInEffect;
+	// }
 
 	public boolean isCreditCard() {
 		return creditCard;
@@ -112,12 +116,29 @@ public class Meter {
 		this.type = type;
 	}
 
-//	public TimeLimit getTimeLimit() {
-//		return timeLimit;
-//	}
-//
-//	public void setTimeLimit(TimeLimit timeLimit) {
-//		this.timeLimit = timeLimit;
-//	}
+	public String getTimeInEffect() {
+		return timeInEffect;
+	}
 
+	public void setTimeInEffect(String timeInEffect) {
+		this.timeInEffect = timeInEffect;
+	}
+
+	public float getTimeLimit() {
+		return timeLimit;
+	}
+
+	public void setTimeLimit(float timeLimit) {
+		this.timeLimit = timeLimit;
+	}
+
+	// public TimeLimit getTimeLimit() {
+	// return timeLimit;
+	// }
+	//
+	// public void setTimeLimit(TimeLimit timeLimit) {
+	// this.timeLimit = timeLimit;
+	// }
+
+	
 }

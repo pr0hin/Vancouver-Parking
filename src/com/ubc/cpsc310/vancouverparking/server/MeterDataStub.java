@@ -15,7 +15,7 @@ public class MeterDataStub {
 	public MeterDataStub() {
 		metersList = new ArrayList<Meter>();
 		for (int i = 0; i<200;i++) {
-			Meter meter = new Meter(378625 + i);
+			Meter meter = new Meter(378625 + i, "test", 0, 0, true, "unknown");
 			meter.setCreditCard(true);
 			if (i%2 == 0) {
 				meter.setRate(2.00);

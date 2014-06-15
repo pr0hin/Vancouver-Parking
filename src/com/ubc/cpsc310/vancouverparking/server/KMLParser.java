@@ -1,20 +1,22 @@
 package com.ubc.cpsc310.vancouverparking.server;
 
 import java.io.File;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipInputStream;
 
-import javax.jdo.annotations.Persistent;
-
-import de.micromata.opengis.kml.v_2_2_0.Coordinate;
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 import de.micromata.opengis.kml.v_2_2_0.Document;
 import de.micromata.opengis.kml.v_2_2_0.Feature;
 import de.micromata.opengis.kml.v_2_2_0.Folder;
-import de.micromata.opengis.kml.v_2_2_0.Geometry;
 import de.micromata.opengis.kml.v_2_2_0.Kml;
-import de.micromata.opengis.kml.v_2_2_0.KmlFactory;
 import de.micromata.opengis.kml.v_2_2_0.Placemark;
 import de.micromata.opengis.kml.v_2_2_0.Point;
 import de.micromata.opengis.kml.v_2_2_0.StyleSelector;
@@ -24,80 +26,155 @@ public class KMLParser {
 	private double latitude;
 	private double longitude;
 	private double rate;
-	private String timeineffect;
+	private String timeInEffect;
 	private boolean creditCard;
 	private String type;
-	private float timelimit;
+	private float timeLimit;
 	private Meter meter;
 	private List<Meter> meters = new ArrayList<Meter>();
+	List<Feature> placemarks;
 
-	public static void main(String [ ] args)
-	{	
+	public KMLParser() {
+//		try {
+//			InputStream is = new URL("http://data.vancouver.ca/download/kml/parking_meter_rates_and_time_limits.kmz").openStream();
+//			ZipInputStream zpstream = new ZipInputStream(is);
+//			File file = zpstream.getNextEntry().
+//			zip.extractFile("parking_meter_rates_and_time_limits.kml", "/home/rohin");
+//		} catch (ZipException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} 
+		
 		File parkingmeters = new File(
-				"/Users/rohinpatel/Desktop/310/VancouverParking/src/com/ubc/cpsc310/vancouverparking/server/parking_meter_rates_and_time_limits.kml");
+				"/home/rohin/workspace/TeamAcronym/src/com/ubc/cpsc310/vancouverparking/server/parking_meter_rates_and_time_limits.kml");
+		//File parkingmeters = new File ("/home/rohin/parking_meter_rates_and_time_limits.kml");
 		Kml kml = Kml.unmarshal(parkingmeters);
 		Document doc = (Document) kml.getFeature();
 
 		List<StyleSelector> styles = doc.getStyleSelector();
-		
-		List<Feature> placemarks;
+
 		List<Feature> folders = doc.getFeature();
 
 		Folder folder = (Folder) folders.get(0);
 		placemarks = folder.getFeature();
-		String desc = placemarks.get(0).getDescription();
-		System.out.println(desc);
-		String delims = "<br>";
-		String [] tokens = desc.split(delims);
-		for (int i = 1; i < tokens.length; i++) {
-		System.out.println(tokens[i]);
-		}
-		Matcher headtype = Pattern.compile("Single|Twin").matcher(tokens[1]);
-		if (headtype.find()) {
-			System.out.println(headtype.group(0));
-		}
-		Matcher hours = Pattern.compile("[$][1-9].[0-9][0-9]").matcher(tokens[3]);
-		if (hours.find()) {
-			
-		System.out.println(hours.group(0));
-		}
-		Matcher timelimit = Pattern.compile("([1-9])|30").matcher(tokens[2]);
-		if (timelimit.find()) {
-			System.out.println(timelimit.group(0));
-		}
-		
-		
-		Matcher creditcard = Pattern.compile("CREDIT_CARD").matcher(tokens[4]);
-		if (creditcard.find()) {
-			System.out.println(creditcard.group(0));
-		}
-		Matcher timeineffect = Pattern.compile("[1-9]:[0-9][0-9]\\s(P|A)?M\\sTO\\s[1-9]?[0-9]:[0-9][0-9]\\s(P|A)?M").matcher(tokens[5]);
-		if (timeineffect.find()){
-			System.out.println(timeineffect.group(0));
-		}
-		
-		
+		Placemark pm = (Placemark)placemarks.get(0);
+		Point point = (Point)pm.getGeometry();
+			System.out.println(point.getCoordinates().get(0).getLatitude());
+				
+
 	}
 
-//	private List<Meter> parse() {
-//		for (Feature pm : placemarks) {
-//			number = new Integer(pm.getName());
-//			String description = pm.getDescription();
-//			parseDescription(description);
-//			Placemark placemark = (Placemark) pm;
-//			Point point = (Point) placemark.getGeometry();
-//			latitude = point.getCoordinates().get(0).getLatitude();
-//			longitude = point.getCoordinates().get(0).getLongitude();
-//
-//			meter = new Meter(number);
-//			meters.add(meter);
-//		}
-//		return null;
-//	}
-//
-//	private void parseDescription(String description) {
-//		String delims = "<br>";
-//		String [] tokens = desc.split(delims);
-//
-//	}
+	public List<Meter> parse() {
+		for (Feature pm : placemarks) {
+			number = new Integer(pm.getName());
+			String description = pm.getDescription();
+			parseDescription(description);
+			Placemark placemark = (Placemark)pm;
+			Point point = (Point)placemark.getGeometry();
+			if (point != null) {
+			this.latitude = point.getCoordinates().get(0).getLatitude();
+			this.longitude = point.getCoordinates().get(0).getLongitude();
+			}
+			else {
+				latitude = 0;
+				longitude = 0;
+			}
+			meter = new Meter(number, type, rate, timeLimit, creditCard,
+					timeInEffect);
+			meter.setLatitude(latitude);
+			meter.setLongitude(longitude);
+			meters.add(meter);
+		
+		}
+		return meters;
+	}
+
+	private void parseDescription(String desc) {
+		String delims = "<br>";
+		String[] tokens = desc.split(delims);
+		Matcher headtype = Pattern.compile("Single|Twin|Single Motorbike").matcher(tokens[1]);
+		if (headtype.find()) {
+			this.type = headtype.group(0);
+		} else {
+			this.type = "Unknown";
+		}
+		Matcher rate = Pattern.compile("[1-9]|\\s.[0-9][0-9]").matcher(tokens[3]);
+		if (rate.find()) {
+
+			this.rate = Double.parseDouble(rate.group(0));
+		} else {
+			this.rate = 0;
+		}
+		Matcher timelimit = Pattern.compile("([1-9])|30|no time limit").matcher(tokens[2]);
+		if (timelimit.find()) {
+			this.timeLimit = Float.parseFloat(timelimit.group(0));
+		} else {
+			this.timeLimit = 0;
+		}
+
+		Matcher creditcard = Pattern.compile("CREDIT_CARD").matcher(tokens[4]);
+		if (creditcard.find()) {
+			this.creditCard = true;
+		} else {
+			this.creditCard = false;
+		}
+		Matcher timeineffect = Pattern
+				.compile(
+						"[1-9]:[0-9][0-9]\\s(P|A)?M\\sTO\\s[1-9]?[0-9]:[0-9][0-9]\\s(P|A)?M")
+				.matcher(tokens[5]);
+		if (timeineffect.find()) {
+			this.timeInEffect = timeineffect.group(0);
+		} else {
+			this.timeInEffect = "Unknown";
+		}
+
+	}
+	public List<Meter> getMeters() {
+		return meters;
+	}
+	public List<Feature> getPlacemarks() {
+		return placemarks;
+	}
+	
+	public List<Meter> getmeterswithoutcoord() {
+		List<Meter> meterswithoutcoord = new ArrayList<Meter>();
+		for (Meter meter : meters) {
+			if ( (meter.getLatitude() == 0) || (meter.getLongitude() == 0) ) {
+				meterswithoutcoord.add(meter);
+				System.out.println(meter.getNumber());
+				
+			}
+		}
+		return meterswithoutcoord;
+	}
+	
+	public List<Meter> getMetersFailingDescriptionParsing() {
+		List<Meter> metersfailingdescriptionparsing = new ArrayList<Meter>();
+		for (Meter meter : meters) {
+			if ( (meter.getType().equals("Unknown")) || (meter.getRate() == 0) || (meter.getTimeLimit() == 0) || (!meter.isCreditCard()) || (meter.getTimeInEffect().equals("Unknown")) ) {
+				metersfailingdescriptionparsing.add(meter);
+				System.out.println(meter.getNumber());
+			}
+		}
+		return metersfailingdescriptionparsing;
+	}
+	
+	public List<Meter> getMetersFailingTypeParsing() {
+		List<Meter> metersFailingParsing = new ArrayList<Meter>();
+		for (Meter meter : meters) {
+			if (meter.getType().equals("Unknown")) {
+				System.out.println(meter.getNumber());
+			}
+		}
+		return metersFailingParsing;
+	}
+	public List<Meter> getMetersRateParsing() {
+		List<Meter> metersFailingParsing = new ArrayList<Meter>();
+		for (Meter meter : meters) {
+			if (meter.getRate() == 0) {
+				System.out.println(meter.getNumber());
+			}
+		}
+		return metersFailingParsing;
+	}
 }
