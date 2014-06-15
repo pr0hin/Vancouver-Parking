@@ -25,8 +25,44 @@ public class KMLParserTest {
 	}
 	
 	@Test
-	public void checkFailingMeters() {
-		kmlparser.getMetersRateParsing();
+	public void findUnknownHeadTypeMeters() {
+		System.out.println("Meters With No Head Type");
+		kmlparser.getMetersFailingTypeParsing();
+		System.out.println("==============");
+	}
+	
+	@Test
+	public void findUnknownLocationMeters() {
+		System.out.println("Meters with No Location");
+		kmlparser.getMetersWithoutCoord();
+		System.out.println("==============");
+	}
+	
+	@Test
+	public void findMetersWithoutRate() {
+		System.out.println("Meters with No Rate");
+		kmlparser.getMetersFailingRateParsing();
+		System.out.println("==============");
+	}
+	
+	@Test
+	public void findMetersWithoutTimeLimit() {
+		System.out.println("Meters without Time Limit");
+		kmlparser.getMetersFailingTimeLimit();
+		System.out.println("==============");	
+	}
+	@Test 
+	public void findMetersWithoutCreditCard() {
+		System.out.println("Meters without Credit Card");
+		kmlparser.getMetersFailingCreditCard();
+		System.out.println("==============");
+	}
+	
+	@Test
+	public void findMetersWithoutTimeInEffect() {
+		System.out.println("Meters Without Time In Effect");
+		kmlparser.getMetersFailingTimeInEffect();
+		System.out.println("==============");
 	}
 
 }

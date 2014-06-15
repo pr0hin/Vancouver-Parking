@@ -47,13 +47,18 @@ public class Meter {
 	@Persistent
 	private float timeLimit; // making hour class? (could be int)
 
-	public Meter(int number, String type, double rate, float timeLimit, boolean creditCard, String timeInEffect) {
+	public Meter(int number){
+		this.number = number;
+	}
+	public Meter(int number, String type, double rate, float timeLimit, boolean creditCard, String timeInEffect, double latitude, double longitude) {
 		this.number = number;
 		this.type = type;
 		this.rate = rate;
 		this.timeLimit = timeLimit;
 		this.creditCard = creditCard;
 		this.timeInEffect = timeInEffect;
+		this.latitude = latitude;
+		this.longitude = longitude;
 	}
 
 	public long getNumber() {
