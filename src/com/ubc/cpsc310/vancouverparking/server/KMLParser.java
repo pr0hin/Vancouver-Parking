@@ -49,10 +49,13 @@ public class KMLParser {
 		// }
 
 		File parkingmeters = new File(
-				"/TeamAcronym/src/com/ubc/cpsc310/vancouverparking/server/parking_meter_rates_and_time_limits.kml");
+
+				"C:/Users/Andre Furlan/SkyDrive/UBC/CPSC 310/parking_meter_rates_and_time_limits.kml");
+//				"/TeamAcronym/war/parking_meter_rates_and_time_limits.kml");
 		// File parkingmeters = new File
 		// ("/home/rohin/parking_meter_rates_and_time_limits.kml");
 		//File parkingmeters = new File(System.getProperty("user.dir")+"/"+"parking_meter_rates_and_time_limits.kml");
+
 		Kml kml = Kml.unmarshal(parkingmeters);
 		Document doc = (Document) kml.getFeature();
 
@@ -62,8 +65,6 @@ public class KMLParser {
 
 		Folder folder = (Folder) folders.get(0);
 		placemarks = folder.getFeature();
-
-
 	}
 
 	public List<Meter> parse() {
@@ -86,6 +87,7 @@ public class KMLParser {
 
 		}
 		return meters;
+
 	}
 
 	private void parseDescription(String desc) {
@@ -140,6 +142,8 @@ public class KMLParser {
 	public List<Meter> getMeters() {
 		return meters;
 	}
+
+
 
 	public List<Feature> getPlacemarks() {
 		return placemarks;
@@ -222,3 +226,5 @@ public class KMLParser {
 	}
 
 }
+
+

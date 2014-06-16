@@ -31,10 +31,12 @@ public class MeterDataStub {
 			meter.setTieStart(8.0f);
 			meter.setTimeLimit(2);
 			metersList.add(meter);
+
 			
 		}
 
 	}
+
 
 	public List<Meter> getMetersList() {
 		return metersList;

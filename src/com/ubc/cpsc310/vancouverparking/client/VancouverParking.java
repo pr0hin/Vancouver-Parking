@@ -46,6 +46,7 @@ public class VancouverParking implements EntryPoint {
 	// Map related fields
 	private GoogleMap map;
 	private MarkerImage icon = MarkerImage.create("/mapIcon.png");
+
 	private Button loadMetersButton = new Button("Load Meters"); // //////////
 	private HorizontalPanel panel = new HorizontalPanel(); // //////////
 	private LatLng myLatLng = LatLng.create(49.2569777, -123.123904);
@@ -54,6 +55,7 @@ public class VancouverParking implements EntryPoint {
 	private Element selected = null;
 	private InfoWindow lastInfoWindow = null;
 	private List<Marker> markers = new ArrayList<Marker>();
+
 	/**
 	 * The message displayed to the user when the server cannot be reached or
 	 * returns an error.
@@ -116,12 +118,13 @@ public class VancouverParking implements EntryPoint {
 	}
 
 	private void getMeters() {
+
 		meterService.getMeters(new AsyncCallback<List<MeterInfo>>() {
 			public void onFailure(Throwable error) {
 				// TODO
 			}
-
 			public void onSuccess(List<MeterInfo> meters) {
+
 
 				// Receiving meters from server and putting them in global
 				// allMeters variable
@@ -135,6 +138,7 @@ public class VancouverParking implements EntryPoint {
 	}
 
 	private void displayMeters(List<MeterInfo> meters) {
+
 
 		clearMarkers();
 		// Adding meters to the cellList
@@ -159,6 +163,7 @@ public class VancouverParking implements EntryPoint {
 			newMarkerOpts.setIcon(icon);
 			final Marker marker = Marker.create(newMarkerOpts);
 			markers.add(marker);
+
 
 			final int index = i;
 			// creating popup
@@ -192,11 +197,11 @@ public class VancouverParking implements EntryPoint {
 						lastInfoWindow.close();
 						lastInfoWindow = infowindow;
 					}
-
 				}
 			});
 		}
 		reloadMarkers();
+
 	}
 
 	public void reloadMarkers() {
@@ -211,6 +216,7 @@ public class VancouverParking implements EntryPoint {
 		}
 		markers.clear();
 	}
+
 
 	public List<MeterInfo> filterMetersByRate(int rate) {
 		List<MeterInfo> filteredMeters = new ArrayList<MeterInfo>();

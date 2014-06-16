@@ -19,10 +19,10 @@ public class Meter {
 	
 	@Persistent
 	private long number;
-	
+
 	@Persistent
 	private double latitude;
-	
+
 	@Persistent
 	private double longitude;
 	
@@ -30,13 +30,13 @@ public class Meter {
 	private float rate;
 
 	@Persistent
+	private String timeInEffect;
+
+	@Persistent
 	private boolean creditCard;
-	
+
 	@Persistent
 	private String type;
-	
-	@Persistent
-	private String timeInEffect;
  
 	@Persistent
 	private Date createDate;
@@ -68,8 +68,8 @@ public class Meter {
 
 	public Meter(long number) {
 		this();
-		this.number = number;
 	}
+
 
 	public long getNumber() {
 		return number;
@@ -78,7 +78,7 @@ public class Meter {
 	public double getLatitude() {
 		return latitude;
 	}
-	
+
 	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}
@@ -99,6 +99,22 @@ public class Meter {
 		this.rate = rate;
 	}
 
+	public float getTieStart() {
+		return tieStart;
+	}
+
+	public void setTieStart(float tieStart) {
+		this.tieStart = tieStart;
+	}
+
+	public float getTieEnd() {
+		return tieEnd;
+	}
+
+	public void setTieEnd(float tieEnd) {
+		this.tieEnd = tieEnd;
+	}
+
 	public boolean isCreditCard() {
 		return creditCard;
 	}
@@ -115,26 +131,9 @@ public class Meter {
 		this.type = type;
 	}
 
-
-	public float getTieStart() {
-		return tieStart;
+	public void setNumber(long number) {
+		this.number = number;
 	}
-
-
-	public void setTieStart(float tieStart) {
-		this.tieStart = tieStart;
-	}
-
-
-	public float getTieEnd() {
-		return tieEnd;
-	}
-
-
-	public void setTieEnd(float tieEnd) {
-		this.tieEnd = tieEnd;
-	}
-
 
 	public String getTimeInEffect() {
 		return timeInEffect;
@@ -217,6 +216,4 @@ public class Meter {
 	}
 
 
-
-	
 }
