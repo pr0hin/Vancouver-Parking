@@ -84,7 +84,7 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 			m.setLatitude(meter.getLatitude());
 			m.setLongitude(meter.getLongitude());
 			m.setType("bla");
-			m.setRate(2.00);
+			m.setRate(Math.floor(Math.random() * 5.00));
 			metersInfo.add(m);
 		}
 		// TODO Auto-generated method stub

@@ -26,9 +26,7 @@ public class MeterDataStub {
 			meter.setLatitude(latitude);
 			meter.setLongitude(longitude);
 			metersList.add(meter);
-	}
-	
-	
+		}
 	}
 	
 	public List<Meter> getMetersList() {
