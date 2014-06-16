@@ -27,30 +27,44 @@ public class Meter {
 	private double longitude;
 	
 	@Persistent
-	private double rate;
+	private float rate;
 
 	@Persistent
 	private boolean creditCard;
 	
 	@Persistent
 	private String type;
+	
+	@Persistent
+	private String timeInEffect;
  
 	@Persistent
 	private Date createDate;
 
 	@Persistent
-	private double tieStart;
+	private float tieStart;
 	
 	@Persistent
-	private double tieEnd;
+	private float tieEnd;
 	
 	@Persistent
-	private double timeLimit;
+	private float timeLimit;
 	
 	public Meter() {
 		this.createDate = new Date();
 	}
 
+	public Meter(int number, String type, float rate, float timeLimit, boolean creditCard, String timeInEffect, double latitude, double longitude) {
+		this();
+		this.number = number;
+		this.type = type;
+		this.rate = rate;
+		this.timeLimit = timeLimit;
+		this.creditCard = creditCard;
+		this.timeInEffect = timeInEffect;
+		this.latitude = latitude;
+		this.longitude = longitude;
+	}
 
 	public Meter(long number) {
 		this();
@@ -77,11 +91,11 @@ public class Meter {
 		this.longitude = longitude;
 	}
 
-	public double getRate() {
+	public float getRate() {
 		return rate;
 	}
 
-	public void setRate(double rate) {
+	public void setRate(float rate) {
 		this.rate = rate;
 	}
 
@@ -102,32 +116,39 @@ public class Meter {
 	}
 
 
-	public double getTieStart() {
+	public float getTieStart() {
 		return tieStart;
 	}
 
 
-	public void setTieStart(double tieStart) {
+	public void setTieStart(float tieStart) {
 		this.tieStart = tieStart;
 	}
 
 
-	public double getTieEnd() {
+	public float getTieEnd() {
 		return tieEnd;
 	}
 
 
-	public void setTieEnd(double tieEnd) {
+	public void setTieEnd(float tieEnd) {
 		this.tieEnd = tieEnd;
 	}
 
 
-	public double getTimeLimit() {
+	public String getTimeInEffect() {
+		return timeInEffect;
+	}
+
+	public void setTimeInEffect(String timeInEffect) {
+		this.timeInEffect = timeInEffect;
+	}
+
+	public float getTimeLimit() {
 		return timeLimit;
 	}
 
-
-	public void setTimeLimit(double timeLimit) {
+	public void setTimeLimit(float timeLimit) {
 		this.timeLimit = timeLimit;
 	}
 
@@ -194,6 +215,8 @@ public class Meter {
 			return false;
 		return true;
 	}
+
+
 
 	
 }

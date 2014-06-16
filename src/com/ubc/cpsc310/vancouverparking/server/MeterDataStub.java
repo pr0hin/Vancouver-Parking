@@ -18,18 +18,18 @@ public class MeterDataStub {
 				cc = false;
 			meter.setCreditCard(cc);
 			if (i % 2 == 0) {
-				meter.setRate(2.00);
+				meter.setRate(2.00f);
 			} else {
-				meter.setRate(3.00);
+				meter.setRate(3.00f);
 			}
 			meter.setType("Public");
 			double latitude = 49.2569777 - (Math.random() * 0.1);
 			double longitude = -123.123904 - (Math.random() * 0.1);
 			meter.setLatitude(latitude);
 			meter.setLongitude(longitude);
-			meter.setTieEnd(6.0);
-			meter.setTieStart(8.0);
-			meter.setTimeLimit(2.0);
+			meter.setTieEnd(6.0f);
+			meter.setTieStart(8.0f);
+			meter.setTimeLimit(2);
 			metersList.add(meter);
 			
 		}
