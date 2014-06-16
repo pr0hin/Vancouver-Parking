@@ -10,7 +10,7 @@ public class MeterInfo implements Serializable {
 	/**
 	 * 
 	 */
-	private int number;
+	private long number;
 	private double latitude;
 	private double longitude;
 	private double rate;
@@ -20,11 +20,11 @@ public class MeterInfo implements Serializable {
 	//private TimeLimit timeLimit; // making hour class? (could be int)
 
 
-	public int getNumber() {
+	public long getNumber() {
 		return number;
 	}
 	
-	public void setNumber(int n){
+	public void setNumber(long n){
 		this.number = n;
 	}
 	public double getLatitude() {

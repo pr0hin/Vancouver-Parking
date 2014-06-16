@@ -29,8 +29,30 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 	private static final PersistenceManagerFactory PMF = JDOHelper
 			.getPersistenceManagerFactory("transactions-optional");
 
+
+//	public String[] getStocks() throws NotLoggedInException {
+//		checkLoggedIn();
+//		PersistenceManager pm = getPersistenceManager();
+//		List<String> symbols = new ArrayList<String>();
+//		try {
+//			Query q = pm.newQuery(Stock.class, "user == u");
+//			q.declareParameters("com.google.appengine.api.users.User u");
+//			q.setOrdering("createDate");
+//			List<Stock> stocks = (List<Stock>) q.execute(getUser());
+//			for (Stock stock : stocks) {
+//				symbols.add(stock.getSymbol());
+//			}
+//		} finally {
+//			pm.close();
+//		}
+//		return (String[]) symbols.toArray(new String[0]);
+//	}
+//	public void addStock(String symbol) throws NotLoggedInException {
+//		checkLoggedIn();
+
 //	public void addMeter() {
 //		MeterDataStub metersStub = new MeterDataStub();
+
 //		PersistenceManager pm = getPersistenceManager();
 //		try {
 //
@@ -41,6 +63,10 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 //		// TODO Auto-generated method stub
 //	}
 
+//
+//
+
+
 //	public void removeMeter(MeterInfo m) {
 //		PersistenceManager pm = getPersistenceManager();
 //		try {
@@ -50,6 +76,7 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 //		}
 //		// TODO Auto-generated method stub
 //	}
+
 
 	public List<MeterInfo> getMeters() {
 		MeterDataStub metersStub = new MeterDataStub();
