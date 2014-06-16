@@ -10,6 +10,7 @@ import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
+import javax.jdo.Transaction;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ubc.cpsc310.vancouverparking.client.MeterInfo;
@@ -34,17 +35,42 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 		// initializes an instance of the parser
 		KMLParser parser = new KMLParser();
 		List<Meter> meters = parser.parseFile();
+		// removeMeters();
 		PersistenceManager pm = PMF.getPersistenceManager();
+		//Transaction tx = pm.currentTransaction();
 		try {
+			// tx.begin();
 			// input all meters parsed into the datastore
-			for (Meter m : meters) {
-				pm.makePersistent(m);
-			}
-			// pm.makePersistentAll();
+			pm.makePersistentAll(meters);
 			res = true;
+			// tx.commit();
+		} finally {
+			// while(tx.isActive()){
+			// }
+			// if (tx.isActive()) {
+			// tx.rollback(); // Error occurred so rollback the PM transaction
+			// }
+			pm.refreshAll();
+			pm.close();
+		}
+		System.out.println("Meters to load :" + meters.size());
+		if (!pm.isClosed()){
+			pm.close();
+		}
+		pm = PMF.getPersistenceManager();
+		List<Meter> metersParsed = new LinkedList<Meter>();
+		try {
+
+//			Query q = pm.newQuery(Meter.class);
+//			metersParsed = (List<Meter>) q.execute();
+			Query q = pm.newQuery(Meter.class);//, "city == c");
+			//q.declareParameters("String c");
+			metersParsed = (List<Meter>) q.execute();
+
 		} finally {
 			pm.close();
 		}
+			System.out.println("Meters loaded :" + metersParsed.size());
 		return res;
 	}
 
@@ -52,12 +78,28 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 		boolean res = false;
 		PersistenceManager pm = PMF.getPersistenceManager();
 		try {
-			// ... do stuff with pm ...
+//			Extent<Meter> extent = pm.getExtent(Meter.class, true);
+//			for (Meter meter : extent) {
+//				pm.deletePersistent(meter);
+//			}
+			Query q = pm.newQuery(Meter.class);//, "city == c");
+			//q.declareParameters("String c");
+			q.deletePersistentAll();
 			res = true;
 		} finally {
 			pm.close();
 		}
-		// TODO implement remove meters
+		pm = PMF.getPersistenceManager();
+		pm.refreshAll();
+		try {
+			Query q = pm.newQuery(Meter.class);//, "city == c");
+			//q.declareParameters("String c");
+			List<Meter> meters = (List<Meter>) q.execute();
+			System.out.println("Meters remained :" + meters.size());
+
+		} finally {
+			pm.close();
+		}
 		return res;
 	}
 
@@ -70,9 +112,34 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 
 		try {
 			// gets a list of all meters from the datastore
-			
-			Extent<Meter> extent = pm.getExtent(Meter.class, false);
-			for (Meter meter : extent) {
+
+			// Extent<Meter> extent = pm.getExtent(Meter.class, true);
+			// for (Meter meter : extent) {
+			// MeterInfo m = new MeterInfo();
+			// m.setNumber(meter.getNumber());
+			// m.setCreditCard(meter.isCreditCard());
+			// m.setLatitude(meter.getLatitude());
+			// m.setLongitude(meter.getLongitude());
+			// m.setType(meter.getType());
+			// m.setRate(meter.getRate());
+			// m.setTieEnd(meter.getTieEnd());
+			// m.setTieStart(meter.getTieStart());
+			// m.setTimeLimit(meter.getTimeLimit());
+			// metersInfo.add(m);
+			// System.out.println(metersInfo.size());
+			// }
+			// extent.closeAll();
+			Query q = pm.newQuery(Meter.class);//, "city == c");
+			//q.declareParameters("String c");
+			meters = (List<Meter>) q.execute();
+
+		} finally {
+			pm.close();
+		}
+		System.out.println("Meters retrieved :" + meters.size());
+		if (meters != null) {
+			// translates meters into meterinfo
+			for (Meter meter : meters) {
 				MeterInfo m = new MeterInfo();
 				m.setNumber(meter.getNumber());
 				m.setCreditCard(meter.isCreditCard());
@@ -85,26 +152,6 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 				m.setTimeLimit(meter.getTimeLimit());
 				metersInfo.add(m);
 			}
-			extent.closeAll();
-//			Query q = pm.newQuery(Meter.class);
-//			meters = (List<Meter>) q.execute();
-//			if (meters != null) {
-//				// translates meters into meterinfo
-//				for (Meter meter : meters) {
-//					MeterInfo m = new MeterInfo();
-//					m.setNumber(meter.getNumber());
-//					m.setCreditCard(meter.isCreditCard());
-//					m.setLatitude(meter.getLatitude());
-//					m.setLongitude(meter.getLongitude());
-//					m.setType(meter.getType());
-//					m.setRate(meter.getRate());
-//					m.setTieEnd(meter.getTieEnd());
-//					m.setTieStart(meter.getTieStart());
-//					m.setTimeLimit(meter.getTimeLimit());
-//					metersInfo.add(m);
-//				}
-		} finally {
-			pm.close();
 		}
 		return metersInfo;
 	}

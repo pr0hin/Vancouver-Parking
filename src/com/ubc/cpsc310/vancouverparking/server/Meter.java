@@ -8,11 +8,16 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
+import com.google.appengine.api.datastore.Key;
+
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class Meter {
 
 	@PrimaryKey
-	@Persistent//(valueStrategy = IdGeneratorStrategy.IDENTITY)
+    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+    private Key key;
+	
+	@Persistent
 	private long number;
 	
 	@Persistent
@@ -124,6 +129,70 @@ public class Meter {
 
 	public void setTimeLimit(double timeLimit) {
 		this.timeLimit = timeLimit;
+	}
+
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (creditCard ? 1231 : 1237);
+		long temp;
+		temp = Double.doubleToLongBits(latitude);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(longitude);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + (int) (number ^ (number >>> 32));
+		temp = Double.doubleToLongBits(rate);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(tieEnd);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(tieStart);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(timeLimit);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Meter other = (Meter) obj;
+		if (creditCard != other.creditCard)
+			return false;
+		if (Double.doubleToLongBits(latitude) != Double
+				.doubleToLongBits(other.latitude))
+			return false;
+		if (Double.doubleToLongBits(longitude) != Double
+				.doubleToLongBits(other.longitude))
+			return false;
+		if (number != other.number)
+			return false;
+		if (Double.doubleToLongBits(rate) != Double
+				.doubleToLongBits(other.rate))
+			return false;
+		if (Double.doubleToLongBits(tieEnd) != Double
+				.doubleToLongBits(other.tieEnd))
+			return false;
+		if (Double.doubleToLongBits(tieStart) != Double
+				.doubleToLongBits(other.tieStart))
+			return false;
+		if (Double.doubleToLongBits(timeLimit) != Double
+				.doubleToLongBits(other.timeLimit))
+			return false;
+		if (type == null) {
+			if (other.type != null)
+				return false;
+		} else if (!type.equals(other.type))
+			return false;
+		return true;
 	}
 
 	

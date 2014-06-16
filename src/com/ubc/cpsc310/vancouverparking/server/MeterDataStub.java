@@ -31,6 +31,7 @@ public class MeterDataStub {
 			meter.setTieStart(8.0);
 			meter.setTimeLimit(2.0);
 			metersList.add(meter);
+			
 		}
 
 	}

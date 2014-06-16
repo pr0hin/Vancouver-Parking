@@ -35,6 +35,8 @@ public class VancouverParking implements EntryPoint {
 	private CellList<MeterInfo> cellList = new CellList<MeterInfo>(metercell);
 	private Button loadMetersButton = new Button("Load Meters");
 	private Button getMetersButton = new Button("Get Meters");
+	private Button removeMetersButton = new Button("Remove Meters");
+	private Button countMetersButton = new Button("Count Meters");
 	private HorizontalPanel panel = new HorizontalPanel();
 
 	// Data related fields
@@ -70,9 +72,12 @@ public class VancouverParking implements EntryPoint {
 		panel.addStyleName("panel");
 		loadMetersButton.addStyleName("loadButton");
 		getMetersButton.addStyleName("getButton");
+		removeMetersButton.addStyleName("removeButton");
 		panel.add(loadMetersButton);
 		panel.add(getMetersButton);
-
+		panel.add(removeMetersButton);
+		panel.add(countMetersButton);
+		
 		loadMetersButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				loadMeters();
@@ -81,6 +86,16 @@ public class VancouverParking implements EntryPoint {
 		getMetersButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				getMeters();
+			}
+		});
+		removeMetersButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				removeMeters();
+			}
+		});
+		countMetersButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				System.out.println("Meters on client side: "+meters.size());
 			}
 		});
 		RootPanel.get("list_view").add(panel);
@@ -99,15 +114,28 @@ public class VancouverParking implements EntryPoint {
 		});
 	}
 
+	private void removeMeters() {
+		meterService.removeMeters(new AsyncCallback<Boolean>() {
+			public void onFailure(Throwable error) {
+				// TODO
+			}
+
+			public void onSuccess(Boolean res) {
+
+			}
+		});
+	}
+	
 	private void getMeters() {
 		meterService.getMeters(new AsyncCallback<List<MeterInfo>>() {
 			public void onFailure(Throwable error) {
 				// TODO
 			}
 
-			public void onSuccess(List<MeterInfo> meters) {
-				if (meters != null)
-					displayMeters(meters);
+			public void onSuccess(List<MeterInfo> lom) {
+				//if (meters != null)
+				meters = lom;
+				displayMeters(meters);
 			}
 
 		});
