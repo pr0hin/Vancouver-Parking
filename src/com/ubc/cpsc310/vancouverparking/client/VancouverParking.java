@@ -9,9 +9,13 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.cellview.client.CellList;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.maps.gwt.client.ArrayHelper;
 import com.google.maps.gwt.client.GoogleMap;
 import com.google.maps.gwt.client.InfoWindow;
@@ -34,6 +38,12 @@ import com.google.maps.gwt.client.Size;
 public class VancouverParking implements EntryPoint {
 	// FIELDS
 	// ========================
+	
+	// Login Fields
+	private LoginInfo loginInfo = null;
+	private Anchor signInLink = new Anchor("Sign In");
+	private Anchor signOutLink = new Anchor("Sign Out");
+	
 	// UI related fields
 
 	private MeterCell metercell = new MeterCell();
@@ -71,13 +81,14 @@ public class VancouverParking implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
+		// Setup Map Configurations
 		myOptions.setZoom(13.0);
 		myOptions.setCenter(myLatLng);
 		myOptions.setMapTypeId(MapTypeId.ROADMAP);
 		
 		map = GoogleMap.create(Document.get().getElementById("map_canvas"),
 				myOptions);
-	
+
 		// Add filter elements to filterBox
 		RootPanel.get("filterBox").add(filterButton);
 		filterButton.setText("Filter to $3");
@@ -87,9 +98,44 @@ public class VancouverParking implements EntryPoint {
 		      }
 		    });
 		//meterService.addMeter(null);
-		loadMeters();
 		
+		// Check login status using login service.
+	    LoginServiceAsync loginService = GWT.create(LoginService.class);
+	    loginService.login(GWT.getHostPageBaseURL(), new AsyncCallback<LoginInfo>() {
+	      public void onFailure(Throwable error) { handleError(error);}
+
+	      public void onSuccess(LoginInfo result) {
+	    	loadMeters();
+	        loginInfo = result;
+	        displayLoginInfo();
+	      }
+	    });
 	}
+	
+	private void displayLoginInfo() {
+		
+		if(loginInfo.isLoggedIn()) {
+			// If logged in, show username and logout link
+        	String userName = loginInfo.getNickname();
+        	String logout = loginInfo.getLogoutUrl();
+        	signOutLink.setText(userName);
+        	signOutLink.setHref(logout);
+        	
+        	RootPanel.get("loginInfo").add(signOutLink);
+        } else {
+        	// If not logged in, show sign in link
+        	String login = loginInfo.getLoginUrl();
+        	signInLink.setHref(login);
+		    RootPanel.get("loginInfo").add(signInLink);
+        }
+	}
+	
+	private void handleError(Throwable error) {
+	    Window.alert(error.getMessage());
+	    if (error instanceof NotLoggedInException) {
+	      Window.Location.replace(loginInfo.getLogoutUrl());
+	    }
+	  }
 	
 	private void loadMeters() {
 		meterService.getMeters(new AsyncCallback<List<MeterInfo>>() {
