@@ -30,7 +30,6 @@ public class KMLParser extends RemoteServiceServlet {
 	private Meter meter;
 	private List<Meter> meters = new ArrayList<Meter>();
 	List<Feature> placemarks;
-	String path;
 	public KMLParser() {
 		 try {
 		 URL meters = new URL("http://data.vancouver.ca/download/kml/parking_meter_rates_and_time_limits.kmz");
@@ -55,13 +54,7 @@ public class KMLParser extends RemoteServiceServlet {
 		
 	}
 
-	public String getPath() {
-		return path;
-	}
-
-	public void setPath(String path) {
-		this.path = path;
-	}
+	
 
 	public List<Meter> parse() {
 		for (Feature pm : placemarks) {
