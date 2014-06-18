@@ -51,16 +51,7 @@ public class KMLParser extends RemoteServiceServlet {
 		// TODO Auto-generated catch block
 		 e.printStackTrace();
 		 } 
-		
-		//path = getServletContext().getRealPath("");		
-		
-		//System.out.println(path);
-		//File parkingmeters = new File(path + "parking_meter_rates_and_time_limits.kml");
-//				"/TeamAcronym/war/parking_meter_rates_and_time_limits.kml");
-		// File parkingmeters = new File
-		// ("/home/rohin/parking_meter_rates_and_time_limits.kml");
-		//File parkingmeters = new File(System.getProperty("user.dir")+"/"+"parking_meter_rates_and_time_limits.kml");
-
+	
 		
 	}
 
