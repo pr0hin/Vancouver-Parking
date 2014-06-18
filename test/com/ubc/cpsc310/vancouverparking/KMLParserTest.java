@@ -14,6 +14,7 @@ public class KMLParserTest {
 	public void checkIfFilePresent() {
 		kmlparser = new KMLParser();
 		kmlparser.parse();
+		System.out.println(kmlparser.getPath());
 	}
 	
 	
