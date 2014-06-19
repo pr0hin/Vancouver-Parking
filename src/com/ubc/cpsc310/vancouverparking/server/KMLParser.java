@@ -18,7 +18,7 @@ import de.micromata.opengis.kml.v_2_2_0.Placemark;
 import de.micromata.opengis.kml.v_2_2_0.Point;
 import de.micromata.opengis.kml.v_2_2_0.StyleSelector;
 
-public class KMLParser extends RemoteServiceServlet {
+public class KMLParser {
 	private int number;
 	private double latitude;
 	private double longitude;
@@ -30,14 +30,18 @@ public class KMLParser extends RemoteServiceServlet {
 	private Meter meter;
 	private List<Meter> meters = new ArrayList<Meter>();
 	List<Feature> placemarks;
-	public KMLParser() {
-		 try {
-		 URL meters = new URL("http://data.vancouver.ca/download/kml/parking_meter_rates_and_time_limits.kmz");
-		 HttpURLConnection connection = (HttpURLConnection) meters.openConnection();
 
-		 ZipInputStream parkingmeters = new ZipInputStream(connection.getInputStream());
-		 parkingmeters.getNextEntry();
-		 Kml kml = Kml.unmarshal(parkingmeters);
+	public KMLParser() {
+		try {
+			URL meters = new URL(
+					"http://data.vancouver.ca/download/kml/parking_meter_rates_and_time_limits.kmz");
+			HttpURLConnection connection = (HttpURLConnection) meters
+					.openConnection();
+
+			ZipInputStream parkingmeters = new ZipInputStream(
+					connection.getInputStream());
+			parkingmeters.getNextEntry();
+			Kml kml = Kml.unmarshal(parkingmeters);
 			Document doc = (Document) kml.getFeature();
 
 			List<StyleSelector> styles = doc.getStyleSelector();
@@ -46,15 +50,12 @@ public class KMLParser extends RemoteServiceServlet {
 
 			Folder folder = (Folder) folders.get(0);
 			placemarks = folder.getFeature();
-		 } catch (Exception e) {
-		// TODO Auto-generated catch block
-		 e.printStackTrace();
-		 } 
-	
-		
-	}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-	
+	}
 
 	public List<Meter> parse() {
 		for (Feature pm : placemarks) {
@@ -132,8 +133,6 @@ public class KMLParser extends RemoteServiceServlet {
 		return meters;
 	}
 
-
-
 	public List<Feature> getPlacemarks() {
 		return placemarks;
 	}
@@ -150,7 +149,6 @@ public class KMLParser extends RemoteServiceServlet {
 		}
 		return meterswithoutcoord;
 	}
-
 
 	public List<Meter> getMetersFailingDescriptionParsing() {
 		List<Meter> metersfailingdescriptionparsing = new ArrayList<Meter>();
@@ -194,6 +192,7 @@ public class KMLParser extends RemoteServiceServlet {
 		}
 		return metersFailingParsing;
 	}
+
 	public List<Meter> getMetersFailingCreditCard() {
 		List<Meter> metersFailingParsing = new ArrayList<Meter>();
 		for (Meter meter : meters) {
@@ -215,5 +214,3 @@ public class KMLParser extends RemoteServiceServlet {
 	}
 
 }
-
-
