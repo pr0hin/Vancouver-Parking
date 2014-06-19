@@ -1,24 +1,13 @@
 package com.ubc.cpsc310.vancouverparking.server;
 
-import java.io.File;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
+
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.jdo.annotations.IdGeneratorStrategy;
-import javax.jdo.annotations.IdentityType;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
-
-import com.google.appengine.api.datastore.Key;
+import java.util.zip.ZipInputStream;
 
 import de.micromata.opengis.kml.v_2_2_0.Document;
 import de.micromata.opengis.kml.v_2_2_0.Feature;
@@ -28,7 +17,9 @@ import de.micromata.opengis.kml.v_2_2_0.Placemark;
 import de.micromata.opengis.kml.v_2_2_0.Point;
 import de.micromata.opengis.kml.v_2_2_0.StyleSelector;
 
+
 public class KMLParser {
+
 
 	private int number;
 	private double latitude;
@@ -41,37 +32,30 @@ public class KMLParser {
 	private Meter meter;
 	private List<Meter> meters = new ArrayList<Meter>();
 	List<Feature> placemarks;
-
 	public KMLParser() {
 
-		// = new File(
-		// "C:/Users/Andre Furlan/SkyDrive/UBC/CPSC 310/TeamAcronym/war/parking_meter_rates_and_time_limits.kml");
+		 try {
+		 URL meters = new URL("http://data.vancouver.ca/download/kml/parking_meter_rates_and_time_limits.kmz");
+		 HttpURLConnection connection = (HttpURLConnection) meters.openConnection();
 
-		// File parkingmeters = new
-		// File("https://drive.google.com/file/d/0Bw8KzSMB_NOSWWwtU3k5YVlxUGc/edit?usp=sharing");
-
-		try {
-	
-		
-//            URL url = new URL("https://dl.dropboxusercontent.com/u/24742075/parking_meter_rates_and_time_limits.kml");
-			URL url = new URL("https://dl.dropboxusercontent.com/u/24742075/parking_meter_rates_and_time_limits.kml");
-//			URLConnection con = url.openConnection();
-			
-//            File parkingmeters = new File(con.get);
-            InputStream in = url.openStream();
-//			Kml kml = Kml.unmarshal(parkingmeters);
-			Kml kml = Kml.unmarshal(in);
+		 ZipInputStream parkingmeters = new ZipInputStream(connection.getInputStream());
+		 parkingmeters.getNextEntry();
+		 Kml kml = Kml.unmarshal(parkingmeters);
 			Document doc = (Document) kml.getFeature();
+
 			List<StyleSelector> styles = doc.getStyleSelector();
+
 			List<Feature> folders = doc.getFeature();
+
 			Folder folder = (Folder) folders.get(0);
 			placemarks = folder.getFeature();
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		 } catch (Exception e) {
+
+		 e.printStackTrace();
+		 } 
 	}
+
+	
 
 	public List<Meter> parse() {
 		for (Feature pm : placemarks) {
