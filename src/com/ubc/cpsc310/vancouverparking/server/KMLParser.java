@@ -1,21 +1,13 @@
 package com.ubc.cpsc310.vancouverparking.server;
 
-import java.io.File;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
+
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
-
-import com.google.gwt.core.client.GWT;
-
-import net.lingala.zip4j.core.ZipFile;
-import net.lingala.zip4j.exception.ZipException;
 import de.micromata.opengis.kml.v_2_2_0.Document;
 import de.micromata.opengis.kml.v_2_2_0.Feature;
 import de.micromata.opengis.kml.v_2_2_0.Folder;
@@ -24,7 +16,10 @@ import de.micromata.opengis.kml.v_2_2_0.Placemark;
 import de.micromata.opengis.kml.v_2_2_0.Point;
 import de.micromata.opengis.kml.v_2_2_0.StyleSelector;
 
+
 public class KMLParser {
+
+
 	private int number;
 	private double latitude;
 	private double longitude;
@@ -36,38 +31,31 @@ public class KMLParser {
 	private Meter meter;
 	private List<Meter> meters = new ArrayList<Meter>();
 	List<Feature> placemarks;
-
 	public KMLParser() {
-		// try {
-		// InputStream is = new
-		// URL("http://data.vancouver.ca/download/kml/parking_meter_rates_and_time_limits.kmz").openStream();
-		// ZipInputStream zpstream = new ZipInputStream(is);
-		// File file = zpstream.getNextEntry().
-		// zip.extractFile("parking_meter_rates_and_time_limits.kml",
-		// "/home/rohin");
-		// } catch (ZipException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		
-		File parkingmeters = new File(
 
-				"/Users/renniehaylock/CS310_VancouverParking/TeamAcronym/war/parking_meter_rates_and_time_limits.kml");
-//				"/TeamAcronym/war/parking_meter_rates_and_time_limits.kml");
-		// File parkingmeters = new File
-		// ("/home/rohin/parking_meter_rates_and_time_limits.kml");
-		//File parkingmeters = new File(System.getProperty("user.dir")+"/"+"parking_meter_rates_and_time_limits.kml");
 
-		Kml kml = Kml.unmarshal(parkingmeters);
-		Document doc = (Document) kml.getFeature();
+		 try {
+		 URL meters = new URL("http://data.vancouver.ca/download/kml/parking_meter_rates_and_time_limits.kmz");
+		 HttpURLConnection connection = (HttpURLConnection) meters.openConnection();
 
-		List<StyleSelector> styles = doc.getStyleSelector();
+		 ZipInputStream parkingmeters = new ZipInputStream(connection.getInputStream());
+		 parkingmeters.getNextEntry();
+		 Kml kml = Kml.unmarshal(parkingmeters);
+			Document doc = (Document) kml.getFeature();
 
-		List<Feature> folders = doc.getFeature();
+			List<StyleSelector> styles = doc.getStyleSelector();
 
-		Folder folder = (Folder) folders.get(0);
-		placemarks = folder.getFeature();
+			List<Feature> folders = doc.getFeature();
+
+			Folder folder = (Folder) folders.get(0);
+			placemarks = folder.getFeature();
+		 } catch (Exception e) {
+
+		 e.printStackTrace();
+		 } 
 	}
+
+	
 
 	public List<Meter> parse() {
 		for (Feature pm : placemarks) {
@@ -86,8 +74,8 @@ public class KMLParser {
 			meter = new Meter(number, type, rate, timeLimit, creditCard,
 					timeInEffect, latitude, longitude);
 			meters.add(meter);
-
 		}
+
 		return meters;
 
 	}
@@ -145,8 +133,6 @@ public class KMLParser {
 		return meters;
 	}
 
-
-
 	public List<Feature> getPlacemarks() {
 		return placemarks;
 	}
@@ -163,7 +149,6 @@ public class KMLParser {
 		}
 		return meterswithoutcoord;
 	}
-
 
 	public List<Meter> getMetersFailingDescriptionParsing() {
 		List<Meter> metersfailingdescriptionparsing = new ArrayList<Meter>();
@@ -207,6 +192,7 @@ public class KMLParser {
 		}
 		return metersFailingParsing;
 	}
+
 	public List<Meter> getMetersFailingCreditCard() {
 		List<Meter> metersFailingParsing = new ArrayList<Meter>();
 		for (Meter meter : meters) {
@@ -228,5 +214,3 @@ public class KMLParser {
 	}
 
 }
-
-

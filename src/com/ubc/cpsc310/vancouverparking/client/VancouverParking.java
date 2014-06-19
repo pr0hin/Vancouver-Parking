@@ -142,6 +142,9 @@ public class VancouverParking implements EntryPoint {
 						});
 					}
 				});
+        		// Load meter stuff
+        		loadMetersButton.setStyleName("loadButton");
+        		RootPanel.get("loadMeters").add(loadMetersButton);
         	}
         } else {
         	// If not logged in, show sign in link
@@ -166,6 +169,8 @@ public class VancouverParking implements EntryPoint {
 			}
 			public void onSuccess(List<MeterInfo> meters) {
 
+
+				System.out.println("Meters on client: " + meters.size());
 				// Receiving meters from server and putting them in global
 				// allMeters variable
 				for (MeterInfo meter : meters) {

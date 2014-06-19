@@ -34,8 +34,17 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 		// initializes an instance of the parser
 		KMLParser parser = new KMLParser();
 		List<Meter> meters = parser.parse();
-		removeMeters();
+//		while(getMeters().size() != 0)
+//			removeMeters();
+		
 		PersistenceManager pm = PMF.getPersistenceManager();
+//		try {
+//			// input all meters parsed into the datastore
+//			pm.makePersistent(parser);
+//		} finally {
+//			pm.refreshAll();
+//			pm.close();
+//		}
 		try {
 			// input all meters parsed into the datastore
 			pm.makePersistentAll(meters);
@@ -44,20 +53,6 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 			pm.refreshAll();
 			pm.close();
 		}
-//		System.out.println("Meters to load :" + meters.size());
-//		if (!pm.isClosed()){
-//			pm.close();
-//		}
-//		pm = PMF.getPersistenceManager();
-//		List<Meter> metersParsed = new LinkedList<Meter>();
-//		try {
-//			Query q = pm.newQuery(Meter.class);
-//			metersParsed = (List<Meter>) q.execute();
-//
-//		} finally {
-//			pm.close();
-//		}
-//			System.out.println("Meters loaded :" + metersParsed.size());
 	}
 
 	public void removeMeters() {
@@ -68,29 +63,27 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 		} finally {
 			pm.close();
 		}
-//		pm = PMF.getPersistenceManager();
-//		pm.refreshAll();
-//		try {
-//			Query q = pm.newQuery(Meter.class);
-//			List<Meter> meters = (List<Meter>) q.execute();
-//			System.out.println("Meters remained :" + meters.size());
-//
-//		} finally {
-//			pm.close();
-//		}
 	}
 
 	public List<MeterInfo> getMeters() {
-		// simulates the parsing using the dataStub
-
-		
+	
 		PersistenceManager pm = PMF.getPersistenceManager();
 		List<Meter> meters = new LinkedList<Meter>();
-
+//		KMLParser parser;
+//		try {
+//			Query q = pm.newQuery(KMLParser.class);
+//			q.setOrdering("descending");
+//			q.setUnique(true);
+//			parser = (KMLParser) q.execute();
+//			System.out.println("last parsed count of meters " + parser.getLastParsedMeterCount());
+//		} finally {
+//			pm.close();
+//		}
+//		pm = PMF.getPersistenceManager();
 		try {
 			// gets a list of all meters from the datastore
-
 			Query q = pm.newQuery(Meter.class);
+			q.getFetchPlan().setFetchSize(15000);
 			meters = (List<Meter>) q.execute();
 			
 		} finally {
@@ -101,6 +94,8 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 		return parseMetertoMeterInfo(meters);
 	}
 
+	
+	
 	private List<MeterInfo> parseMetertoMeterInfo(List<Meter> meters) {
 		List<MeterInfo> metersInfo = new LinkedList<MeterInfo>();
 		if (meters != null) {
