@@ -2,14 +2,12 @@ package com.ubc.cpsc310.vancouverparking.client;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.safecss.shared.SafeStyles;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.ubc.cpsc310.vancouverparking.server.Meter;
 
 public class MeterCell extends AbstractCell<MeterInfo>{
-	
+
 	/**
      * The HTML templates used to render the cell.
      */
@@ -52,7 +50,7 @@ public class MeterCell extends AbstractCell<MeterInfo>{
 	      if (value == null) {
 	        return;
 	      }
-	      
+
 	      // Use the template to create the Cell's html.
 	      long meterNum = value.getNumber();
 	      double rate = value.getRate();
@@ -65,10 +63,10 @@ public class MeterCell extends AbstractCell<MeterInfo>{
 	      // This next line needs to be an if statement that checks some info on meter and 
 	      // makes iconStyle the proper one
 	      String iconStyle = value.getType();
-	      
+
 	      SafeHtml rendered = templates.cell(meterNum , rate, paymentType, iconStyle);
 	      sb.append(rendered);
-	      
+
 	}
 
 }

@@ -6,10 +6,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
+
+import com.google.gwt.core.client.GWT;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -25,7 +28,7 @@ public class KMLParser {
 	private int number;
 	private double latitude;
 	private double longitude;
-	private double rate;
+	private float rate;
 	private String timeInEffect;
 	private boolean creditCard;
 	private String type;
@@ -46,11 +49,15 @@ public class KMLParser {
 		// // TODO Auto-generated catch block
 		// e.printStackTrace();
 		// }
-
+		
 		File parkingmeters = new File(
-				"/home/rohin/workspace/TeamAcronym/src/com/ubc/cpsc310/vancouverparking/server/parking_meter_rates_and_time_limits.kml");
+
+				"/Users/renniehaylock/CS310_VancouverParking/TeamAcronym/war/parking_meter_rates_and_time_limits.kml");
+//				"/TeamAcronym/war/parking_meter_rates_and_time_limits.kml");
 		// File parkingmeters = new File
 		// ("/home/rohin/parking_meter_rates_and_time_limits.kml");
+		//File parkingmeters = new File(System.getProperty("user.dir")+"/"+"parking_meter_rates_and_time_limits.kml");
+
 		Kml kml = Kml.unmarshal(parkingmeters);
 		Document doc = (Document) kml.getFeature();
 
@@ -60,8 +67,6 @@ public class KMLParser {
 
 		Folder folder = (Folder) folders.get(0);
 		placemarks = folder.getFeature();
-		
-
 	}
 
 	public List<Meter> parse() {
@@ -84,6 +89,7 @@ public class KMLParser {
 
 		}
 		return meters;
+
 	}
 
 	private void parseDescription(String desc) {
@@ -112,7 +118,7 @@ public class KMLParser {
 				tokens[3]);
 		if (rate.find()) {
 
-			this.rate = Double.parseDouble(rate.group(0));
+			this.rate = Float.parseFloat(rate.group(0));
 		} else {
 			this.rate = 0;
 		}
@@ -138,6 +144,8 @@ public class KMLParser {
 	public List<Meter> getMeters() {
 		return meters;
 	}
+
+
 
 	public List<Feature> getPlacemarks() {
 		return placemarks;
@@ -208,7 +216,7 @@ public class KMLParser {
 		}
 		return metersFailingParsing;
 	}
-	
+
 	public List<Meter> getMetersFailingTimeInEffect() {
 		List<Meter> metersFailingParsing = new ArrayList<Meter>();
 		for (Meter meter : meters) {
@@ -220,3 +228,5 @@ public class KMLParser {
 	}
 
 }
+
+

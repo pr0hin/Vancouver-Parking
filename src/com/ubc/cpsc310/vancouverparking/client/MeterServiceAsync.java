@@ -10,6 +10,6 @@ import com.ubc.cpsc310.vancouverparking.server.Meter;
  */
 public interface MeterServiceAsync {
 	public void getMeters(AsyncCallback<List<MeterInfo>> async);
-	//public void addMeter(AsyncCallback<Void> async);
-	//public void removeMeter(MeterInfo m, AsyncCallback<Void> async);
+	public void loadMeters(AsyncCallback<Void> callback);	
+	public void removeMeters(AsyncCallback<Void> async);
 }

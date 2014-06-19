@@ -14,23 +14,21 @@ public class MeterInfo implements Serializable {
 	private double latitude;
 	private double longitude;
 	private double rate;
-	// private TimeInEffect timeInEffect;
 	private boolean creditCard;
 	private String type;
-	//private TimeLimit timeLimit; // making hour class? (could be int)
+	private double tieStart;
+	private double tieEnd;
+	private double timeLimit;
 
 
 	public long getNumber() {
 		return number;
 	}
-	
-	public void setNumber(long n){
-		this.number = n;
-	}
+
 	public double getLatitude() {
 		return latitude;
 	}
-
+	
 	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}
@@ -51,14 +49,6 @@ public class MeterInfo implements Serializable {
 		this.rate = rate;
 	}
 
-//	public TimeInEffect getTimeInEffect() {
-//		return timeInEffect;
-//	}
-//
-//	public void setTimeInEffect(TimeInEffect timeInEffect) {
-//		this.timeInEffect = timeInEffect;
-//	}
-
 	public boolean isCreditCard() {
 		return creditCard;
 	}
@@ -74,14 +64,40 @@ public class MeterInfo implements Serializable {
 	public void setType(String type) {
 		this.type = type;
 	}
-//
-//	public TimeLimit getTimeLimit() {
-//		return timeLimit;
-//	}
-//
-//	public void setTimeLimit(TimeLimit timeLimit) {
-//		this.timeLimit = timeLimit;
-//	}
 
+
+	public double getTieStart() {
+		return tieStart;
+	}
+
+
+	public void setTieStart(double tieStart) {
+		this.tieStart = tieStart;
+	}
+
+
+	public double getTieEnd() {
+		return tieEnd;
+	}
+
+
+	public void setTieEnd(double tieEnd) {
+		this.tieEnd = tieEnd;
+	}
+
+
+	public double getTimeLimit() {
+		return timeLimit;
+	}
+
+
+	public void setTimeLimit(double timeLimit) {
+		this.timeLimit = timeLimit;
+	}
+
+	public void setNumber(long n) {
+		this.number = n;
+		
+	}
 	
 }

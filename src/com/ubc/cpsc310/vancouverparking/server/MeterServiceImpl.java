@@ -2,19 +2,19 @@ package com.ubc.cpsc310.vancouverparking.server;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Iterator;
 
+import javax.jdo.Extent;
 import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
+import javax.jdo.Transaction;
 
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ubc.cpsc310.vancouverparking.client.MeterInfo;
 import com.ubc.cpsc310.vancouverparking.client.MeterService;
-import com.ubc.cpsc310.vancouverparking.shared.FieldVerifier;
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
  * The server-side implementation of the RPC service.
@@ -29,148 +29,96 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 	private static final PersistenceManagerFactory PMF = JDOHelper
 			.getPersistenceManagerFactory("transactions-optional");
 
+	public void loadMeters() {
 
-//	public String[] getStocks() throws NotLoggedInException {
-//		checkLoggedIn();
-//		PersistenceManager pm = getPersistenceManager();
-//		List<String> symbols = new ArrayList<String>();
+		// initializes an instance of the parser
+		KMLParser parser = new KMLParser();
+		List<Meter> meters = parser.parse();
+		removeMeters();
+		PersistenceManager pm = PMF.getPersistenceManager();
+		try {
+			// input all meters parsed into the datastore
+			pm.makePersistentAll(meters);
+
+		} finally {
+			pm.refreshAll();
+			pm.close();
+		}
+//		System.out.println("Meters to load :" + meters.size());
+//		if (!pm.isClosed()){
+//			pm.close();
+//		}
+//		pm = PMF.getPersistenceManager();
+//		List<Meter> metersParsed = new LinkedList<Meter>();
 //		try {
-//			Query q = pm.newQuery(Stock.class, "user == u");
-//			q.declareParameters("com.google.appengine.api.users.User u");
-//			q.setOrdering("createDate");
-//			List<Stock> stocks = (List<Stock>) q.execute(getUser());
-//			for (Stock stock : stocks) {
-//				symbols.add(stock.getSymbol());
-//			}
+//			Query q = pm.newQuery(Meter.class);
+//			metersParsed = (List<Meter>) q.execute();
+//
 //		} finally {
 //			pm.close();
 //		}
-//		return (String[]) symbols.toArray(new String[0]);
-//	}
-//	public void addStock(String symbol) throws NotLoggedInException {
-//		checkLoggedIn();
+//			System.out.println("Meters loaded :" + metersParsed.size());
+	}
 
-//	public void addMeter() {
-//		MeterDataStub metersStub = new MeterDataStub();
-
-//		PersistenceManager pm = getPersistenceManager();
+	public void removeMeters() {
+		PersistenceManager pm = PMF.getPersistenceManager();
+		try {
+			Query q = pm.newQuery(Meter.class);
+			q.deletePersistentAll();
+		} finally {
+			pm.close();
+		}
+//		pm = PMF.getPersistenceManager();
+//		pm.refreshAll();
 //		try {
+//			Query q = pm.newQuery(Meter.class);
+//			List<Meter> meters = (List<Meter>) q.execute();
+//			System.out.println("Meters remained :" + meters.size());
 //
-//			pm.makePersistentAll(metersStub.getMetersList());
 //		} finally {
 //			pm.close();
 //		}
-//		// TODO Auto-generated method stub
-//	}
-
-//
-//
-
-
-//	public void removeMeter(MeterInfo m) {
-//		PersistenceManager pm = getPersistenceManager();
-//		try {
-//			// ... do stuff with pm ...
-//		} finally {
-//			pm.close();
-//		}
-//		// TODO Auto-generated method stub
-//	}
-
+	}
 
 	public List<MeterInfo> getMeters() {
-		MeterDataStub metersStub = new MeterDataStub();
-		//PersistenceManager pm = getPersistenceManager();
-		// List<Meter> meters = new LinkedList<Meter>();
-		List<Meter> meters = metersStub.getMetersList();
-		List<MeterInfo> metersInfo = new LinkedList<MeterInfo>();
-		// try {
-		//
-		// Query q = pm.newQuery(Meter.class);
-		//
-		// meters = (List<Meter>) q.execute();
-		//
-		// for(Meter meter : meters) {
-		// MeterInfo m = new MeterInfo(meter.getNumber());
-		// m.setCreditCard(true);
-		// m.setLatitude(m.getLatitude());
-		// m.setLongitude(m.getLongitude());
-		// metersInfo.add(m);
-		// }
-		//
-		//
-		//
-		// } finally {
-		// pm.close();
-		// }
+		// simulates the parsing using the dataStub
 
-		for (Meter meter : meters) {
-			MeterInfo m = new MeterInfo();
-			m.setNumber(meter.getNumber());
-			m.setCreditCard(true);
-			m.setLatitude(meter.getLatitude());
-			m.setLongitude(meter.getLongitude());
-			m.setType("bla");
-			m.setRate(Math.floor(Math.random() * 5.00));
-			metersInfo.add(m);
+		
+		PersistenceManager pm = PMF.getPersistenceManager();
+		List<Meter> meters = new LinkedList<Meter>();
+
+		try {
+			// gets a list of all meters from the datastore
+
+			Query q = pm.newQuery(Meter.class);
+			meters = (List<Meter>) q.execute();
+			
+		} finally {
+			pm.close();
 		}
-		// TODO Auto-generated method stub
+		System.out.println("Meters retrieved :" + meters.size());
+		
+		return parseMetertoMeterInfo(meters);
+	}
+
+	private List<MeterInfo> parseMetertoMeterInfo(List<Meter> meters) {
+		List<MeterInfo> metersInfo = new LinkedList<MeterInfo>();
+		if (meters != null) {
+			// translates meters into meterinfo
+			for (Meter meter : meters) {
+				MeterInfo m = new MeterInfo();
+				m.setNumber(meter.getNumber());
+				m.setCreditCard(meter.isCreditCard());
+				m.setLatitude(meter.getLatitude());
+				m.setLongitude(meter.getLongitude());
+				m.setType(meter.getType());
+				m.setRate(meter.getRate());
+				m.setTieEnd(meter.getTieEnd());
+				m.setTieStart(meter.getTieStart());
+				m.setTimeLimit(meter.getTimeLimit());
+				metersInfo.add(m);
+			}
+		}
 		return metersInfo;
 	}
-
-	private PersistenceManager getPersistenceManager() {
-		return PMF.getPersistenceManager();
-	}
-
-	// public void addStock(String symbol) throws NotLoggedInException {
-	// checkLoggedIn();
-	// PersistenceManager pm = getPersistenceManager();
-	// try {
-	// pm.makePersistent(new Stock(getUser(), symbol));
-	// } finally {
-	// pm.close();
-	// }
-	// }
-	//
-	// public void removeStock(String symbol) throws NotLoggedInException {
-	// checkLoggedIn();
-	// PersistenceManager pm = getPersistenceManager();
-	// try {
-	// long deleteCount = 0;
-	// Query q = pm.newQuery(Stock.class, "user == u");
-	// q.declareParameters("com.google.appengine.api.users.User u");
-	// List<Stock> stocks = (List<Stock>) q.execute(getUser());
-	// for (Stock stock : stocks) {
-	// if (symbol.equals(stock.getSymbol())) {
-	// deleteCount++;
-	// pm.deletePersistent(stock);
-	// }
-	// }
-	// if (deleteCount != 1) {
-	// LOG.log(Level.WARNING, "removeStock deleted " + deleteCount
-	// + " Stocks");
-	// }
-	// } finally {
-	// pm.close();
-	// }
-	// }
-	//
-	// public String[] getStocks() throws NotLoggedInException {
-	// checkLoggedIn();
-	// PersistenceManager pm = getPersistenceManager();
-	// List<String> symbols = new ArrayList<String>();
-	// try {
-	// Query q = pm.newQuery(Stock.class, "user == u");
-	// q.declareParameters("com.google.appengine.api.users.User u");
-	// q.setOrdering("createDate");
-	// List<Stock> stocks = (List<Stock>) q.execute(getUser());
-	// for (Stock stock : stocks) {
-	// symbols.add(stock.getSymbol());
-	// }
-	// } finally {
-	// pm.close();
-	// }
-	// return (String[]) symbols.toArray(new String[0]);
-	// }
-
 }
