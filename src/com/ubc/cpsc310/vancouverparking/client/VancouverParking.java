@@ -9,19 +9,17 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.cellview.client.CellList;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.maps.gwt.client.ArrayHelper;
 import com.google.maps.gwt.client.GoogleMap;
 import com.google.maps.gwt.client.InfoWindow;
 import com.google.maps.gwt.client.InfoWindowOptions;
 import com.google.maps.gwt.client.LatLng;
 import com.google.maps.gwt.client.MapOptions;
 import com.google.maps.gwt.client.MapTypeId;
-import com.google.maps.gwt.client.MapTypeStyle;
-import com.google.maps.gwt.client.MapTypeStyleFeatureType;
 import com.google.maps.gwt.client.Marker;
 import com.google.maps.gwt.client.Marker.ClickHandler;
 import com.google.maps.gwt.client.MarkerImage;
@@ -35,6 +33,12 @@ import com.google.maps.gwt.client.Size;
 public class VancouverParking implements EntryPoint {
 	// FIELDS
 	// ========================
+	
+	// Login Fields
+	private LoginInfo loginInfo = null;
+	private Anchor signInLink = new Anchor("Sign In");
+	private Anchor signOutLink = new Anchor("Sign Out");
+	
 	// UI related fields
 
 	private MeterCell metercell = new MeterCell();
@@ -48,14 +52,15 @@ public class VancouverParking implements EntryPoint {
 	private MarkerImage icon = MarkerImage.create("/mapIcon.png");
 
 	private Button loadMetersButton = new Button("Load Meters"); // //////////
-	private HorizontalPanel panel = new HorizontalPanel(); // //////////
 	private LatLng myLatLng = LatLng.create(49.2569777, -123.123904);
 	private MapOptions myOptions = MapOptions.create();
 	private final Size iconsize = Size.create(5.0, 5.0);
 	private Element selected = null;
 	private InfoWindow lastInfoWindow = null;
 	private List<Marker> markers = new ArrayList<Marker>();
-
+	
+	
+	
 	/**
 	 * The message displayed to the user when the server cannot be reached or
 	 * returns an error.
@@ -76,6 +81,8 @@ public class VancouverParking implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
+		
+		// Setup Map Configurations
 		myOptions.setZoom(13.0);
 		myOptions.setCenter(myLatLng);
 		myOptions.setMapTypeId(MapTypeId.ROADMAP);
@@ -83,22 +90,45 @@ public class VancouverParking implements EntryPoint {
 		map = GoogleMap.create(Document.get().getElementById("map_canvas"),
 				myOptions);
 
-		loadMetersButton.addStyleName("loadButton"); // /////////////////
-		panel.add(loadMetersButton); // ///////////////////
-
 		// Add filter elements to filterBox
-		RootPanel.get("filterBox").add(filterButton);
-		RootPanel.get("filterBox").add(panel); // //////////////
-		filterButton.setText("Filter to $3");
-		filterButton
-				.addClickHandler(new com.google.gwt.event.dom.client.ClickHandler() {
-					public void onClick(ClickEvent event) {
-						displayMeters(filterMetersByRate(3));
-					}
-				});
+		//RootPanel.get("filterBox").add(filterButton);
+		
+		//filterButton.setText("Filter to $3");
+		
+		//		filterButton.addClickHandler(new com.google.gwt.event.dom.client.ClickHandler() {
+		//		      public void onClick(ClickEvent event) {
+		//		        displayMeters(filterMetersByRate(3));
+		//		      }
+		//		    });
+		
+		//meterService.addMeter(null);
+		
+		// Check login status using login service.
+	    LoginServiceAsync loginService = GWT.create(LoginService.class);
+	    loginService.login(GWT.getHostPageBaseURL(), new AsyncCallback<LoginInfo>() {
+	      public void onFailure(Throwable error) { handleError(error);}
 
-		loadMetersButton
-				.addClickHandler(new com.google.gwt.event.dom.client.ClickHandler() {
+	      public void onSuccess(LoginInfo result) {
+	    	getMeters();
+	        loginInfo = result;
+	        displayLoginInfo();
+	      }
+	    });
+	}
+	
+	private void displayLoginInfo() {
+		
+		if(loginInfo.isLoggedIn()) {
+			// If logged in, show username and logout link
+        	String userName = loginInfo.getNickname();
+        	String logout = loginInfo.getLogoutUrl();
+        	signOutLink.setText(userName);
+        	signOutLink.setHref(logout);
+        	
+        	RootPanel.get("loginInfo").add(signOutLink);
+        	// If admin is logged in, show load meter button
+        	if (loginInfo.getEmailAddress().equalsIgnoreCase("renniehaylock@gmail.com")) {
+        		loadMetersButton.addClickHandler(new com.google.gwt.event.dom.client.ClickHandler() {
 					public void onClick(ClickEvent event) {
 						meterService.loadMeters(new AsyncCallback<Void>() {
 							public void onFailure(Throwable error) {
@@ -108,14 +138,29 @@ public class VancouverParking implements EntryPoint {
 							@Override
 							public void onSuccess(Void result) {
 								// TODO Auto-generated method stub
-
+								Window.alert("Meters loaded!!");
 							}
 						});
 					}
 				});
-
-		getMeters();
+        		// Load meter stuff
+        		loadMetersButton.setStyleName("loadButton");
+        		RootPanel.get("loadMeters").add(loadMetersButton);
+        	}
+        } else {
+        	// If not logged in, show sign in link
+        	String login = loginInfo.getLoginUrl();
+        	signInLink.setHref(login);
+		    RootPanel.get("loginInfo").add(signInLink);
+        }
 	}
+	
+	private void handleError(Throwable error) {
+	    Window.alert(error.getMessage());
+//	    if (error instanceof NotLoggedInException) {
+//	      Window.Location.replace(loginInfo.getLogoutUrl());
+//	    }
+	  }
 
 	private void getMeters() {
 
@@ -124,14 +169,18 @@ public class VancouverParking implements EntryPoint {
 				// TODO
 			}
 			public void onSuccess(List<MeterInfo> meters) {
+				/////////////////////////////////////////////////////////////////////////
 
-				System.out.println("Meters on client: "+meters.size());
+				
+				System.out.println("Meters on client: " + meters.size());
 				// Receiving meters from server and putting them in global
 				// allMeters variable
 				for (MeterInfo meter : meters) {
 					allMeters.add(meter);
 				}
 				displayMeters(meters);
+				
+				/////////////////////////////////////////////////////////////////////////
 			}
 
 		});
@@ -153,7 +202,8 @@ public class VancouverParking implements EntryPoint {
 
 		// creating markers and putting them in map
 		icon.setScaledSize(iconsize);
-
+		// loading panel
+		//RootPanel.get("loadingContainer").setVisible(true);
 		for (int i = 0; i < meters.size(); i++) {
 			MeterInfo meter = meters.get(i);
 			LatLng latlon = LatLng.create(meter.getLatitude(),
@@ -200,14 +250,15 @@ public class VancouverParking implements EntryPoint {
 				}
 			});
 		}
-		reloadMarkers();
 
+		reloadMarkers();
 	}
 
 	public void reloadMarkers() {
 		for (Marker m : markers) {
 			m.setMap(map);
 		}
+
 	}
 
 	public void clearMarkers() {
