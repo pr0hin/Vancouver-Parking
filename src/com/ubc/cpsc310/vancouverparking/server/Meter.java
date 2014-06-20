@@ -10,6 +10,7 @@ import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.GeoPt;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.search.GeoPoint;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class Meter {
@@ -51,11 +52,14 @@ public class Meter {
 	@Persistent
 	private float timeLimit;
 	
+	@Persistent
+	private GeoPt geopoint;
+	
 	public Meter() {
 		this.createDate = new Date();
 	}
 
-	public Meter(int number, String type, float rate, float timeLimit, boolean creditCard, String timeInEffect, double latitude, double longitude) {
+	public Meter(int number, String type, float rate, float timeLimit, boolean creditCard, String timeInEffect, GeoPt geopoint) {
 		this();
 		this.number = number;
 		this.type = type;
@@ -63,8 +67,15 @@ public class Meter {
 		this.timeLimit = timeLimit;
 		this.creditCard = creditCard;
 		this.timeInEffect = timeInEffect;
-		this.latitude = latitude;
-		this.longitude = longitude;
+		this.geopoint = geopoint;
+	}
+
+	public GeoPt getGeopoint() {
+		return geopoint;
+	}
+
+	public void setGeopoint(GeoPt geopoint) {
+		this.geopoint = geopoint;
 	}
 
 	public Meter(long number) {

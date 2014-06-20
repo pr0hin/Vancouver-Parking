@@ -7,6 +7,7 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.Window;
@@ -157,9 +158,10 @@ public class VancouverParking implements EntryPoint {
 	
 	private void handleError(Throwable error) {
 	    Window.alert(error.getMessage());
-//	    if (error instanceof NotLoggedInException) {
-//	      Window.Location.replace(loginInfo.getLogoutUrl());
-//	    }
+
+	    if (error instanceof NotLoggedInException) {
+	      Window.Location.replace(loginInfo.getLogoutUrl());
+	    }
 	  }
 
 	private void getMeters() {
@@ -171,7 +173,6 @@ public class VancouverParking implements EntryPoint {
 			public void onSuccess(List<MeterInfo> meters) {
 				/////////////////////////////////////////////////////////////////////////
 
-				
 				System.out.println("Meters on client: " + meters.size());
 				// Receiving meters from server and putting them in global
 				// allMeters variable

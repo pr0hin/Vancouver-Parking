@@ -21,10 +21,7 @@
 		<servlet-class>com.ubc.cpsc310.vancouverparking.server.MeterServiceImpl</servlet-class>
 	</servlet>
 	
-	<servlet>
-	    <serlvet-name>KmlParser</serlvet-name>
-	    <servlet-class>com.ubc.cpsc310.vancouverparking.server.KMLParser</servlet-class>
-	</servlet>
+	
 	
 
 	<servlet-mapping>

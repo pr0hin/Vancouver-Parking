@@ -18,7 +18,7 @@
     <!--                                           -->
     <!-- Any title is fine                         -->
     <!--                                           -->
-    <title>Web Application Starter Project</title>
+    <title>Vancouver Parking</title>
     
     <!--                                           -->
     <!-- This script loads your compiled module.   -->
@@ -37,17 +37,20 @@
   <!--                                           -->
   <body>
 
-  	<div id="filterBox"></div>
-  	<div id="navBar"><span id="title"><b>vancouver</b><span class="light">parking</span></span></div>
+  	<!--  <div id="filterBox"></div> -->
+  	<div id="navBar">
+	  	<span id="title"><b>vancouver</b><span class="light">parking</span></span>
+	  	<div id="loadMeters"></div>
+  		<div id="loginInfo"></div>
+  	</div>
   	
   	<div id="container">
   	  	<!-- div holding the map -->
-		<div id="map_canvas">map here</div>
+		<div id="map_canvas"></div>
   			
 		<!-- div holding the list view -->
 		<div id="list_view"></div>
   	</div>
-  	
 
     <!-- OPTIONAL: include this if you want history support -->
     <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
