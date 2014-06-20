@@ -104,8 +104,8 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 				MeterInfo m = new MeterInfo();
 				m.setNumber(meter.getNumber());
 				m.setCreditCard(meter.isCreditCard());
-				m.setLatitude(meter.getLatitude());
-				m.setLongitude(meter.getLongitude());
+				m.setLatitude(meter.getGeopoint().getLatitude());
+				m.setLongitude(meter.getGeopoint().getLongitude());
 				m.setType(meter.getType());
 				m.setRate(meter.getRate());
 				m.setTieEnd(meter.getTieEnd());

@@ -8,6 +8,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
 
+import com.google.appengine.api.datastore.GeoPt;
+import com.google.appengine.api.search.GeoPoint;
+
 import de.micromata.opengis.kml.v_2_2_0.Document;
 import de.micromata.opengis.kml.v_2_2_0.Feature;
 import de.micromata.opengis.kml.v_2_2_0.Folder;
@@ -18,8 +21,8 @@ import de.micromata.opengis.kml.v_2_2_0.StyleSelector;
 
 public class KMLParser {
 	private int number;
-	private double latitude;
-	private double longitude;
+	private float latitude;
+	private float longitude;
 	private float rate;
 	private String timeInEffect;
 	private boolean creditCard;
@@ -63,14 +66,15 @@ public class KMLParser {
 			Placemark placemark = (Placemark) pm;
 			Point point = (Point) placemark.getGeometry();
 			if (point != null) {
-				this.latitude = point.getCoordinates().get(0).getLatitude();
-				this.longitude = point.getCoordinates().get(0).getLongitude();
+				this.latitude = (float) point.getCoordinates().get(0).getLatitude();
+				this.longitude = (float) point.getCoordinates().get(0).getLongitude();
 			} else {
 				latitude = 0;
 				longitude = 0;
 			}
+			GeoPt geopoint = new GeoPt(latitude, longitude);
 			meter = new Meter(number, type, rate, timeLimit, creditCard,
-					timeInEffect, latitude, longitude);
+					timeInEffect, geopoint);
 			meters.add(meter);
 
 		}
