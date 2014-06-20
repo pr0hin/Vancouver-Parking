@@ -59,7 +59,9 @@ public class VancouverParking implements EntryPoint {
 	private Element selected = null;
 	private InfoWindow lastInfoWindow = null;
 	private List<Marker> markers = new ArrayList<Marker>();
-
+	
+	
+	
 	/**
 	 * The message displayed to the user when the server cannot be reached or
 	 * returns an error.
@@ -156,6 +158,7 @@ public class VancouverParking implements EntryPoint {
 	
 	private void handleError(Throwable error) {
 	    Window.alert(error.getMessage());
+
 	    if (error instanceof NotLoggedInException) {
 	      Window.Location.replace(loginInfo.getLogoutUrl());
 	    }
@@ -168,7 +171,7 @@ public class VancouverParking implements EntryPoint {
 				// TODO
 			}
 			public void onSuccess(List<MeterInfo> meters) {
-
+				/////////////////////////////////////////////////////////////////////////
 
 				System.out.println("Meters on client: " + meters.size());
 				// Receiving meters from server and putting them in global
@@ -177,6 +180,8 @@ public class VancouverParking implements EntryPoint {
 					allMeters.add(meter);
 				}
 				displayMeters(meters);
+				
+				/////////////////////////////////////////////////////////////////////////
 			}
 
 		});
@@ -246,6 +251,7 @@ public class VancouverParking implements EntryPoint {
 				}
 			});
 		}
+
 		reloadMarkers();
 	}
 
@@ -253,6 +259,7 @@ public class VancouverParking implements EntryPoint {
 		for (Marker m : markers) {
 			m.setMap(map);
 		}
+
 	}
 
 	public void clearMarkers() {

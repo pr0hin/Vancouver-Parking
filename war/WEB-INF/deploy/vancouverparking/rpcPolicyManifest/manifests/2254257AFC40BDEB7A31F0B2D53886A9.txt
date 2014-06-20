@@ -1,2 +1,0 @@
-serviceClass: com.ubc.cpsc310.vancouverparking.client.LoginService
-path: C6E11D64624BEF270102D243C8F87FAC.gwt.rpc

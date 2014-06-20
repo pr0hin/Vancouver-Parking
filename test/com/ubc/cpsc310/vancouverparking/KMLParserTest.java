@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.ubc.cpsc310.vancouverparking.server.KMLParser;
+import com.ubc.cpsc310.vancouverparking.server.Meter;
 
 public class KMLParserTest {
 	public KMLParser kmlparser;
@@ -63,6 +64,19 @@ public class KMLParserTest {
 		System.out.println("Meters Without Time In Effect");
 		kmlparser.getMetersFailingTimeInEffect();
 		System.out.println("==============");
+	}
+	
+	@Test
+	public void test1meter() {
+		Meter m1 = new Meter();
+		for (Meter meter: kmlparser.getMeters()) {
+			if (meter.getNumber() == 60018) {
+				 m1 = meter;
+			}
+			
+		}
+		System.out.println(m1.getLatitude());
+		System.out.println(m1.getLongitude());
 	}
 
 }

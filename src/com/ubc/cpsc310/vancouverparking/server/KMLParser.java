@@ -1,6 +1,5 @@
 package com.ubc.cpsc310.vancouverparking.server;
 
-
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -8,6 +7,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
+
+import com.google.appengine.api.datastore.GeoPt;
+import com.google.appengine.api.search.GeoPoint;
+
 import de.micromata.opengis.kml.v_2_2_0.Document;
 import de.micromata.opengis.kml.v_2_2_0.Feature;
 import de.micromata.opengis.kml.v_2_2_0.Folder;
@@ -16,13 +19,10 @@ import de.micromata.opengis.kml.v_2_2_0.Placemark;
 import de.micromata.opengis.kml.v_2_2_0.Point;
 import de.micromata.opengis.kml.v_2_2_0.StyleSelector;
 
-
 public class KMLParser {
-
-
 	private int number;
-	private double latitude;
-	private double longitude;
+	private float latitude;
+	private float longitude;
 	private float rate;
 	private String timeInEffect;
 	private boolean creditCard;
@@ -31,16 +31,18 @@ public class KMLParser {
 	private Meter meter;
 	private List<Meter> meters = new ArrayList<Meter>();
 	List<Feature> placemarks;
+
 	public KMLParser() {
+		try {
+			URL meters = new URL(
+					"http://data.vancouver.ca/download/kml/parking_meter_rates_and_time_limits.kmz");
+			HttpURLConnection connection = (HttpURLConnection) meters
+					.openConnection();
 
-
-		 try {
-		 URL meters = new URL("http://data.vancouver.ca/download/kml/parking_meter_rates_and_time_limits.kmz");
-		 HttpURLConnection connection = (HttpURLConnection) meters.openConnection();
-
-		 ZipInputStream parkingmeters = new ZipInputStream(connection.getInputStream());
-		 parkingmeters.getNextEntry();
-		 Kml kml = Kml.unmarshal(parkingmeters);
+			ZipInputStream parkingmeters = new ZipInputStream(
+					connection.getInputStream());
+			parkingmeters.getNextEntry();
+			Kml kml = Kml.unmarshal(parkingmeters);
 			Document doc = (Document) kml.getFeature();
 
 			List<StyleSelector> styles = doc.getStyleSelector();
@@ -49,13 +51,12 @@ public class KMLParser {
 
 			Folder folder = (Folder) folders.get(0);
 			placemarks = folder.getFeature();
-		 } catch (Exception e) {
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-		 e.printStackTrace();
-		 } 
 	}
-
-	
 
 	public List<Meter> parse() {
 		for (Feature pm : placemarks) {
@@ -65,17 +66,18 @@ public class KMLParser {
 			Placemark placemark = (Placemark) pm;
 			Point point = (Point) placemark.getGeometry();
 			if (point != null) {
-				this.latitude = point.getCoordinates().get(0).getLatitude();
-				this.longitude = point.getCoordinates().get(0).getLongitude();
+				this.latitude = (float) point.getCoordinates().get(0).getLatitude();
+				this.longitude = (float) point.getCoordinates().get(0).getLongitude();
 			} else {
 				latitude = 0;
 				longitude = 0;
 			}
+			GeoPt geopoint = new GeoPt(latitude, longitude);
 			meter = new Meter(number, type, rate, timeLimit, creditCard,
-					timeInEffect, latitude, longitude);
+					timeInEffect, geopoint);
 			meters.add(meter);
-		}
 
+		}
 		return meters;
 
 	}
