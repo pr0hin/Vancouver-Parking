@@ -96,34 +96,62 @@ public class VancouverParking implements EntryPoint {
 		map = GoogleMap.create(Document.get().getElementById("map_canvas"),
 				myOptions);
 
-		// Add filter elements to filterBox
-		// RootPanel.get("filterBox").add(filterButton);
-
-		// filterButton.setText("Filter to $3");
-
-		// filterButton.addClickHandler(new
-		// com.google.gwt.event.dom.client.ClickHandler() {
-		// public void onClick(ClickEvent event) {
-		// displayMeters(filterMetersByRate(3));
-		// }
-		// });
-
-		// meterService.addMeter(null);
-
 		// Check login status using login service.
 		LoginServiceAsync loginService = GWT.create(LoginService.class);
 		loginService.login(GWT.getHostPageBaseURL(),
 				new AsyncCallback<LoginInfo>() {
 					public void onFailure(Throwable error) {
-						handleError(error);
+						loginServiceOnFailure(error);
 					}
 
 					public void onSuccess(LoginInfo result) {
-						getMeters();
-						loginInfo = result;
-						displayLoginInfo();
+						loginServiceOnSuccess(result);
 					}
+
 				});
+	}
+
+	private void loginServiceOnSuccess(LoginInfo result) {
+		meterService.getMeters(new AsyncCallback<List<MeterInfo>>() {
+			public void onFailure(Throwable error) {
+				meterServiceOnFailure();
+			}
+
+			public void onSuccess(List<MeterInfo> meters) {
+				meterServiceOnSuccess(meters);
+			}
+		});
+
+		loginInfo = result;
+		displayLoginInfo();
+	}
+
+	private void meterServiceOnSuccess(List<MeterInfo> meters) {
+		System.out.println("Meters on client: " + meters.size());
+		// Receiving meters from server and putting them in global
+		// allMeters variable
+		for (MeterInfo meter : meters) {
+			allMeters.add(meter);
+		}
+		displayMeters(meters);
+
+	}
+
+	private void meterServiceOnFailure() {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void loginServiceOnFailure(Throwable error) {
+		Window.alert(error.getMessage());
+
+		if (error instanceof NotLoggedInException) {
+			Window.Location.replace(loginInfo.getLogoutUrl());
+		}
+	}
+
+	private void getMeters() {
+
 	}
 
 	private void displayLoginInfo() {
@@ -142,20 +170,7 @@ public class VancouverParking implements EntryPoint {
 				loadMetersButton
 						.addClickHandler(new com.google.gwt.event.dom.client.ClickHandler() {
 							public void onClick(ClickEvent event) {
-								meterService
-										.loadMeters(new AsyncCallback<Void>() {
-											public void onFailure(
-													Throwable error) {
-												// TODO
-											}
-
-											@Override
-											public void onSuccess(Void result) {
-												// TODO Auto-generated method
-												// stub
-												Window.alert("Meters loaded!!");
-											}
-										});
+								loadMeterService();
 							}
 						});
 				// Load meter stuff
@@ -170,34 +185,28 @@ public class VancouverParking implements EntryPoint {
 		}
 	}
 
-	private void handleError(Throwable error) {
-		Window.alert(error.getMessage());
+	private void loadMeterService() {
+		meterService.loadMeters(new AsyncCallback<Void>() {
+			public void onFailure(Throwable error) {
+				loadMeterServiceOnFailure();
+			}
 
-		if (error instanceof NotLoggedInException) {
-			Window.Location.replace(loginInfo.getLogoutUrl());
-		}
+			@Override
+			public void onSuccess(Void result) {
+				loadMeterServiceOnSuccess();
+				Window.alert("Meters loaded!!");
+			}
+		});
 	}
 
-	private void getMeters() {
+	private void loadMeterServiceOnSuccess() {
+		// TODO Auto-generated method stub
 
-		meterService.getMeters(new AsyncCallback<List<MeterInfo>>() {
-			public void onFailure(Throwable error) {
-				// TODO
-			}
+	}
 
-			public void onSuccess(List<MeterInfo> meters) {
+	private void loadMeterServiceOnFailure() {
+		// TODO Auto-generated method stub
 
-				System.out.println("Meters on client: " + meters.size());
-				// Receiving meters from server and putting them in global
-				// allMeters variable
-				for (MeterInfo meter : meters) {
-					allMeters.add(meter);
-				}
-				displayMeters(meters);
-
-			}
-
-		});
 	}
 
 	private void displayMeters(List<MeterInfo> meters) {
@@ -253,9 +262,62 @@ public class VancouverParking implements EntryPoint {
 
 		reloadMarkers();
 	}
+	
+	private void drawInfoWindow(Marker marker, MouseEvent mouseEvent,
+			final MeterInfo meter) {
+
+		// Close the existing info window
+		if (infoWindow != null) {
+			infoWindow.close();
+		}
+
+		// Check for the marker
+		if (marker == null || mouseEvent == null) {
+			return;
+		}
+
+		// Button and HTMLPanel init
+		Button addToFavoritesButton = new Button();
+		Label meterNumber = new Label("Meter #: "
+				+ String.valueOf(meter.getNumber()));
+		final HTMLPanel infoHTMLPanel;
+
+		// Button Styling - Bootstrap
+		addToFavoritesButton.setText("+");
+
+		// button click handler
+		addToFavoritesButton
+				.addClickHandler(new com.google.gwt.event.dom.client.ClickHandler() {
+					@Override
+					public void onClick(ClickEvent event) {
+						favClickHandler(meter.getNumber());
+					}
+				});
+		// HTML Panel init and adding button
+		infoHTMLPanel = new HTMLPanel(marker.getTitle());
+		infoHTMLPanel.add(meterNumber);
+		infoHTMLPanel.add(addToFavoritesButton);
+
+		fVirtualPanel.attach(infoHTMLPanel);
+
+		// InfoWindow init and content set
+		InfoWindowOptions options = InfoWindowOptions.create();
+		options.setContent(infoHTMLPanel.getElement());
+		infoWindow = InfoWindow.create(options);
+		infoWindow.addCloseClickListener(new CloseClickHandler() {
+
+			@Override
+			public void handle() {
+				fVirtualPanel.remove(infoHTMLPanel);
+
+			}
+		});
+		infoWindow.open(map, marker);
+
+		map.panTo(marker.getPosition());
+	}
 
 	private void favClickHandler(long meterNumber) {
-		Window.alert("ohhh!!");
 		favoritesService.addMeter(meterNumber, new AsyncCallback<Void>() {
 			public void onFailure(Throwable error) {
 				// TODO
@@ -265,7 +327,6 @@ public class VancouverParking implements EntryPoint {
 			@Override
 			public void onSuccess(Void result) {
 				// TODO Auto-generated method
-				// stub
 				Window.alert("Meter added!!");
 			}
 		});
@@ -309,6 +370,8 @@ public class VancouverParking implements EntryPoint {
 		return filteredMeters;
 	}
 
+	
+	//this class is necessary to make the button inside the infoWindow work
 	private static class VirtualPanel extends ComplexPanel {
 
 		public void attach(Widget w) {
@@ -321,59 +384,5 @@ public class VancouverParking implements EntryPoint {
 		public boolean isAttached() {
 			return true;
 		}
-	}
-
-	protected void drawInfoWindow(Marker marker, MouseEvent mouseEvent,
-			final MeterInfo meter) {
-
-		// Close the existing info window
-		if (infoWindow != null) {
-			infoWindow.close();
-		}
-
-		// Check for the marker
-		if (marker == null || mouseEvent == null) {
-			return;
-		}
-
-		// Button and HTMLPanel init
-		Button addToFavoritesButton = new Button();
-		Label meterNumber = new Label("Meter #: " + String.valueOf(meter.getNumber()));
-		final HTMLPanel infoHTMLPanel;
-
-		// Button Styling - Bootstrap
-		addToFavoritesButton.setText("+");
-
-		// button click handler
-		addToFavoritesButton
-				.addClickHandler(new com.google.gwt.event.dom.client.ClickHandler() {
-					@Override
-					public void onClick(ClickEvent event) {
-						favClickHandler(meter.getNumber());
-					}
-				});
-		// HTML Panel init and adding button
-		infoHTMLPanel = new HTMLPanel(marker.getTitle());
-		infoHTMLPanel.add(meterNumber);
-		infoHTMLPanel.add(addToFavoritesButton);
-		
-
-		fVirtualPanel.attach(infoHTMLPanel);
-
-		// InfoWindow init and content set
-		InfoWindowOptions options = InfoWindowOptions.create();
-		options.setContent(infoHTMLPanel.getElement());
-		infoWindow = InfoWindow.create(options);
-		infoWindow.addCloseClickListener(new CloseClickHandler() {
-
-			@Override
-			public void handle() {
-				fVirtualPanel.remove(infoHTMLPanel);
-
-			}
-		});
-		infoWindow.open(map, marker);
-
-		map.panTo(marker.getPosition());
 	}
 }
