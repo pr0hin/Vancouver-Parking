@@ -20,13 +20,20 @@
 		<servlet-name>meterService</servlet-name>
 		<servlet-class>com.ubc.cpsc310.vancouverparking.server.MeterServiceImpl</servlet-class>
 	</servlet>
-	
-	
-	
 
 	<servlet-mapping>
 		<servlet-name>meterService</servlet-name>
 		<url-pattern>/vancouverparking/meter</url-pattern>
+	</servlet-mapping>
+	
+		<servlet>
+		<servlet-name>favoritesService</servlet-name>
+		<servlet-class>com.ubc.cpsc310.vancouverparking.server.FavoritesServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>favoritesService</servlet-name>
+		<url-pattern>/vancouverparking/favorites</url-pattern>
 	</servlet-mapping>
   
   <!-- Default page to serve -->
