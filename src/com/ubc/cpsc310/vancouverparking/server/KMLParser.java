@@ -81,7 +81,9 @@ public class KMLParser {
 		return meters;
 
 	}
-
+	
+	
+// TESTING METHODS
 	private void parseDescription(String desc) {
 		String delims = "<br>";
 		String[] tokens = desc.split(delims);

@@ -128,7 +128,7 @@ public class VancouverParking implements EntryPoint {
         	
         	RootPanel.get("loginInfo").add(signOutLink);
         	// If admin is logged in, show load meter button
-        	if (loginInfo.getEmailAddress().equalsIgnoreCase("renniehaylock@gmail.com")) {
+        	if (loginInfo.getEmailAddress().equalsIgnoreCase("renniehaylock@gmail.com") || loginInfo.getEmailAddress().equalsIgnoreCase("rohinjpatel@gmail.com")) {
         		loadMetersButton.addClickHandler(new com.google.gwt.event.dom.client.ClickHandler() {
 					public void onClick(ClickEvent event) {
 						meterService.loadMeters(new AsyncCallback<Void>() {

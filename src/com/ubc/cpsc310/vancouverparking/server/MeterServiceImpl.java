@@ -11,6 +11,7 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 import javax.jdo.Transaction;
+import static javax.jdo.FetchPlan.FETCH_SIZE_OPTIMAL;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ubc.cpsc310.vancouverparking.client.MeterInfo;
@@ -40,7 +41,7 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 
 		try {
 			// input all meters parsed into the datastore
-			pm.makePersistentAll(meters);
+			//pm.makePersistentAll(meters);
 
 		} finally {
 			pm.refreshAll();
@@ -66,7 +67,7 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 		try {
 			// gets a list of all meters from the datastore
 			Query q = pm.newQuery(Meter.class);
-			q.getFetchPlan().setFetchSize(15000);
+			q.getFetchPlan().setFetchSize(1000);
 			meters = (List<Meter>) q.execute();
 
 		} finally {
