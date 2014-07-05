@@ -80,6 +80,7 @@ public class Meter {
 
 	public Meter(long number) {
 		this();
+		setNumber(number);
 	}
 
 

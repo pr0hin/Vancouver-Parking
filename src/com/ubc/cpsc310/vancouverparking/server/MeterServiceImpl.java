@@ -32,8 +32,10 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 	public void loadMeters() {
 
 		// initializes an instance of the parser
-		KMLParser parser = new KMLParser();
-		List<Meter> meters = parser.parse();
+//		KMLParser parser = new KMLParser();
+//		List<Meter> meters = parser.parse();
+		
+		List<Meter> meters = new MeterDataStub().getMetersList();
 		removeMeters();
 
 		PersistenceManager pm = PMF.getPersistenceManager();
@@ -58,6 +60,8 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 		}
 	}
 
+	
+	//TODO change the return of this function to Meter[]
 	public List<MeterInfo> getMeters() {
 
 		PersistenceManager pm = PMF.getPersistenceManager();

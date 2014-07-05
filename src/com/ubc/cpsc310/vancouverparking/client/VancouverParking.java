@@ -1,6 +1,5 @@
 package com.ubc.cpsc310.vancouverparking.client;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -10,7 +9,6 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.Window;
@@ -363,11 +361,6 @@ public class VancouverParking implements EntryPoint {
 		final Marker marker = Marker.create(newMarkerOpts);
 
 		final int i = index;
-		// creating popup
-		InfoWindowOptions infowindowOpts = InfoWindowOptions.create();
-		infowindowOpts.setContent("Meter #: "
-				+ String.valueOf(meter.getNumber()));
-		final InfoWindow infowindow = InfoWindow.create(infowindowOpts);
 
 		// adding clickListener to marker
 		marker.addClickListener(new ClickHandler() {
