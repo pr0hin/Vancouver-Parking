@@ -95,7 +95,7 @@ public class KMLParser {
 			this.type = "Unknown";
 		}
 
-		Matcher timelimit = Pattern.compile("([1-9])|30|no time limit")
+		Matcher timelimit = Pattern.compile("30|([1-9])|no time limit")
 				.matcher(tokens[2]);
 		if (timelimit.find()) {
 			if (timelimit.group(0).equals("no time limit")) {
