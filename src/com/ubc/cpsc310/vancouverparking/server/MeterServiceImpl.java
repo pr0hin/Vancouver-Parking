@@ -33,17 +33,17 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 	public void loadMeters() {
 
 		// initializes an instance of the parser
-//		KMLParser parser = new KMLParser();
-//		List<Meter> meters = parser.parse();
+		KMLParser parser = new KMLParser();
+		List<Meter> meters = parser.parse();
 		
-		List<Meter> meters = new MeterDataStub().getMetersList();
-		removeMeters();
+		//List<Meter> meters = new MeterDataStub().getMetersList();
+		//removeMeters();
 
 		PersistenceManager pm = PMF.getPersistenceManager();
 
 		try {
 			// input all meters parsed into the datastore
-			//pm.makePersistentAll(meters);
+			pm.makePersistentAll(meters);
 
 		} finally {
 			pm.refreshAll();
@@ -64,9 +64,12 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 	
 	//TODO change the return of this function to Meter[]
 	public List<MeterInfo> getMeters() {
-
+		
+		
 		PersistenceManager pm = PMF.getPersistenceManager();
 		List<Meter> meters = new LinkedList<Meter>();
+		//KMLParser parser = new KMLParser();
+		//meters = parser.parse();
 
 		try {
 			// gets a list of all meters from the datastore

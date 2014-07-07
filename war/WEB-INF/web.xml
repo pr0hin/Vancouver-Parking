@@ -35,6 +35,8 @@
 		<servlet-name>favoritesService</servlet-name>
 		<url-pattern>/vancouverparking/favorites</url-pattern>
 	</servlet-mapping>
+	
+
   
   <!-- Default page to serve -->
   <welcome-file-list>

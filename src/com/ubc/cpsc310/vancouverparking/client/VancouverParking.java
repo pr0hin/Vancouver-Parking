@@ -7,12 +7,14 @@ import java.util.Map.Entry;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -21,12 +23,19 @@ import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.maps.gwt.client.Geocoder;
+import com.google.maps.gwt.client.Geocoder.Callback;
 import com.google.maps.gwt.client.GoogleMap;
 import com.google.maps.gwt.client.InfoWindow;
 import com.google.maps.gwt.client.InfoWindow.CloseClickHandler;
+import com.google.maps.gwt.client.GeocoderRequest;
+import com.google.maps.gwt.client.GeocoderResult;
+import com.google.maps.gwt.client.GeocoderStatus;
 import com.google.maps.gwt.client.InfoWindowOptions;
 import com.google.maps.gwt.client.LatLng;
+import com.google.maps.gwt.client.LatLngBounds;
 import com.google.maps.gwt.client.MapOptions;
 import com.google.maps.gwt.client.MapTypeId;
 import com.google.maps.gwt.client.Marker;
@@ -35,6 +44,8 @@ import com.google.maps.gwt.client.MarkerImage;
 import com.google.maps.gwt.client.MarkerOptions;
 import com.google.maps.gwt.client.MouseEvent;
 import com.google.maps.gwt.client.Size;
+
+
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -81,7 +92,13 @@ public class VancouverParking implements EntryPoint {
 	private CheckBox checkboxFive = new CheckBox("$5");
 	
 	private ListBox hoursBox = new ListBox(); 	
-
+	// Search UI objects
+	private AbsolutePanel searchPanel = new AbsolutePanel();
+	private TextBox addressBox = new TextBox();
+	private Button addressButton = new Button();
+	private Geocoder geocode;
+	
+	
 	/**
 	 * The message displayed to the user when the server cannot be reached or
 	 * returns an error.
@@ -115,7 +132,23 @@ public class VancouverParking implements EntryPoint {
 
 		map = GoogleMap.create(Document.get().getElementById("map_canvas"),
 				myOptions);
-
+		
+		//add search box
+//		
+//		addressBox.setStyleName("textbox");
+//		addressBox.setText("Search for an address");
+//		addressButton.setStyleName("searchbutton");
+//		addressButton.setText("search");
+//		addressButton.addClickHandler(this);
+//		searchPanel.add(addressBox);
+//		searchPanel.add(addressButton);
+//		searchPanel.setStyleName("search");
+//		
+//		RootPanel.get("search").add(searchPanel);
+		
+		setUpAddressSearch();
+		
+		
 		// set icon size
 		icon1.setScaledSize(iconsize);
 		icon2.setScaledSize(iconsize);
@@ -128,45 +161,13 @@ public class VancouverParking implements EntryPoint {
 		displayFilterElements();
 
 		// Check login status using login service.
-<<<<<<< HEAD
-	    LoginServiceAsync loginService = GWT.create(LoginService.class);
-	    loginService.login(GWT.getHostPageBaseURL(), new AsyncCallback<LoginInfo>() {
-	      public void onFailure(Throwable error) { handleError(error);}
 
-	      public void onSuccess(LoginInfo result) {
-	    	getMeters();
-	        loginInfo = result;
-	        displayLoginInfo();
-	      }
-	    });
-	}
-	
-	private void displayLoginInfo() {
-		
-		if(loginInfo.isLoggedIn()) {
-			// If logged in, show username and logout link
-        	String userName = loginInfo.getNickname();
-        	String logout = loginInfo.getLogoutUrl();
-        	signOutLink.setText(userName);
-        	signOutLink.setHref(logout);
-        	
-        	RootPanel.get("loginInfo").add(signOutLink);
-        	// If admin is logged in, show load meter button
-        	if (loginInfo.getEmailAddress().equalsIgnoreCase("renniehaylock@gmail.com") || loginInfo.getEmailAddress().equalsIgnoreCase("rohinjpatel@gmail.com")) {
-        		loadMetersButton.addClickHandler(new com.google.gwt.event.dom.client.ClickHandler() {
-					public void onClick(ClickEvent event) {
-						meterService.loadMeters(new AsyncCallback<Void>() {
-							public void onFailure(Throwable error) {
-								// TODO
-							}
-=======
 		LoginServiceAsync loginService = GWT.create(LoginService.class);
 		loginService.login(GWT.getHostPageBaseURL(),
 				new AsyncCallback<LoginInfo>() {
 					public void onFailure(Throwable error) {
 						loginServiceOnFailure(error);
 					}
->>>>>>> 4b4e153b3998cbbee33cbfcb42390ea20c885b25
 
 					public void onSuccess(LoginInfo result) {
 						loginServiceOnSuccess(result);
@@ -517,4 +518,71 @@ public class VancouverParking implements EntryPoint {
 			return true;
 		}
 	}
+
+private void setUpAddressSearch() {
+	addressBox.setStyleName("textbox");
+	addressBox.setText("Search for an address");
+	
+	addressBox.addClickHandler(new com.google.gwt.event.dom.client.ClickHandler() {
+		@Override
+		public void onClick(ClickEvent event) {
+			addressBox.setFocus(true);
+			if ((addressBox.isEnabled()) && (addressBox.getText().equals("Search for an address"))) {
+				addressBox.setText("");
+			}
+		}
+	});
+	addressButton.setStyleName("searchbutton");
+	addressButton.setText("search");
+
+	addressButton.addClickHandler(new com.google.gwt.event.dom.client.ClickHandler() { 	
+		
+		@Override
+	public void onClick(ClickEvent event) {
+		String location = addressBox.getText().toUpperCase().trim();
+		geocode = Geocoder.create();
+		
+		if (location.equals("")) {
+			Window.alert("Please enter a valid address");
+		} else {
+			
+		
+			GeocoderRequest request = GeocoderRequest.create();
+			LatLng ne = LatLng.create(49.302265, -122.902679);
+			LatLng sw = LatLng.create(49.216910, -123.238449);
+			request.setRegion("ca");
+			request.setBounds(LatLngBounds.create(ne, sw));
+		
+			request.setAddress(location);
+			geocode.geocode(request, new Geocoder.Callback() {
+				
+				@Override
+				public void handle(JsArray<GeocoderResult> a, GeocoderStatus b) {
+				
+					if (b == GeocoderStatus.OK) {
+						
+						GeocoderResult result = a.shift();
+						LatLng latlng = result.getGeometry().getLocation();
+						
+						Marker marker = Marker.create();
+						marker.setPosition(latlng);
+						marker.setMap(map);
+						map.panTo(latlng);
+						map.setZoom(15);
+						}
+					}
+				
+			});
+			
+		}
+	}
+	});
+	searchPanel.add(addressBox);
+	searchPanel.add(addressButton);
+	searchPanel.setStyleName("search");
+	
+	RootPanel.get("search").add(searchPanel);
+		}
+
+
 }

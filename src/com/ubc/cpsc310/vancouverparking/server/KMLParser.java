@@ -45,7 +45,7 @@ public class KMLParser {
 			Kml kml = Kml.unmarshal(parkingmeters);
 			Document doc = (Document) kml.getFeature();
 
-			List<StyleSelector> styles = doc.getStyleSelector();
+			
 
 			List<Feature> folders = doc.getFeature();
 
@@ -106,7 +106,7 @@ public class KMLParser {
 		} else {
 			this.timeLimit = -1;
 		}
-		Matcher rate = Pattern.compile("[1-9]|\\s.[0-9][0-9]").matcher(
+		Matcher rate = Pattern.compile("([1-9]|\\s).[0-9][0-9]|[0-9]").matcher(
 				tokens[3]);
 		if (rate.find()) {
 
