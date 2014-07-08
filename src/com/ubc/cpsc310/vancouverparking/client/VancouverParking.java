@@ -54,8 +54,10 @@ public class VancouverParking implements EntryPoint {
 	private CellList<MeterInfo> cellList = new CellList<MeterInfo>(metercell);
 	private Button filterButton = new Button();
 	// Data related fields
+
 	private LinkedHashMap<MeterInfo, Marker> allMeters = new LinkedHashMap<MeterInfo, Marker>();
 	private Long[] favorites = new Long[0];
+
 
 	// Map related fields
 	private GoogleMap map;
@@ -66,6 +68,7 @@ public class VancouverParking implements EntryPoint {
 	private MarkerImage icon5 = MarkerImage.create("/mapIcon5.png");
 	private MarkerImage icon6 = MarkerImage.create("/mapIcon6.png");
 	private MarkerImage iconFav = MarkerImage.create("/bigStar.png");
+
 
 	private Button loadMetersButton = new Button("Load Meters");
 	private LatLng myLatLng = LatLng.create(49.2569777, -123.123904);
@@ -82,8 +85,8 @@ public class VancouverParking implements EntryPoint {
 	private CheckBox checkboxThree = new CheckBox("$3");
 	private CheckBox checkboxFour = new CheckBox("$4");
 	private CheckBox checkboxFive = new CheckBox("$5");
+	private ListBox hoursBox = new ListBox(); 	
 
-	private ListBox hoursBox = new ListBox();
 
 	/**
 	 * The message displayed to the user when the server cannot be reached or
@@ -103,8 +106,8 @@ public class VancouverParking implements EntryPoint {
 	private final FavoritesServiceAsync favoritesService = GWT
 			.create(FavoritesService.class);
 
+
 	// ON MODULE LOAD
-	// ========================================================================
 
 	/**
 	 * This is the entry point method.
@@ -203,6 +206,7 @@ public class VancouverParking implements EntryPoint {
 	}
 
 	private void meterServiceOnFailure() {
+
 		// do nothing
 	}
 
@@ -301,6 +305,7 @@ public class VancouverParking implements EntryPoint {
 		hoursBox.addItem("+4 hours");
 		filterButton.setText("Filter to $3");
 	}
+
 
 	// Helper for displayFilterElements()
 	private void addRateHandler(CheckBox cb, final int rate) {
@@ -424,6 +429,7 @@ public class VancouverParking implements EntryPoint {
 		}
 	}
 
+
 	private void drawInfoWindow(Marker marker, MouseEvent mouseEvent,
 			final MeterInfo meter) {
 
@@ -498,7 +504,7 @@ public class VancouverParking implements EntryPoint {
 
 	}
 
-	// this class is necessary to make the button inside the infoWindow work
+	
 	private static class VirtualPanel extends ComplexPanel {
 
 		public void attach(Widget w) {
