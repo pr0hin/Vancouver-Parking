@@ -117,6 +117,10 @@ body {
   background-color: #005abf;
 }
 
+.markerFav {
+  	background:url(/bigStar.png);
+}
+
 .left {
 	float: left;
 	position: relative;
