@@ -23,11 +23,12 @@ public class MeterCell extends AbstractCell<MeterInfo>{
        * @return a {@link SafeHtml} instance
        */
       @SafeHtmlTemplates.Template("<div class='cell'>"
-    		+ "<div class='{3}'></div>"
+    		+ "<div class='listMarkerIcon {3}'></div>"
       		+ "<span class='meter_number'>{0}</span><br>"
-    		+ "<span class='meter_data'>{1} | {2}</span>"
+    		+ "<span class='meter_data'>${1} | {2} | {6} hr max</span>"
       		+ "</div>")
-      SafeHtml cell(long meterNum, double rate, String paymentType, String iconStyle);
+      SafeHtml cell(long meterNum, double rate, String paymentType, String iconStyle
+    		  , double timeStart, double timeEnd, int timeLimit);
     }
     
     
@@ -54,17 +55,37 @@ public class MeterCell extends AbstractCell<MeterInfo>{
 	      // Use the template to create the Cell's html.
 	      long meterNum = value.getNumber();
 	      double rate = value.getRate();
+	      double start = value.getTieStart();
+	      double end = value.getTieEnd();
+	      double limit = value.getTimeLimit();
+	      int limitVal = (int) limit;
+	      
 	      String paymentType;
+	      String iconStyle = "";
 	      if (value.isCreditCard()) {
-	    	  paymentType = "Credit Cards Accepted";
+	    	  paymentType = "Credit Card Valid";
 	      } else {
 	    	  paymentType = "No Credit Cards";
 	      }
 	      // This next line needs to be an if statement that checks some info on meter and 
 	      // makes iconStyle the proper one
-	      String iconStyle = value.getType();
+	      if (rate == 1.0) {
+	    	  iconStyle = "marker1";
+	      } else if (rate == 2.0) {
+	    	  iconStyle = "marker2";
+	      } else if (rate == 3.0) {
+	    	  iconStyle = "marker3";
+	      } else if (rate == 4.0) {
+	    	  iconStyle = "marker4";
+	      } else if (rate == 5.0) {
+	    	  iconStyle = "marker5";
+	      } else if (rate == 6.0) {
+	    	  iconStyle = "marker6";
+	      }
+	      
 
-	      SafeHtml rendered = templates.cell(meterNum , rate, paymentType, iconStyle);
+	      SafeHtml rendered = templates.cell(meterNum , rate, paymentType, iconStyle,
+	    		  start, end, limitVal);
 	      sb.append(rendered);
 
 	}
