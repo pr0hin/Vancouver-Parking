@@ -10,6 +10,8 @@ body {
 	overflow: hidden
 }
 
+
+
 #filterBox {
 	width: 280px;
 	height: 290px;
@@ -73,6 +75,23 @@ body {
 	font-weight:100;
 	border-radius: 3px;
 }
+
+.favButton {
+	background:url(/grayStar.png);
+	cursor:pointer;
+    border:none;
+    width:24px;
+    height:24px;
+}
+
+.unFavButton {
+	background:url(/yellowStar.png);
+	cursor:pointer;
+    border:none;
+    width:24px;
+    height:24px;
+}
+
 .visible {
 	display: inline;
 }

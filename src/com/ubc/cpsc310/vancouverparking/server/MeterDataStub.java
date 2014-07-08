@@ -21,14 +21,14 @@ public class MeterDataStub {
 				cc = false;
 			meter.setCreditCard(cc);
 			if (i % 2 == 0) {
-				meter.setRate(2.00f);
+				meter.setRate(4.00f);
 			} else {
-				meter.setRate(3.00f);
+				meter.setRate(5.00f);
 			}
 			meter.setType("Public");
 			
-			double latitude = 49.2569777 - (Math.random() * 0.1);
-			double longitude = -123.123904 - (Math.random() * 0.1);
+			double latitude = 49.2569777 - (Math.random() * 0.01);
+			double longitude = -123.123904 - (Math.random() * 0.01);
 			meter.setLatitude(latitude);
 			meter.setLongitude(longitude);
 			GeoPt gp = new GeoPt((float)latitude, (float)longitude);
