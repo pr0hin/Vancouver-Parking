@@ -48,8 +48,6 @@ body {
 	font-weight: 200;
 }
 
-
-
 #navBar {
 
 	width: 100%;
@@ -160,6 +158,10 @@ body {
   background-color: #005abf;
 }
 
+.markerFav {
+  	background:url(/bigStar.png);
+}
+
 .mysteryMarker {
   background-color: #333333;
 }
@@ -175,6 +177,40 @@ body {
 .right {
 	float: right;
 	position: relative;
+}
+
+.favButton {
+	background:url(/grayStar.png);
+	cursor:pointer;
+    border:none;
+    width:24px;
+    height:24px;
+}
+
+.unFavButton {
+	background:url(/yellowStar.png);
+	cursor:pointer;
+    border:none;
+    width:24px;
+    height:24px;
+}
+
+.visible {
+	display: inline;
+}
+
+.invisible {
+	display: none;
+}
+
+.listMarkerIcon {
+	border-radius: 30px;
+	width: 8px;
+	height: 8px;
+	display: block;
+	top: 15px;
+	right: 20px;
+	position: relative
 }
 
 #map_canvas {

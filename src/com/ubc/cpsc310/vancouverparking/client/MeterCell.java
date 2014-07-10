@@ -6,7 +6,7 @@ import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
-public class MeterCell extends AbstractCell<MeterInfo>{
+public class MeterCell extends AbstractCell<MeterInfo> {
 
 	/**
      * The HTML templates used to render the cell.
@@ -31,26 +31,23 @@ public class MeterCell extends AbstractCell<MeterInfo>{
     		  , double timeStart, double timeEnd, String timeLimit);
     }
     
-    
-    /**
-     * Create a singleton instance of the templates used to render the cell.
-     */
-    private static MeterCellTemplates templates = GWT.create(MeterCellTemplates.class);
-
-    
-    
-   
+	/**
+	 * Create a singleton instance of the templates used to render the cell.
+	 */
+	private static MeterCellTemplates templates = GWT
+			.create(MeterCellTemplates.class);
+	
 	@Override
 	public void render(com.google.gwt.cell.client.Cell.Context context,
 			MeterInfo value, SafeHtmlBuilder sb) {
-		 /*
-	       * Always do a null check on the value. Cell widgets can pass null to
-	       * cells if the underlying data contains a null, or if the data arrives
-	       * out of order.
-	       */
-	      if (value == null) {
-	        return;
-	      }
+		/*
+		 * Always do a null check on the value. Cell widgets can pass null to
+		 * cells if the underlying data contains a null, or if the data arrives
+		 * out of order.
+		 */
+		if (value == null) {
+			return;
+		}
 
 	      // Use the template to create the Cell's html.
 	      long meterNum = value.getNumber();

@@ -1,5 +1,6 @@
 package com.ubc.cpsc310.vancouverparking.client;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -35,6 +36,7 @@ import com.google.maps.gwt.client.Marker.ClickHandler;
 import com.google.maps.gwt.client.MarkerImage;
 import com.google.maps.gwt.client.MarkerOptions;
 import com.google.maps.gwt.client.MouseEvent;
+import com.google.maps.gwt.client.Point;
 import com.google.maps.gwt.client.Size;
 
 /**
@@ -54,7 +56,9 @@ public class VancouverParking implements EntryPoint {
 	private MeterCell metercell = new MeterCell();
 	private CellList<MeterInfo> cellList = new CellList<MeterInfo>(metercell);
 	// Data related fields
-	private LinkedHashMap<MeterInfo,Marker> allMeters = new LinkedHashMap<MeterInfo,Marker>();
+
+	private LinkedHashMap<MeterInfo, Marker> allMeters = new LinkedHashMap<MeterInfo, Marker>();
+	private List<Long> favorites = new ArrayList<Long>();
 
 	// Map related fields
 	private GoogleMap map;
@@ -64,6 +68,7 @@ public class VancouverParking implements EntryPoint {
 	private MarkerImage icon4 = MarkerImage.create("/mapIcon4.png");
 	private MarkerImage icon5 = MarkerImage.create("/mapIcon5.png");
 	private MarkerImage icon6 = MarkerImage.create("/mapIcon6.png");
+	private MarkerImage iconFav = MarkerImage.create("/bigStar.png");
 	private MarkerImage mysteryicon = MarkerImage.create("/mysteryIcon.png");
 	private MarkerImage doucheicon = MarkerImage.create("/doucheIcon.png");
 
@@ -71,6 +76,7 @@ public class VancouverParking implements EntryPoint {
 	private LatLng myLatLng = LatLng.create(49.2569777, -123.123904);
 	private MapOptions myOptions = MapOptions.create();
 	private final Size iconsize = Size.create(4.0, 4.0);
+	private final Size starSize = Size.create(30.0, 30.0);
 	private Element selected = null;
 	private InfoWindow infoWindow = null;
 	private final VirtualPanel fVirtualPanel = new VirtualPanel();
@@ -84,9 +90,8 @@ public class VancouverParking implements EntryPoint {
 	private CheckBox checkboxThree = new CheckBox("$3");
 	private CheckBox checkboxFour = new CheckBox("$4");
 	private CheckBox checkboxFive = new CheckBox("$5");
+	private ListBox hoursBox = new ListBox();
 	private CheckBox checkboxSix = new CheckBox("$6");
-	
-	private ListBox hoursBox = new ListBox(); 	
 
 	/**
 	 * The message displayed to the user when the server cannot be reached or
@@ -106,8 +111,7 @@ public class VancouverParking implements EntryPoint {
 	private final FavoritesServiceAsync favoritesService = GWT
 			.create(FavoritesService.class);
 
-	// ON MODULE LOAD 
-	// ========================================================================
+	// ON MODULE LOAD
 
 	/**
 	 * This is the entry point method.
@@ -129,7 +133,8 @@ public class VancouverParking implements EntryPoint {
 		icon4.setScaledSize(iconsize);
 		icon5.setScaledSize(iconsize);
 		icon6.setScaledSize(iconsize);
-		
+		iconFav.setScaledSize(starSize);
+
 		// Add filter elements to filterBox
 		displayFilterElements();
 
@@ -152,6 +157,18 @@ public class VancouverParking implements EntryPoint {
 	// ========================================================================
 
 	private void loginServiceOnSuccess(LoginInfo result) {
+
+		favoritesService.getFavorites(new AsyncCallback<Long[]>() {
+			public void onFailure(Throwable error) {
+				getFavoritesServiceOnFailure();
+			}
+
+			public void onSuccess(Long[] favorites) {
+				getFavoritesServiceOnSuccess(favorites);
+				System.out.println("Favorite meters " + favorites.toString());
+			}
+
+		});
 		meterService.getMeters(new AsyncCallback<List<MeterInfo>>() {
 			public void onFailure(Throwable error) {
 				meterServiceOnFailure();
@@ -163,7 +180,18 @@ public class VancouverParking implements EntryPoint {
 		});
 
 		loginInfo = result;
+
 		displayLoginInfo();
+	}
+
+	private void getFavoritesServiceOnSuccess(Long[] favorites) {
+		for (Long m : favorites)
+			this.favorites.add(m);
+	}
+
+	private void getFavoritesServiceOnFailure() {
+		// do nothing
+
 	}
 
 	private void meterServiceOnSuccess(List<MeterInfo> meters) {
@@ -175,21 +203,15 @@ public class VancouverParking implements EntryPoint {
 		// put meters into allMeters linkedHashmap
 		for (int i = 0; i < meters.size(); i++) {
 			MeterInfo meter = meters.get(i);
+			meter.setFavorite(favorites);
 			Marker marker = meterToMarker(meter, i);
 			allMeters.put(meter, marker);
 		}
 
-		// // Receiving meters from server and putting them in global
-		// // allMeters variable
-		// for (MeterInfo meter : meters) {
-		// 	allMeters.add(meter);
-		// }
-		// displayMeters(meters);
-
 	}
 
 	private void meterServiceOnFailure() {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	private void loginServiceOnFailure(Throwable error) {
@@ -239,20 +261,18 @@ public class VancouverParking implements EntryPoint {
 			@Override
 			public void onSuccess(Void result) {
 				loadMeterServiceOnSuccess();
-				Window.alert("Meters loaded!!");
 			}
 		});
 	}
 
 	private void loadMeterServiceOnSuccess() {
-		// TODO Auto-generated method stub
+		Window.alert("Meters loaded!!");
 
 	}
 
 	private void loadMeterServiceOnFailure() {
-		// TODO Auto-generated method stub
+		Window.alert("Error, meters not loaded");
 	}
-
 
 	// METER AND LIST DISPLAY METHODS
 	// ========================================================================
@@ -262,12 +282,13 @@ public class VancouverParking implements EntryPoint {
 		cellList.setRowCount(meters.size(), true);
 		cellList.setRowData(0, meters);
 		cellList.redraw();
-		
+
 		// Add cellList to list_view
 		RootPanel.get("list_view").add(cellList);
 	}
 
 	private void displayFilterElements() {
+
 		addRateHandler(checkboxOne);
 		addRateHandler(checkboxOneTwentyFive);
 		addRateHandler(checkboxOneFifty);
@@ -296,53 +317,53 @@ public class VancouverParking implements EntryPoint {
 		hoursBox.addItem("3 hours");
 		hoursBox.addItem("+4 hours");
 	}
-	
+
 	// Helper to addClickHandler to Hours ListBox
 	private void addHoursHandler(final ListBox lb) {
 		lb.addChangeHandler(new com.google.gwt.event.dom.client.ChangeHandler() {
 
 			@Override
 			public void onChange(ChangeEvent event) {
-				  filterMeters();
-				  int selectedIndex = hoursBox.getSelectedIndex();
-	    		  String hoursString = hoursBox.getItemText(selectedIndex);
-	    		  System.out.println(hoursString);
+				filterMeters();
+				int selectedIndex = hoursBox.getSelectedIndex();
+				String hoursString = hoursBox.getItemText(selectedIndex);
+				System.out.println(hoursString);
 			}
-		    });
+		});
 	}
-	
+
 	// Helper to addClickHandler to Rate CheckBoxes
 	private void addRateHandler(CheckBox cb) {
 		cb.addClickHandler(new com.google.gwt.event.dom.client.ClickHandler() {
-		      public void onClick(ClickEvent event) {
-		    		  filterMeters();
-		      }
-		    });
+			public void onClick(ClickEvent event) {
+				filterMeters();
+			}
+		});
 	}
-	
-	// Helper for getting hours from listbox 
+
+	// Helper for getting hours from listbox
 	private double getHours(ListBox lb) {
-		  double hours = 0.0;
-		  int selectedIndex = lb.getSelectedIndex();
-		  String hoursString = lb.getItemText(selectedIndex);
-		  
-		  if (hoursString.equals("30 mins")) {
-			  hours = 0.50;
-		  } else if (hoursString.equals("No selection")){
-			  hours = 0.0;
-		  } else if (hoursString.equals("1 hour")) {
-			  hours = 1.0;
-		  } else if (hoursString.equals("2 hours")) {
-			  hours = 2.0;
-		  } else if (hoursString.equals("3 hours")) {
-			  hours = 3.0;
-		  } else if (hoursString.equals("+4 hours")) {
-			  hours = 4.0;
-		  }
-		  return hours;
+		double hours = 0.0;
+		int selectedIndex = lb.getSelectedIndex();
+		String hoursString = lb.getItemText(selectedIndex);
+
+		if (hoursString.equals("30 mins")) {
+			hours = 0.50;
+		} else if (hoursString.equals("No selection")) {
+			hours = 0.0;
+		} else if (hoursString.equals("1 hour")) {
+			hours = 1.0;
+		} else if (hoursString.equals("2 hours")) {
+			hours = 2.0;
+		} else if (hoursString.equals("3 hours")) {
+			hours = 3.0;
+		} else if (hoursString.equals("+4 hours")) {
+			hours = 4.0;
+		}
+		return hours;
 	}
-	
-	//Filters meters on map by rate
+
+	// Filters meters on map by rate
 	private void filterMeters() {
 		// Get data from checkboxes
 		boolean cb1 = checkboxOne.getValue();
@@ -354,82 +375,62 @@ public class VancouverParking implements EntryPoint {
 		boolean cb4 = checkboxFour.getValue();
 		boolean cb5 = checkboxFive.getValue();
 		boolean cb6 = checkboxSix.getValue();
-		
+
 		double hours = getHours(hoursBox);
 		System.out.println(hours);
+
 		int index = 0;
 		// iterate over allMeters hashmap and add to map
-		Iterator<Entry<MeterInfo, Marker>> entries = allMeters.entrySet().iterator();
+		Iterator<Entry<MeterInfo, Marker>> entries = allMeters.entrySet()
+				.iterator();
 
 		while (entries.hasNext()) {
 			Entry thisEntry = (Entry) entries.next();
 			MeterInfo meter = (MeterInfo) thisEntry.getKey();
 			Marker meterMarker = (Marker) thisEntry.getValue();
+
 			if (hours == 0.0 || meter.getTimeLimit() >= hours) {
-				if ((cb1 && meter.getRate() == 1.0) ||
-					(cb1_25 && meter.getRate() == 1.25) ||
-					(cb1_50 && meter.getRate() == 1.50) ||
-					(cb2 && meter.getRate() == 2.0) ||
-					(cb2_50 && meter.getRate() == 2.50) ||
-					(cb3 && meter.getRate() == 3.0) ||
-					(cb4 && meter.getRate() == 4.0) ||
-					(cb5 && meter.getRate() == 5.0) ||
-					(cb6 && meter.getRate() == 6.0)) {
-					
+				if ((cb1 && meter.getRate() == 1.0)
+						|| (cb1_25 && meter.getRate() == 1.25)
+						|| (cb1_50 && meter.getRate() == 1.50)
+						|| (cb2 && meter.getRate() == 2.0)
+						|| (cb2_50 && meter.getRate() == 2.50)
+						|| (cb3 && meter.getRate() == 3.0)
+						|| (cb4 && meter.getRate() == 4.0)
+						|| (cb5 && meter.getRate() == 5.0)
+						|| (cb6 && meter.getRate() == 6.0)) {
+
 					meterMarker.setVisible(true);
 				} else {
-					if (!cb1 && !cb1_25 && !cb1_50 && !cb2 && !cb2_50 && !cb3 && !cb4 && !cb5 && !cb6) {
+					if (!cb1 && !cb1_25 && !cb1_50 && !cb2 && !cb2_50 && !cb3
+							&& !cb4 && !cb5 && !cb6) {
 						meterMarker.setVisible(true);
 					} else {
 						meterMarker.setVisible(false);
 					}
-				};
+				}
+				;
+
 			} else {
 				meterMarker.setVisible(false);
 			}
-			
-//			if (meter.getRate() == rate) {
-//				meterMarker.setVisible(true);
-//				//cellList.getRowElement(index).setAttribute("display", "inline");
-//			} else {
-//				meterMarker.setVisible(false);
-//				//cellList.getRowElement(index).setAttribute("display", "none");
-//				cellList.getRowElement(index).addClassName("invisible");
-//			}
+			// //cellList.getRowElement(index).setAttribute("display", "none");
 			index++;
 		}
 	}
 
 	private Marker meterToMarker(final MeterInfo meter, int index) {
-		
+
 		// Create latlon from meter
-		LatLng latlon = LatLng.create(meter.getLatitude(),
-				meter.getLongitude());
-		// create marker options
-		MarkerOptions newMarkerOpts = MarkerOptions.create();
-		newMarkerOpts.setPosition(latlon);
-		
-		if (meter.getRate() == 0.0){
-			newMarkerOpts.setIcon(mysteryicon);
-		} else if (meter.getRate() < 2.0) {
-			newMarkerOpts.setIcon(icon1);
-		} else if (meter.getRate() < 3.0) {
-			newMarkerOpts.setIcon(icon2);
-		} else if (meter.getRate() < 4.0) {
-			newMarkerOpts.setIcon(icon3);
-		} else if (meter.getRate() < 5.0) {
-			newMarkerOpts.setIcon(icon4);
-		} else if (meter.getRate() < 6.0) {
-			newMarkerOpts.setIcon(icon5);
-		} else if (meter.getRate() < 7.0) {
-			newMarkerOpts.setIcon(icon6);
-		} else {
-			newMarkerOpts.setIcon(doucheicon);
-		}
-		
-		
+		LatLng latlon = LatLng
+				.create(meter.getLatitude(), meter.getLongitude());
 		// create marker
-		final Marker marker = Marker.create(newMarkerOpts);
+		final Marker marker = Marker.create();
+		marker.setPosition(latlon);
+		assignMarkertoRate(meter, marker);
+		
+	
+		
 
 		final int i = index;
 
@@ -457,8 +458,41 @@ public class VancouverParking implements EntryPoint {
 		return marker;
 	}
 
-	private void drawInfoWindow(Marker marker, MouseEvent mouseEvent,
-			final MeterInfo meter) {
+	private boolean isFavorite(final MeterInfo meter) {
+		// return favorites.contains(meter);
+		return meter.isFavorite();
+
+	}
+
+	private void assignMarkertoRate(final MeterInfo meter, Marker marker) {
+		if (isFavorite(meter)) {
+			System.out.println(meter.getNumber());
+			marker.setIcon(iconFav);
+			iconFav.setAnchor(Point.create(15, 15));
+			marker.setZIndex(100000);
+
+		} else if (meter.getRate() == 0.0) {
+			marker.setIcon(mysteryicon);
+		} else if (meter.getRate() < 2.0) {
+			marker.setIcon(icon1);
+		} else if (meter.getRate() < 3.0) {
+			marker.setIcon(icon2);
+		} else if (meter.getRate() < 4.0) {
+			marker.setIcon(icon3);
+		} else if (meter.getRate() < 5.0) {
+			marker.setIcon(icon4);
+		} else if (meter.getRate() < 6.0) {
+			marker.setIcon(icon5);
+		} else if (meter.getRate() < 7.0) {
+			marker.setIcon(icon6);
+		} else {
+			marker.setIcon(doucheicon);
+		}
+
+	}
+
+	private void drawInfoWindow(final Marker marker,
+			final MouseEvent mouseEvent, final MeterInfo meter) {
 
 		// Close the existing info window
 		if (infoWindow != null) {
@@ -471,27 +505,38 @@ public class VancouverParking implements EntryPoint {
 		}
 
 		// Button and HTMLPanel init
-		Button addToFavoritesButton = new Button();
+		final Button favoritesButton = new Button();
 		Label meterNumber = new Label("Meter #: "
 				+ String.valueOf(meter.getNumber()));
 		final HTMLPanel infoHTMLPanel;
 
 		// Button Styling - Bootstrap
-		addToFavoritesButton.setText("+");
+		if (isFavorite(meter)) {
+			favoritesButton.setStyleName("unFavButton");
+		} else {
+			favoritesButton.setStyleName("favButton");
+		}
 
 		// button click handler
-		addToFavoritesButton
+		favoritesButton
 				.addClickHandler(new com.google.gwt.event.dom.client.ClickHandler() {
 					@Override
 					public void onClick(ClickEvent event) {
-						favClickHandler(meter.getNumber());
+						if (loginInfo.isLoggedIn()) {
+							favClickHandler(meter);
+							assignMarkertoRate(meter, marker);
+							drawInfoWindow(marker, mouseEvent, meter);
+						} else {
+							Window.alert("Please sign in to save favorites");
+						}
 					}
 				});
 		// HTML Panel init and adding button
 		infoHTMLPanel = new HTMLPanel(marker.getTitle());
 		infoHTMLPanel.add(meterNumber);
-		infoHTMLPanel.add(addToFavoritesButton);
-
+		if (loginInfo.isLoggedIn()) {
+			infoHTMLPanel.add(favoritesButton);
+		}
 		fVirtualPanel.attach(infoHTMLPanel);
 
 		// InfoWindow init and content set
@@ -503,7 +548,6 @@ public class VancouverParking implements EntryPoint {
 			@Override
 			public void handle() {
 				fVirtualPanel.remove(infoHTMLPanel);
-
 			}
 		});
 		infoWindow.open(map, marker);
@@ -511,37 +555,34 @@ public class VancouverParking implements EntryPoint {
 		map.panTo(marker.getPosition());
 	}
 
-	private void favClickHandler(long meterNumber) {
-		favoritesService.addMeter(meterNumber, new AsyncCallback<Void>() {
-			public void onFailure(Throwable error) {
-				// TODO
-				Window.alert("Shit!!");
-			}
+	private void favClickHandler(MeterInfo meter) {
+		if (!isFavorite(meter)) {
+			meter.setFavorite(true);
+			favoritesService.addMeter(meter.getNumber(),
+					new AsyncCallback<Void>() {
+						public void onFailure(Throwable error) {
+						}
 
-			@Override
-			public void onSuccess(Void result) {
-				// TODO Auto-generated method
-				Window.alert("Meter added!!");
-			}
-		});
+						@Override
+						public void onSuccess(Void result) {
+						}
+					});
 
-		favoritesService.getFavorites(new AsyncCallback<Long[]>() {
-			public void onFailure(Throwable error) {
-				// TODO
-				Window.alert("Shit!!");
-			}
+		} else {
+			meter.setFavorite(false);
+			favoritesService.removeMeter(meter.getNumber(),
+					new AsyncCallback<Void>() {
+						public void onFailure(Throwable error) {
+						}
 
-			public void onSuccess(Long[] favorites) {
-				Window.alert("Yay");
-				System.out.println("Favorite meters " + favorites.toString());
-			}
+						@Override
+						public void onSuccess(Void result) {
+						}
+					});
 
-		});
-
+		}
 	}
 
-	
-	//this class is necessary to make the button inside the infoWindow work
 	private static class VirtualPanel extends ComplexPanel {
 
 		public void attach(Widget w) {
