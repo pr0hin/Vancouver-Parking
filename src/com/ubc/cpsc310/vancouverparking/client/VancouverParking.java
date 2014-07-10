@@ -1,5 +1,6 @@
 package com.ubc.cpsc310.vancouverparking.client;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -34,6 +35,7 @@ import com.google.maps.gwt.client.Marker.ClickHandler;
 import com.google.maps.gwt.client.MarkerImage;
 import com.google.maps.gwt.client.MarkerOptions;
 import com.google.maps.gwt.client.MouseEvent;
+import com.google.maps.gwt.client.Point;
 import com.google.maps.gwt.client.Size;
 
 /**
@@ -56,8 +58,7 @@ public class VancouverParking implements EntryPoint {
 	// Data related fields
 
 	private LinkedHashMap<MeterInfo, Marker> allMeters = new LinkedHashMap<MeterInfo, Marker>();
-	private Long[] favorites = new Long[0];
-
+	private List<Long> favorites = new ArrayList<Long>();
 
 	// Map related fields
 	private GoogleMap map;
@@ -68,7 +69,6 @@ public class VancouverParking implements EntryPoint {
 	private MarkerImage icon5 = MarkerImage.create("/mapIcon5.png");
 	private MarkerImage icon6 = MarkerImage.create("/mapIcon6.png");
 	private MarkerImage iconFav = MarkerImage.create("/bigStar.png");
-
 
 	private Button loadMetersButton = new Button("Load Meters");
 	private LatLng myLatLng = LatLng.create(49.2569777, -123.123904);
@@ -85,8 +85,7 @@ public class VancouverParking implements EntryPoint {
 	private CheckBox checkboxThree = new CheckBox("$3");
 	private CheckBox checkboxFour = new CheckBox("$4");
 	private CheckBox checkboxFive = new CheckBox("$5");
-	private ListBox hoursBox = new ListBox(); 	
-
+	private ListBox hoursBox = new ListBox();
 
 	/**
 	 * The message displayed to the user when the server cannot be reached or
@@ -105,7 +104,6 @@ public class VancouverParking implements EntryPoint {
 			.create(MeterService.class);
 	private final FavoritesServiceAsync favoritesService = GWT
 			.create(FavoritesService.class);
-
 
 	// ON MODULE LOAD
 
@@ -181,8 +179,8 @@ public class VancouverParking implements EntryPoint {
 	}
 
 	private void getFavoritesServiceOnSuccess(Long[] favorites) {
-		this.favorites = favorites;
-
+		for(Long m: favorites)
+			this.favorites.add(m);
 	}
 
 	private void getFavoritesServiceOnFailure() {
@@ -199,6 +197,7 @@ public class VancouverParking implements EntryPoint {
 		// put meters into allMeters linkedHashmap
 		for (int i = 0; i < meters.size(); i++) {
 			MeterInfo meter = meters.get(i);
+			meter.setFavorite(favorites);
 			Marker marker = meterToMarker(meter, i);
 			allMeters.put(meter, marker);
 		}
@@ -206,7 +205,6 @@ public class VancouverParking implements EntryPoint {
 	}
 
 	private void meterServiceOnFailure() {
-
 		// do nothing
 	}
 
@@ -278,6 +276,7 @@ public class VancouverParking implements EntryPoint {
 		cellList.setRowCount(meters.size(), true);
 		cellList.setRowData(0, meters);
 		cellList.redraw();
+		
 
 		// Add cellList to list_view
 		RootPanel.get("list_view").add(cellList);
@@ -305,7 +304,6 @@ public class VancouverParking implements EntryPoint {
 		hoursBox.addItem("+4 hours");
 		filterButton.setText("Filter to $3");
 	}
-
 
 	// Helper for displayFilterElements()
 	private void addRateHandler(CheckBox cb, final int rate) {
@@ -362,18 +360,12 @@ public class VancouverParking implements EntryPoint {
 		LatLng latlon = LatLng
 				.create(meter.getLatitude(), meter.getLongitude());
 		// create marker options
-		MarkerOptions newMarkerOpts = MarkerOptions.create();
-		newMarkerOpts.setPosition(latlon);
-		assignMarkertoRate(meter, newMarkerOpts);
-
-		if(isFavorite(meter)) {
-			System.out.println(meter.getNumber());
-			newMarkerOpts.setIcon(iconFav);
-			newMarkerOpts.setZindex(100000);
-		}
+		final Marker marker = Marker.create();
+		marker.setPosition(latlon);
+		assignMarkertoRate(meter, marker);
 
 		// create marker
-		final Marker marker = Marker.create(newMarkerOpts);
+		
 
 		final int i = index;
 
@@ -402,35 +394,36 @@ public class VancouverParking implements EntryPoint {
 	}
 
 	private boolean isFavorite(final MeterInfo meter) {
-
-		for (long n : favorites) {
-			if(n == meter.getNumber())
-				return true;
-		}
-		return false;
+//		return favorites.contains(meter);
+		return meter.isFavorite();
+		
 	}
 
 	private void assignMarkertoRate(final MeterInfo meter,
-			MarkerOptions newMarkerOpts) {
-		if (meter.getRate() == 1.0f) {
-			newMarkerOpts.setIcon(icon1);
+			Marker marker) {
+		if (isFavorite(meter)) {
+			System.out.println(meter.getNumber());
+			marker.setIcon(iconFav);
+			iconFav.setAnchor(Point.create(15, 15));
+			marker.setZIndex(100000);
+		} else if (meter.getRate() == 1.0f) {
+			marker.setIcon(icon1);
 		} else if (meter.getRate() == 2.0f) {
-			newMarkerOpts.setIcon(icon2);
+			marker.setIcon(icon2);
 		} else if (meter.getRate() == 3.0f) {
-			newMarkerOpts.setIcon(icon3);
+			marker.setIcon(icon3);
 		} else if (meter.getRate() == 4.0f) {
-			newMarkerOpts.setIcon(icon4);
+			marker.setIcon(icon4);
 		} else if (meter.getRate() == 5.0f) {
-			newMarkerOpts.setIcon(icon5);
+			marker.setIcon(icon5);
 		} else if (meter.getRate() == 6.0f) {
-			newMarkerOpts.setIcon(icon6);
+			marker.setIcon(icon6);
 		} else {
-			newMarkerOpts.setIcon(icon1);
+			marker.setIcon(icon1);
 		}
 	}
 
-
-	private void drawInfoWindow(Marker marker, MouseEvent mouseEvent,
+	private void drawInfoWindow(final Marker marker,final MouseEvent mouseEvent,
 			final MeterInfo meter) {
 
 		// Close the existing info window
@@ -442,17 +435,17 @@ public class VancouverParking implements EntryPoint {
 		if (marker == null || mouseEvent == null) {
 			return;
 		}
-
+		
 		// Button and HTMLPanel init
-		Button favoritesButton = new Button();
+		final Button favoritesButton = new Button();
 		Label meterNumber = new Label("Meter #: "
 				+ String.valueOf(meter.getNumber()));
 		final HTMLPanel infoHTMLPanel;
 
 		// Button Styling - Bootstrap
-		if(isFavorite(meter)){
+		if (isFavorite(meter)) {
 			favoritesButton.setStyleName("unFavButton");
-		}else{
+		} else {
 			favoritesButton.setStyleName("favButton");
 		}
 
@@ -461,14 +454,21 @@ public class VancouverParking implements EntryPoint {
 				.addClickHandler(new com.google.gwt.event.dom.client.ClickHandler() {
 					@Override
 					public void onClick(ClickEvent event) {
-						favClickHandler(meter.getNumber());
+						if (loginInfo.isLoggedIn()) {
+							favClickHandler(meter);
+							assignMarkertoRate(meter, marker);
+							drawInfoWindow(marker, mouseEvent, meter);
+						}else{
+							Window.alert("Please sign in to save favorites");
+						}
 					}
 				});
 		// HTML Panel init and adding button
 		infoHTMLPanel = new HTMLPanel(marker.getTitle());
 		infoHTMLPanel.add(meterNumber);
-		infoHTMLPanel.add(favoritesButton);
-
+		if (loginInfo.isLoggedIn()) {
+			infoHTMLPanel.add(favoritesButton);
+		}
 		fVirtualPanel.attach(infoHTMLPanel);
 
 		// InfoWindow init and content set
@@ -480,7 +480,6 @@ public class VancouverParking implements EntryPoint {
 			@Override
 			public void handle() {
 				fVirtualPanel.remove(infoHTMLPanel);
-
 			}
 		});
 		infoWindow.open(map, marker);
@@ -488,23 +487,35 @@ public class VancouverParking implements EntryPoint {
 		map.panTo(marker.getPosition());
 	}
 
-	private void favClickHandler(long meterNumber) {
-		favoritesService.addMeter(meterNumber, new AsyncCallback<Void>() {
-			public void onFailure(Throwable error) {
-				// TODO
-				Window.alert("Shit!!");
-			}
+	private void favClickHandler(MeterInfo meter) {
+		if (!isFavorite(meter)) {
+			meter.setFavorite(true);
+			favoritesService.addMeter(meter.getNumber(), new AsyncCallback<Void>() {
+				public void onFailure(Throwable error) {
+				}
 
-			@Override
-			public void onSuccess(Void result) {
-				// TODO Auto-generated method
-				Window.alert("Meter added!!");
-			}
-		});
+				@Override
+				public void onSuccess(Void result) {
+				}
+			});
+			
+				
 
+		} else {
+			meter.setFavorite(false);
+			favoritesService.removeMeter(meter.getNumber(),
+					new AsyncCallback<Void>() {
+						public void onFailure(Throwable error) {
+						}
+
+						@Override
+						public void onSuccess(Void result) {
+						}
+					});
+			
+		}
 	}
 
-	
 	private static class VirtualPanel extends ComplexPanel {
 
 		public void attach(Widget w) {

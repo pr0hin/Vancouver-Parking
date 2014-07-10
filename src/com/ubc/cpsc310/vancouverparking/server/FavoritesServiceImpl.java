@@ -33,11 +33,16 @@ public class FavoritesServiceImpl extends RemoteServiceServlet implements
 					.getEmail());
 			if(!fav.getFavoriteMeters().contains(number))
 				fav.addMeter(number);
+			LOG.log(Level.INFO, "meter " + number
+					+ "added from favorites of user " + fav.getId());
 		} catch (Exception e){
 			Favorites fav = new Favorites(getUser().getEmail());
 			fav.addMeter(number);
 			pm.makePersistent(fav);
+			LOG.log(Level.INFO, "meter " + number
+					+ "added from favorites of user " + fav.getId());
 		}finally {
+			pm.refreshAll();
 			pm.close();
 		}
 	}
@@ -51,6 +56,7 @@ public class FavoritesServiceImpl extends RemoteServiceServlet implements
 			LOG.log(Level.INFO, "meter " + number
 					+ "removed from favorites of user " + fav.getId());
 		} finally {
+			pm.refreshAll();
 			pm.close();
 		}
 	}

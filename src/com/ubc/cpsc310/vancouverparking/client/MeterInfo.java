@@ -1,6 +1,7 @@
 package com.ubc.cpsc310.vancouverparking.client;
 
 import java.io.Serializable;
+import java.util.List;
 
 //import com.ubc.cpsc310.vancouverparking.server.TimeInEffect;
 //import com.ubc.cpsc310.vancouverparking.server.TimeLimit;
@@ -19,8 +20,22 @@ public class MeterInfo implements Serializable {
 	private double tieStart;
 	private double tieEnd;
 	private double timeLimit;
+	private boolean favorite;
 
 
+	public boolean isFavorite() {
+		return favorite;
+	}
+
+	public void setFavorite(List<Long> listFavorites) {
+		this.favorite = listFavorites.contains(this.number);
+	}
+
+	public void setFavorite(boolean fav) {
+		this.favorite = fav;
+	}
+
+	
 	public long getNumber() {
 		return number;
 	}

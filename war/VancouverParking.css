@@ -10,8 +10,6 @@ body {
 	overflow: hidden
 }
 
-
-
 #filterBox {
 	width: 280px;
 	height: 290px;
@@ -162,39 +160,6 @@ body {
 	top: 15px;
 	right: 20px;
 	position: relative
-}
-
-.marker1 {
-  background-color: #45803d;
-}
-
-.marker2 {
-  background-color: #f3c50f;
-}
-
-.marker3 {
-  background-color: #f38a0f;
-}
-
-.marker4 {
-  background-color: #ff0000;
-}
-
-.marker5 {
-  background-color: #9d1be0;
-}
-
-.marker6 {
-  background-color: #005abf;
-}
-
-.left {
-	float: left;
-	position: relative;
-}
-.right {
-	float: right;
-	position: relative;
 }
 
 #map_canvas {
