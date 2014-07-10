@@ -19,6 +19,22 @@ body {
 	background-color: white;
 	z-index: 1;
 }
+#twitterBox {
+	width:22%; 
+	/* Firefox */
+	height: -moz-calc(20vh - 45px);
+	/* WebKit */
+	height: -webkit-calc(20vh - 45px);
+	/* Opera */
+	height: -o-calc(20vh - 45px);
+	/* Standard */
+	height: calc(20vh - 45px);
+	position: relative;
+	float: right;
+	background-color: #fff;
+	overflow-y: scroll;
+	
+}
 #navBar {
 
 	width: 100%;
@@ -58,6 +74,12 @@ body {
 	top: 10px;	
 }
 #loadMeters {
+	position: relative;
+	float: left;
+	padding-left: 20px;
+	top: 7px;
+}
+#TwitterButon {
 	position: relative;
 	float: left;
 	padding-left: 20px;

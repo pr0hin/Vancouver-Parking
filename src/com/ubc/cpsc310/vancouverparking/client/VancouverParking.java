@@ -13,6 +13,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -20,6 +21,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.maps.gwt.client.GoogleMap;
@@ -66,6 +68,7 @@ public class VancouverParking implements EntryPoint {
 	private MarkerImage icon6 = MarkerImage.create("/mapIcon6.png");
 
 	private Button loadMetersButton = new Button("Load Meters");
+	private Button twitterButton = new Button("Twitter");
 	private LatLng myLatLng = LatLng.create(49.2569777, -123.123904);
 	private MapOptions myOptions = MapOptions.create();
 	private final Size iconsize = Size.create(4.0, 4.0);
@@ -158,6 +161,7 @@ public class VancouverParking implements EntryPoint {
 
 		loginInfo = result;
 		displayLoginInfo();
+		//displayTwitterButton();
 	}
 
 	private void meterServiceOnSuccess(List<MeterInfo> meters) {
@@ -223,6 +227,33 @@ public class VancouverParking implements EntryPoint {
 			RootPanel.get("loginInfo").add(signInLink);
 		}
 	}
+	
+//	private void displayTwitterButton() {
+//		twitterButton.setStyleName("TwitterButton");
+//		RootPanel.get("loadMeters").add(twitterButton);
+//		
+//		final AbsolutePanel panel = new AbsolutePanel();
+//		RootPanel.get("twitterBox").add(panel);
+//		twitterButton
+//		.addClickHandler(new com.google.gwt.event.dom.client.ClickHandler() {
+////			public void onClick(ClickEvent event) {
+////				final TwitterPopUp tPop = new TwitterPopUp();
+////				panel.add(tPop);
+////				tPop.show();
+//				/*
+//				tPop.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
+//					public void setPosition(int offsetWidth, int offsetHeight) {
+//						int left = (Window.getClientWidth() - offsetWidth) / 3;
+//						int top = (Window.getClientHeight() - offsetHeight) / 3;
+//						tPop.setPopupPosition(left, top);
+//					}
+//				});*/
+//			}
+//		});
+		
+		
+	//}
+	
 
 	private void loadMeterService() {
 		meterService.loadMeters(new AsyncCallback<Void>() {
