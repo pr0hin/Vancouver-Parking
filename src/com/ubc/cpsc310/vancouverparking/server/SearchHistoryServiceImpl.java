@@ -2,7 +2,6 @@ package com.ubc.cpsc310.vancouverparking.server;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.jdo.JDOHelper;
@@ -12,12 +11,14 @@ import javax.jdo.PersistenceManagerFactory;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ubc.cpsc310.vancouverparking.client.NotLoggedInException;
+import com.ubc.cpsc310.vancouverparking.client.SearchHistoryService;
 
-public class SearchHistoryImpl {
+public class SearchHistoryServiceImpl extends RemoteServiceServlet implements SearchHistoryService{
 	
 	private static final Logger LOG = Logger
-			.getLogger(SearchHistoryImpl.class.getName());
+			.getLogger(SearchHistoryServiceImpl.class.getName());
 	private static final PersistenceManagerFactory PMF = JDOHelper
 			.getPersistenceManagerFactory("transactions-optional");
 
@@ -27,8 +28,9 @@ public class SearchHistoryImpl {
 		try {
 			SearchHistory sh = pm.getObjectById(SearchHistory.class, getUser()
 					.getEmail());
-			if(!sh.getHistory().contains(location))
-				sh.addHistory(location);;
+			if (!sh.getHistory().contains(location)) {
+				sh.addHistory(location);
+			}
 		} catch (Exception e){
 			SearchHistory sh = new SearchHistory(getUser().getEmail());
 			sh.addHistory(location);

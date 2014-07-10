@@ -1,5 +1,6 @@
 package com.ubc.cpsc310.vancouverparking.server;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -13,7 +14,11 @@ import javax.jdo.Query;
 import javax.jdo.Transaction;
 import static javax.jdo.FetchPlan.FETCH_SIZE_OPTIMAL;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.ubc.cpsc310.vancouverparking.client.FavoritesService;
+import com.ubc.cpsc310.vancouverparking.client.FavoritesServiceAsync;
 import com.ubc.cpsc310.vancouverparking.client.MeterInfo;
 import com.ubc.cpsc310.vancouverparking.client.MeterService;
 
@@ -37,7 +42,7 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 		List<Meter> meters = parser.parse();
 		
 		//List<Meter> meters = new MeterDataStub().getMetersList();
-		//removeMeters();
+		removeMeters();
 
 		PersistenceManager pm = PMF.getPersistenceManager();
 
@@ -87,6 +92,7 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 
 	private List<MeterInfo> parseMetertoMeterInfo(List<Meter> meters) {
 		List<MeterInfo> metersInfo = new LinkedList<MeterInfo>();
+		
 		if (meters != null) {
 			// translates meters into meterinfo
 			for (Meter meter : meters) {
@@ -105,4 +111,5 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 		}
 		return metersInfo;
 	}
+	
 }
