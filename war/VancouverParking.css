@@ -36,6 +36,7 @@ border: 1px solid black;
  	cursor: pointer;
  	text-align: center;
     text-decoration: none;
+    background: none;
    	border:  solid 1px black;
  	border-top-right-radius: 5px 5px;
  	border-bottom-right-radius: 5px 5px;

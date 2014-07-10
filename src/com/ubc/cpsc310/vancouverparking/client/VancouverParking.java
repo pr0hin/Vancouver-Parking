@@ -11,6 +11,10 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.storage.client.Storage;
+import com.google.gwt.storage.client.StorageMap;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -22,7 +26,9 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.maps.gwt.client.Geocoder;
@@ -94,10 +100,11 @@ public class VancouverParking implements EntryPoint {
 	private ListBox hoursBox = new ListBox(); 	
 	// Search UI objects
 	private AbsolutePanel searchPanel = new AbsolutePanel();
-	private TextBox addressBox = new TextBox();
+	private SuggestBox addressBox;
 	private Button addressButton = new Button();
 	private Geocoder geocode;
-	
+	private Marker locationmarker = Marker.create();
+	private MultiWordSuggestOracle oracle = new MultiWordSuggestOracle();
 	
 	/**
 	 * The message displayed to the user when the server cannot be reached or
@@ -116,6 +123,7 @@ public class VancouverParking implements EntryPoint {
 			.create(MeterService.class);
 	private final FavoritesServiceAsync favoritesService = GWT
 			.create(FavoritesService.class);
+	private final SearchHistoryServiceAsync historyService = GWT.create(SearchHistoryService.class);
 
 	// ON MODULE LOAD 
 	// ========================================================================
@@ -124,6 +132,7 @@ public class VancouverParking implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
+		
 
 		// Setup Map Configurations
 		myOptions.setZoom(13.0);
@@ -132,6 +141,23 @@ public class VancouverParking implements EntryPoint {
 
 		map = GoogleMap.create(Document.get().getElementById("map_canvas"),
 				myOptions);
+		historyService.getHistory(new AsyncCallback<List<String>>() {
+			@Override
+			public void onSuccess(List<String> history) {
+				for (int i = 0; i <history.size(); i++) {
+					oracle.add(history.get(i));
+				}
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				System.out.println(caught.getMessage());
+				
+			}
+			
+		}
+				);
+		
 		
 		//add search box
 //		
@@ -145,7 +171,7 @@ public class VancouverParking implements EntryPoint {
 //		searchPanel.setStyleName("search");
 //		
 //		RootPanel.get("search").add(searchPanel);
-		
+		addressBox = new SuggestBox(oracle);
 		setUpAddressSearch();
 		
 		
@@ -523,7 +549,7 @@ private void setUpAddressSearch() {
 	addressBox.setStyleName("textbox");
 	addressBox.setText("Search for an address");
 	
-	addressBox.addClickHandler(new com.google.gwt.event.dom.client.ClickHandler() {
+	addressBox.getTextBox().addClickHandler(new com.google.gwt.event.dom.client.ClickHandler() {
 		@Override
 		public void onClick(ClickEvent event) {
 			addressBox.setFocus(true);
@@ -535,13 +561,34 @@ private void setUpAddressSearch() {
 	addressButton.setStyleName("searchbutton");
 	addressButton.setText("search");
 
+
 	addressButton.addClickHandler(new com.google.gwt.event.dom.client.ClickHandler() { 	
 		
 		@Override
 	public void onClick(ClickEvent event) {
 		String location = addressBox.getText().toUpperCase().trim();
-		geocode = Geocoder.create();
+		historyService.addHistory(location, new AsyncCallback<Void>() {
+			public void onFailure(Throwable error) {
+				// TODO
+				Window.alert("Shit!!");
+			}
+
+			@Override
+			public void onSuccess(Void result) {
+				// TODO Auto-generated method
+				Window.alert("History added");
+			}
+		});
 		
+//		String symbol = location.substring(0, 5);
+		geocode = Geocoder.create();
+//		if (stockstorage != null) {
+//			StorageMap stockmap = new StorageMap(stockstorage);
+//			if (stockmap.containsKey(symbol) != true) {
+//				 int numStocks = stockstorage.getLength();
+//				    stockstorage.setItem(symbol, location);
+//			}
+//		}
 		if (location.equals("")) {
 			Window.alert("Please enter a valid address");
 		} else {
@@ -564,11 +611,12 @@ private void setUpAddressSearch() {
 						GeocoderResult result = a.shift();
 						LatLng latlng = result.getGeometry().getLocation();
 						
-						Marker marker = Marker.create();
-						marker.setPosition(latlng);
-						marker.setMap(map);
+						
+						locationmarker.setPosition(latlng);
+						locationmarker.setMap(map);
 						map.panTo(latlng);
-						map.setZoom(15);
+						map.setZoom(16);
+						
 						}
 					}
 				
