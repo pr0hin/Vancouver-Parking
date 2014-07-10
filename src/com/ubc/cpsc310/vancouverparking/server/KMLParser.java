@@ -45,7 +45,7 @@ public class KMLParser {
 			Kml kml = Kml.unmarshal(parkingmeters);
 			Document doc = (Document) kml.getFeature();
 
-			List<StyleSelector> styles = doc.getStyleSelector();
+			
 
 			List<Feature> folders = doc.getFeature();
 
@@ -81,7 +81,9 @@ public class KMLParser {
 		return meters;
 
 	}
-
+	
+	
+// TESTING METHODS
 	private void parseDescription(String desc) {
 		String delims = "<br>";
 		String[] tokens = desc.split(delims);
@@ -93,7 +95,7 @@ public class KMLParser {
 			this.type = "Unknown";
 		}
 
-		Matcher timelimit = Pattern.compile("([1-9])|30|no time limit")
+		Matcher timelimit = Pattern.compile("30|([1-9])|no time limit")
 				.matcher(tokens[2]);
 		if (timelimit.find()) {
 			if (timelimit.group(0).equals("no time limit")) {
@@ -104,7 +106,7 @@ public class KMLParser {
 		} else {
 			this.timeLimit = -1;
 		}
-		Matcher rate = Pattern.compile("[1-9]|\\s.[0-9][0-9]").matcher(
+		Matcher rate = Pattern.compile("([1-9]|\\s).[0-9][0-9]|[0-9]").matcher(
 				tokens[3]);
 		if (rate.find()) {
 

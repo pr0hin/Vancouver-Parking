@@ -10,6 +10,43 @@ body {
 	height: 100%;
 	overflow: hidden
 }
+#search {
+	float:left;
+	padding:30px 80px;
+	position: absolute;
+	z-index: 2;
+}
+
+.textbox {
+margin-right: 0;
+padding: 5px 15px;
+font-size: 14px;
+border: 1px solid black; 
+ border-top-left-radius: 5px 5px;
+ border-bottom-left-radius: 5px 5px;
+ 
+
+}
+
+
+.searchbutton {
+   	margin-left: 0;
+  	padding: 5px 15px;
+    font-size: 14px;
+    outline: none;
+ 	cursor: pointer;
+ 	text-align: center;
+    text-decoration: none;
+    background: none;
+   	border:  solid 1px black;
+ 	border-top-right-radius: 5px 5px;
+ 	border-bottom-right-radius: 5px 5px;
+ 	background-size: auto;
+ 
+}
+.searchbutton:hover {
+   background-color: grey;
+}
 
 #filterBox {
 	width: 200px;
@@ -44,10 +81,29 @@ body {
 	white-space: nowrap;
 }
 
-#priceBox,#hourBox {
+#twitterBox {
+	width:22%; 
+	/* Firefox */
+	height: -moz-calc(20vh - 45px);
+	/* WebKit */
+	height: -webkit-calc(20vh - 45px);
+	/* Opera */
+	height: -o-calc(20vh - 45px);
+	/* Standard */
+	height: calc(20vh - 45px);
+	position: relative;
+	float: right;
+	background-color: #fff;
+	overflow-y: scroll;
+	
+}
+
+#priceBox ,#hourBox {
+>>>>>>> ed1f3722ff9d6bda7b6e2e0717fe4047e3c096ec
 	color: #aaaaaa;
 	font-weight: 200;
 }
+
 
 #navBar {
 	width: 100%;
@@ -90,6 +146,12 @@ body {
 }
 
 #loadMeters {
+	position: relative;
+	float: left;
+	padding-left: 20px;
+	top: 7px;
+}
+#TwitterButon {
 	position: relative;
 	float: left;
 	padding-left: 20px;
