@@ -18,6 +18,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -494,6 +496,8 @@ public class VancouverParking implements EntryPoint {
 	private void drawInfoWindow(final Marker marker,
 			final MouseEvent mouseEvent, final MeterInfo meter) {
 
+		
+		
 		// Close the existing info window
 		if (infoWindow != null) {
 			infoWindow.close();
@@ -505,9 +509,21 @@ public class VancouverParking implements EntryPoint {
 		}
 
 		// Button and HTMLPanel init
+		final FlexTable meterInfoTable = new FlexTable();
+		final HorizontalPanel hp1 = new HorizontalPanel();
+		final HorizontalPanel hp2 = new HorizontalPanel();
+		final HorizontalPanel hp3 = new HorizontalPanel();
 		final Button favoritesButton = new Button();
+
 		Label meterNumber = new Label("Meter #: "
 				+ String.valueOf(meter.getNumber()));
+		meterNumber.setStyleName("meterNumberLabel");
+		Label meterRate = new Label("Rate: $"
+				+ String.valueOf(meter.getRate()));
+		Label meterTimeInEffect = new Label("Time in Effect: "
+				+ String.valueOf(meter.getTimeInEffect()));
+
+		
 		final HTMLPanel infoHTMLPanel;
 
 		// Button Styling - Bootstrap
@@ -533,12 +549,21 @@ public class VancouverParking implements EntryPoint {
 				});
 		// HTML Panel init and adding button
 		infoHTMLPanel = new HTMLPanel(marker.getTitle());
-		infoHTMLPanel.add(meterNumber);
-		if (loginInfo.isLoggedIn()) {
-			infoHTMLPanel.add(favoritesButton);
-		}
-		fVirtualPanel.attach(infoHTMLPanel);
+//		infoHTMLPanel.add(meterNumber);
 
+		if (loginInfo.isLoggedIn()) {
+			hp1.add(favoritesButton);
+		}
+		hp1.add(meterNumber);
+		meterInfoTable.setWidget(0, 0, hp1);
+		meterInfoTable.setWidget(1, 0, meterRate);
+		meterInfoTable.setWidget(2, 0, meterTimeInEffect);
+		hp1.setStyleName("infoWindowFirstRow");
+		meterInfoTable.setCellPadding(2);
+		
+		infoHTMLPanel.add(meterInfoTable);
+		
+		fVirtualPanel.attach(infoHTMLPanel);
 		// InfoWindow init and content set
 		InfoWindowOptions options = InfoWindowOptions.create();
 		options.setContent(infoHTMLPanel.getElement());
