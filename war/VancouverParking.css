@@ -11,14 +11,39 @@ body {
 }
 
 #filterBox {
-	width: 280px;
-	height: 290px;
+	width: 200px;
+	height: 210px;
 	position: absolute;
 	bottom: 50px;
 	left: 50px;
 	background-color: white;
 	z-index: 1;
+	padding: 10px 20px 10px 20px;
+	box-shadow: 0px 0px 2px #999999;
+
+	font-size: 0.8em;
+	color: #333333;
+	font-weight: 700;
+	
 }
+#filterBox span {
+	color: #aaaaaa;
+	font-weight: 200;
+}
+
+#filterBox ul {
+	color: #aaaaaa;
+	font-weight: 200;
+	list-style-type: none;
+	padding:0;
+	margin: 0;
+}
+
+#filterBox ul li {
+	display: inline;
+	white-space: nowrap;
+}
+
 #twitterBox {
 	width:22%; 
 	/* Firefox */
@@ -35,6 +60,13 @@ body {
 	overflow-y: scroll;
 	
 }
+
+#priceBox ,#hourBox {
+	color: #aaaaaa;
+	font-weight: 200;
+}
+
+
 #navBar {
 
 	width: 100%;
@@ -113,6 +145,20 @@ body {
 	position: relative
 }
 
+.legendIcon {
+	border-radius: 30px;
+	width: 7px;
+	height: 7px;
+	position: relative;
+  	display: inline-block;
+}
+
+.legendIcon::before,
+.legendIcon::after {
+  content: "";
+  position: absolute;
+}
+
 .marker1 {
   background-color: #45803d;
 }
@@ -137,6 +183,18 @@ body {
   background-color: #005abf;
 }
 
+.markerFav {
+  	background:url(/bigStar.png);
+}
+
+.mysteryMarker {
+  background-color: #333333;
+}
+
+.doucheMarker {
+  background-color: #624339;
+}
+
 .left {
 	float: left;
 	position: relative;
@@ -144,6 +202,40 @@ body {
 .right {
 	float: right;
 	position: relative;
+}
+
+.favButton {
+	background:url(/grayStar.png);
+	cursor:pointer;
+    border:none;
+    width:24px;
+    height:24px;
+}
+
+.unFavButton {
+	background:url(/yellowStar.png);
+	cursor:pointer;
+    border:none;
+    width:24px;
+    height:24px;
+}
+
+.visible {
+	display: inline;
+}
+
+.invisible {
+	display: none;
+}
+
+.listMarkerIcon {
+	border-radius: 30px;
+	width: 8px;
+	height: 8px;
+	display: block;
+	top: 15px;
+	right: 20px;
+	position: relative
 }
 
 #map_canvas {
