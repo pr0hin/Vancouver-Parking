@@ -75,7 +75,7 @@ public class VancouverParking implements EntryPoint {
 	private MarkerImage doucheicon = MarkerImage.create("/doucheIcon.png");
 
 	private Button loadMetersButton = new Button("Load Meters");
-	private Button twitterButton = new Button("Twitter");
+	private Button twitterButton = new Button("Twitter Updates");
 	private LatLng myLatLng = LatLng.create(49.2569777, -123.123904);
 	private MapOptions myOptions = MapOptions.create();
 	private final Size iconsize = Size.create(4.0, 4.0);
@@ -95,7 +95,8 @@ public class VancouverParking implements EntryPoint {
 	private CheckBox checkboxFive = new CheckBox("$5");
 	private ListBox hoursBox = new ListBox();
 	private CheckBox checkboxSix = new CheckBox("$6");
-
+	private boolean showingTweets = false;
+	
 	/**
 	 * The message displayed to the user when the server cannot be reached or
 	 * returns an error.
@@ -113,6 +114,7 @@ public class VancouverParking implements EntryPoint {
 			.create(MeterService.class);
 	private final FavoritesServiceAsync favoritesService = GWT
 			.create(FavoritesService.class);
+	
 
 	// ON MODULE LOAD
 
@@ -120,6 +122,8 @@ public class VancouverParking implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
+		
+		addTwitterButton();
 
 		// Setup Map Configurations
 		myOptions.setZoom(13.0);
@@ -154,6 +158,25 @@ public class VancouverParking implements EntryPoint {
 					}
 
 				});
+	}
+
+	private void addTwitterButton() {
+		RootPanel.get("twitterBox").setVisible(false);
+		twitterButton.setStyleName("loadButton");
+		RootPanel.get("loadMeters").add(twitterButton);
+		twitterButton.addClickHandler((new com.google.gwt.event.dom.client.ClickHandler() {
+			public void onClick(ClickEvent event) {
+				if (showingTweets) {
+					RootPanel.get("twitterBox").setVisible(false);
+					showingTweets = false;
+					twitterButton.setText("Show Tweets");
+				} else {
+					RootPanel.get("twitterBox").setVisible(true);
+					showingTweets = true;
+					twitterButton.setText("Hide Tweets");
+				}
+			}
+		}));
 	}
 
 	// RPC SERVICE METHODS
