@@ -50,7 +50,7 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 
 		try {
 			// input all meters parsed into the datastore
-			pm.makePersistentAll(meters);
+//			pm.makePersistentAll(meters);
 
 		} finally {
 			pm.refreshAll();
@@ -78,9 +78,9 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 
 		try {
 			// gets a list of all meters from the datastore
-			Query q = pm.newQuery(Meter.class);
-			q.getFetchPlan().setFetchSize(1000);
-			meters = (List<Meter>) q.execute();
+//			Query q = pm.newQuery(Meter.class);
+//			q.getFetchPlan().setFetchSize(1000);
+//			meters = (List<Meter>) q.execute();
 
 		} finally {
 			pm.close();
