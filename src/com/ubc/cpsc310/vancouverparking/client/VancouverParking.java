@@ -13,6 +13,8 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -111,7 +113,7 @@ public class VancouverParking implements EntryPoint {
 	private Geocoder geocode;
 	private Marker locationmarker = Marker.create();
 	private MultiWordSuggestOracle oracle = new MultiWordSuggestOracle();
-	
+	String location;
 
 	private CheckBox checkboxSix = new CheckBox("$6");
 
@@ -181,6 +183,7 @@ public class VancouverParking implements EntryPoint {
 //		
 //		RootPanel.get("search").add(searchPanel);
 		addressBox = new SuggestBox(oracle);
+
 		setUpAddressSearch();
 		
 		
@@ -688,7 +691,7 @@ private void setUpAddressSearch() {
 	addressBox.setStyleName("textbox");
 	addressBox.setText("Search for an address");
 	
-	addressBox.getTextBox().addClickHandler(new com.google.gwt.event.dom.client.ClickHandler() {
+	addressBox.getValueBox().addClickHandler(new com.google.gwt.event.dom.client.ClickHandler() {
 		@Override
 		public void onClick(ClickEvent event) {
 			addressBox.setFocus(true);
@@ -699,78 +702,101 @@ private void setUpAddressSearch() {
 	});
 	addressButton.setStyleName("searchbutton");
 	addressButton.setText("search");
+	addressBox.addKeyPressHandler(new com.google.gwt.event.dom.client.KeyPressHandler() {
+
+		@Override
+		public void onKeyPress(KeyPressEvent event) {
+			if ( (!addressBox.isSuggestionListShowing()) && (event.getCharCode()==KeyCodes.KEY_ENTER) ) {
+				findlocation();
+			}
+			
+		}
+		
+	});
 
 
 	addressButton.addClickHandler(new com.google.gwt.event.dom.client.ClickHandler() { 	
 		
 		@Override
 	public void onClick(ClickEvent event) {
-		String location = addressBox.getText().toUpperCase().trim();
-		historyService.addHistory(location, new AsyncCallback<Void>() {
-			@Override
-			public void onFailure(Throwable error) {
-				// TODO
-				Window.alert("Shit!!");
-			}
-
-			@Override
-			public void onSuccess(Void result) {
-				// TODO Auto-generated method
-				Window.alert("History added");
-			}
-		});
-		
-//		String symbol = location.substring(0, 5);
-		geocode = Geocoder.create();
-//		if (stockstorage != null) {
-//			StorageMap stockmap = new StorageMap(stockstorage);
-//			if (stockmap.containsKey(symbol) != true) {
-//				 int numStocks = stockstorage.getLength();
-//				    stockstorage.setItem(symbol, location);
-//			}
-//		}
-		if (location.equals("")) {
-			Window.alert("Please enter a valid address");
-		} else {
+			findlocation();
+			
 			
 		
-			GeocoderRequest request = GeocoderRequest.create();
-			LatLng ne = LatLng.create(49.302265, -122.902679);
-			LatLng sw = LatLng.create(49.216910, -123.238449);
-			request.setRegion("ca");
-			request.setBounds(LatLngBounds.create(ne, sw));
-		
-			request.setAddress(location);
-			geocode.geocode(request, new Geocoder.Callback() {
-				
-				@Override
-				public void handle(JsArray<GeocoderResult> a, GeocoderStatus b) {
-				
-					if (b == GeocoderStatus.OK) {
-						
-						GeocoderResult result = a.shift();
-						LatLng latlng = result.getGeometry().getLocation();
-						
-						
-						locationmarker.setPosition(latlng);
-						locationmarker.setMap(map);
-						map.panTo(latlng);
-						map.setZoom(16);
-						
-						}
-					}
-				
-			});
-			
-		}
-	}
-	});
+	}}); 
+	
 	searchPanel.add(addressBox);
 	searchPanel.add(addressButton);
 	searchPanel.setStyleName("search");
 	
 	RootPanel.get("search").add(searchPanel);
-		}
+}
+
+
+
+public void findlocation() {
+	
+	location = addressBox.getText().toUpperCase().trim();
+
+	
+
+	geocode = Geocoder.create();
+
+	if (location.equals("")) {
+		Window.alert("Please enter a valid address");
+	} else {
+		
+	
+		GeocoderRequest request = GeocoderRequest.create();
+		LatLng ne = LatLng.create(49.302265, -122.902679);
+		LatLng sw = LatLng.create(49.216910, -123.238449);
+		request.setRegion("ca");
+		request.setBounds(LatLngBounds.create(ne, sw));
+	
+		request.setAddress(location);
+		geocode.geocode(request, new Geocoder.Callback() {
+			
+			@Override
+			public void handle(JsArray<GeocoderResult> a, GeocoderStatus b) {
+				
+			
+				if (b == GeocoderStatus.OK) {
+					
+					historyService.addHistory(location, new AsyncCallback<Void>() {
+						@Override
+						public void onFailure(Throwable error) {
+							// TODO
+							Window.alert("Shit!!");
+						}
+
+						@Override
+						public void onSuccess(Void result) {
+							// TODO Auto-generated method
+						
+						}
+					});
+					oracle.add(location);
+					
+					GeocoderResult result = a.shift();
+					LatLng latlng = result.getGeometry().getLocation();
+					
+					
+					locationmarker.setPosition(latlng);
+					locationmarker.setMap(map);
+					map.panTo(latlng);
+					map.setZoom(16);
+					
+					}
+				}
+			
+		});
+		
+	}
+}
+
+	
+	
+
 
 
 }
