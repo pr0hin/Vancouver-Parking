@@ -33,7 +33,7 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 		KMLParser parser = new KMLParser();
 		List<Meter> meters = parser.parse();
 		
-		//List<Meter> meters = new MeterDataStub().getMetersList();
+//		List<Meter> meters = new MeterDataStub().getMetersList();
 
 		removeMeters();
 

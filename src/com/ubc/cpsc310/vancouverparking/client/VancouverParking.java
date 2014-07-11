@@ -307,7 +307,7 @@ public class VancouverParking implements EntryPoint {
 			RootPanel.get("loginInfo").add(signOutLink);
 			// If admin is logged in, show load meter button
 			if (loginInfo.getEmailAddress().equalsIgnoreCase(
-					"andrefurlan@gmail.com")) {
+					"parkvancouver@gmail.com")) {
 				loadMetersButton
 						.addClickHandler(new com.google.gwt.event.dom.client.ClickHandler() {
 							public void onClick(ClickEvent event) {
@@ -559,14 +559,8 @@ public class VancouverParking implements EntryPoint {
 		return marker;
 	}
 
-	private boolean isFavorite(final MeterInfo meter) {
-		// return favorites.contains(meter);
-		return meter.isFavorite();
-
-	}
-
 	private void assignMarkertoRate(final MeterInfo meter, Marker marker) {
-		if (isFavorite(meter)) {
+		if (meter.isFavorite()) {
 			System.out.println(meter.getNumber());
 			marker.setIcon(iconFav);
 			iconFav.setAnchor(Point.create(15, 15));
@@ -626,7 +620,7 @@ public class VancouverParking implements EntryPoint {
 		final HTMLPanel infoHTMLPanel;
 
 		// Button Styling - Bootstrap
-		if (isFavorite(meter)) {
+		if (meter.isFavorite()) {
 			favoritesButton.setStyleName("unFavButton");
 		} else {
 			favoritesButton.setStyleName("favButton");
@@ -680,7 +674,7 @@ public class VancouverParking implements EntryPoint {
 	}
 
 	private void favClickHandler(MeterInfo meter) {
-		if (!isFavorite(meter)) {
+		if (!meter.isFavorite()) {
 			meter.setFavorite(true);
 			favoritesService.addMeter(meter.getNumber(),
 					new AsyncCallback<Void>() {
