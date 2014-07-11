@@ -22,47 +22,43 @@ public class SearchHistoryServiceImpl extends RemoteServiceServlet implements Se
 	private static final PersistenceManagerFactory PMF = JDOHelper
 			.getPersistenceManagerFactory("transactions-optional");
 
-	public void addHistory(String location) throws NotLoggedInException {
-		checkLoggedIn();
-		PersistenceManager pm = getPersistenceManager();
-		try {
-			SearchHistory sh = pm.getObjectById(SearchHistory.class, getUser()
-					.getEmail());
-			if (!sh.getHistory().contains(location)) {
+	public void addHistory(String location) {
+		if (getUser() != null) {
+			PersistenceManager pm = getPersistenceManager();
+			try {
+				SearchHistory sh = pm.getObjectById(SearchHistory.class, getUser()
+						.getEmail());
+				if (!sh.getHistory().contains(location)) {
+					sh.addHistory(location);
+				}
+			} catch (Exception e){
+				SearchHistory sh = new SearchHistory(getUser().getEmail());
 				sh.addHistory(location);
+				pm.makePersistent(sh);
+			}finally {
+				pm.close();
 			}
-		} catch (Exception e){
-			SearchHistory sh = new SearchHistory(getUser().getEmail());
-			sh.addHistory(location);
-			pm.makePersistent(sh);
-		}finally {
-			pm.close();
 		}
 	}
 
 
-	public List<String> getHistory() throws NotLoggedInException {
-		checkLoggedIn();
-		PersistenceManager pm = getPersistenceManager();
+	public List<String> getHistory() {
 		List<String> historylist = new ArrayList<String>();
-	
-		try {
-			SearchHistory sh = pm.getObjectById(SearchHistory.class, getUser()
-					.getEmail());
-			historylist.addAll(sh.getHistory());
+		if (getUser() != null) {
+			PersistenceManager pm = getPersistenceManager();
 		
-		} catch (Exception e){
-		} finally {
-			pm.close();
+			try {
+				SearchHistory sh = pm.getObjectById(SearchHistory.class, getUser()
+						.getEmail());
+				historylist.addAll(sh.getHistory());
+			
+			} catch (Exception e){
+			} finally {
+				pm.close();
+			}
+			System.out.println(historylist);
 		}
-		System.out.println(historylist);
 		return historylist;
-	}
-
-	private void checkLoggedIn() throws NotLoggedInException {
-		if (getUser() == null) {
-			throw new NotLoggedInException("Not logged in.");
-		}
 	}
 
 	private User getUser() {

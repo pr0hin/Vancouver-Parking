@@ -66,7 +66,9 @@ public class MeterCell extends AbstractCell<MeterInfo> {
 	      }
 	      // This next line needs to be an if statement that checks some info on meter and 
 	      // makes iconStyle the proper one
-	      if (rate == 0.0) {
+	      if (value.isFavorite()){
+	    	  iconStyle = "markerFav";
+	      }else if (rate == 0.0) {
 	    	  iconStyle = "mysteryMarker";
 		  } else if (rate < 2.0) {
 	    	  iconStyle = "marker1";
