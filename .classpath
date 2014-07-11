@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="war/WEB-INF/lib/gwt-maps.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/JavaAPIforKml.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxb-api.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxb-core-javadoc.jar"/>
@@ -22,5 +21,6 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/zip4j_1.3.2.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-maps.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
