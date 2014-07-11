@@ -794,7 +794,7 @@ public class VancouverParking implements EntryPoint {
 							@Override
 							public void onFailure(Throwable error) {
 								// TODO
-								Window.alert("Shit!!");
+								
 							}
 
 							@Override

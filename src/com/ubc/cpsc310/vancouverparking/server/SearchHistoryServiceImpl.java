@@ -24,6 +24,7 @@ public class SearchHistoryServiceImpl extends RemoteServiceServlet implements
 			.getPersistenceManagerFactory("transactions-optional");
 
 	public void addHistory(String location) {
+
 		// checkLoggedIn();
 		if (getUser() != null) {
 
@@ -47,7 +48,6 @@ public class SearchHistoryServiceImpl extends RemoteServiceServlet implements
 	}
 
 	public List<String> getHistory() {
-
 		List<String> historylist = new ArrayList<String>();
 		if (getUser() != null) {
 			PersistenceManager pm = getPersistenceManager();
@@ -59,19 +59,13 @@ public class SearchHistoryServiceImpl extends RemoteServiceServlet implements
 				historylist.addAll(sh.getHistory());
 
 			} catch (Exception e) {
+
 			} finally {
 				pm.close();
 			}
 			System.out.println(historylist);
-			
 		}
 		return historylist;
-	}
-
-	private void checkLoggedIn() throws NotLoggedInException {
-		if (getUser() == null) {
-			throw new NotLoggedInException("Not logged in.");
-		}
 	}
 
 	private User getUser() {
