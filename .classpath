@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry exported="true" kind="lib" path="war/WEB-INF/lib/gwt-maps.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/JavaAPIforKml.jar" sourcepath="/Users/rohinpatel/Downloads/javaapiforkml-master/target/JavaAPIforKml-sources.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/JavaAPIforKml.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxb-api.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxb-core-javadoc.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxb-core.jar"/>
@@ -13,7 +13,7 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxb-xjc.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" output="test-classes" path="test"/>
-	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER/App Engine (2)"/>
+	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
 		<attributes>
