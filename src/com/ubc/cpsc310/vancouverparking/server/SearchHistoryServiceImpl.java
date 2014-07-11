@@ -15,44 +15,51 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ubc.cpsc310.vancouverparking.client.NotLoggedInException;
 import com.ubc.cpsc310.vancouverparking.client.SearchHistoryService;
 
-public class SearchHistoryServiceImpl extends RemoteServiceServlet implements SearchHistoryService{
-	
+public class SearchHistoryServiceImpl extends RemoteServiceServlet implements
+		SearchHistoryService {
+
 	private static final Logger LOG = Logger
 			.getLogger(SearchHistoryServiceImpl.class.getName());
 	private static final PersistenceManagerFactory PMF = JDOHelper
 			.getPersistenceManagerFactory("transactions-optional");
 
 	public void addHistory(String location) {
+
+		// checkLoggedIn();
 		if (getUser() != null) {
+
 			PersistenceManager pm = getPersistenceManager();
 			try {
-				SearchHistory sh = pm.getObjectById(SearchHistory.class, getUser()
-						.getEmail());
+				SearchHistory sh = pm.getObjectById(SearchHistory.class,
+						getUser().getEmail());
 				if (!sh.getHistory().contains(location)) {
 					sh.addHistory(location);
 				}
-			} catch (Exception e){
+			} catch (Exception e) {
+
 				SearchHistory sh = new SearchHistory(getUser().getEmail());
 				sh.addHistory(location);
 				pm.makePersistent(sh);
-			}finally {
+
+			} finally {
 				pm.close();
 			}
 		}
 	}
 
-
 	public List<String> getHistory() {
 		List<String> historylist = new ArrayList<String>();
 		if (getUser() != null) {
 			PersistenceManager pm = getPersistenceManager();
-		
-			try {
-				SearchHistory sh = pm.getObjectById(SearchHistory.class, getUser()
-						.getEmail());
-				historylist.addAll(sh.getHistory());
 			
-			} catch (Exception e){
+
+			try {
+				SearchHistory sh = pm.getObjectById(SearchHistory.class,
+						getUser().getEmail());
+				historylist.addAll(sh.getHistory());
+
+			} catch (Exception e) {
+
 			} finally {
 				pm.close();
 			}
@@ -70,5 +77,3 @@ public class SearchHistoryServiceImpl extends RemoteServiceServlet implements Se
 		return PMF.getPersistenceManager();
 	}
 }
-
-

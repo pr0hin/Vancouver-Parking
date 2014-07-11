@@ -21,8 +21,8 @@ public class KMLParserTest {
 	@Test
 	public void checkSizeOfPlacemarks() {
 
-		assertEquals(9860, kmlparser.getPlacemarks().size());
-		assertEquals(9860, kmlparser.getMeters().size());
+		assertEquals(9862, kmlparser.getPlacemarks().size());
+		assertEquals(9862, kmlparser.getMeters().size());
 	}
 	
 	@Test

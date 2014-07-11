@@ -71,7 +71,8 @@ public class VancouverParking implements EntryPoint {
 	private CellList<MeterInfo> cellList = new CellList<MeterInfo>(metercell);
 	private String location;
 	// Data related fields
-
+	
+	private MeterInfo[] arrayOfMeters;
 	private LinkedHashMap<MeterInfo, Marker> allMeters = new LinkedHashMap<MeterInfo, Marker>();
 	private List<Long> favorites = new ArrayList<Long>();
 
@@ -240,12 +241,12 @@ public class VancouverParking implements EntryPoint {
 			}
 
 		});
-		meterService.getMeters(new AsyncCallback<List<MeterInfo>>() {
+		meterService.getMeters(new AsyncCallback<MeterInfo[]>() {
 			public void onFailure(Throwable error) {
 				meterServiceOnFailure();
 			}
 
-			public void onSuccess(List<MeterInfo> meters) {
+			public void onSuccess(MeterInfo[] meters) {
 				meterServiceOnSuccess(meters);
 			}
 		});
@@ -265,19 +266,21 @@ public class VancouverParking implements EntryPoint {
 		// do nothing
 	}
 
-	private void meterServiceOnSuccess(List<MeterInfo> meters) {
-		System.out.println("Meters on client: " + meters.size());
+	private void meterServiceOnSuccess(MeterInfo[] meters) {
+		System.out.println("Meters on client: " + meters.length);
 
-		// Adding meters to the cellList
-		displayCellList(meters);
+		List<MeterInfo> listOfMeters = new ArrayList<MeterInfo>();
 
 		// put meters into allMeters linkedHashmap
-		for (int i = 0; i < meters.size(); i++) {
-			MeterInfo meter = meters.get(i);
+		for (int i = 0; i < meters.length; i++) {
+			MeterInfo meter = meters[i];
+			listOfMeters.add(meter);
 			meter.setFavorite(favorites);
 			Marker marker = meterToMarker(meter, i);
 			allMeters.put(meter, marker);
 		}
+		// Adding meters to the cellList
+		displayCellList(listOfMeters);
 
 	}
 
@@ -556,14 +559,8 @@ public class VancouverParking implements EntryPoint {
 		return marker;
 	}
 
-	private boolean isFavorite(final MeterInfo meter) {
-		// return favorites.contains(meter);
-		return meter.isFavorite();
-
-	}
-
 	private void assignMarkertoRate(final MeterInfo meter, Marker marker) {
-		if (isFavorite(meter)) {
+		if (meter.isFavorite()) {
 			System.out.println(meter.getNumber());
 			marker.setIcon(iconFav);
 			iconFav.setAnchor(Point.create(15, 15));
@@ -623,7 +620,7 @@ public class VancouverParking implements EntryPoint {
 		final HTMLPanel infoHTMLPanel;
 
 		// Button Styling - Bootstrap
-		if (isFavorite(meter)) {
+		if (meter.isFavorite()) {
 			favoritesButton.setStyleName("unFavButton");
 		} else {
 			favoritesButton.setStyleName("favButton");
@@ -677,7 +674,7 @@ public class VancouverParking implements EntryPoint {
 	}
 
 	private void favClickHandler(MeterInfo meter) {
-		if (!isFavorite(meter)) {
+		if (!meter.isFavorite()) {
 			meter.setFavorite(true);
 			favoritesService.addMeter(meter.getNumber(),
 					new AsyncCallback<Void>() {
