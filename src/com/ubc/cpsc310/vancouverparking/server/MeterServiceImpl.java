@@ -30,10 +30,10 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 
 		// initializes an instance of the parser
 
-//		KMLParser parser = new KMLParser();
-//		List<Meter> meters = parser.parse();
+		KMLParser parser = new KMLParser();
+		List<Meter> meters = parser.parse();
 		
-		List<Meter> meters = new MeterDataStub().getMetersList();
+		//List<Meter> meters = new MeterDataStub().getMetersList();
 
 		removeMeters();
 
@@ -41,7 +41,7 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 
 		try {
 			// input all meters parsed into the datastore
-			pm.makePersistentAll(meters);
+	pm.makePersistentAll(meters);
 
 		} finally {
 			pm.refreshAll();

@@ -13,20 +13,21 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.AbsolutePanel; //
+import com.google.gwt.user.client.ui.Anchor; // 
+import com.google.gwt.user.client.ui.Button; //
+import com.google.gwt.user.client.ui.CheckBox; //
+import com.google.gwt.user.client.ui.FlexTable; //
+import com.google.gwt.user.client.ui.HorizontalPanel; //
+import com.google.gwt.user.client.ui.ListBox; //
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
@@ -68,6 +69,7 @@ public class VancouverParking implements EntryPoint {
 
 	private MeterCell metercell = new MeterCell();
 	private CellList<MeterInfo> cellList = new CellList<MeterInfo>(metercell);
+	private String location;
 	// Data related fields
 	
 	private MeterInfo[] arrayOfMeters;
@@ -87,7 +89,7 @@ public class VancouverParking implements EntryPoint {
 	private MarkerImage doucheicon = MarkerImage.create("/doucheIcon.png");
 
 	private Button loadMetersButton = new Button("Load Meters");
-	private Button twitterButton = new Button("Twitter");
+	private Button twitterButton = new Button("Twitter Updates");
 	private LatLng myLatLng = LatLng.create(49.2569777, -123.123904);
 	private MapOptions myOptions = MapOptions.create();
 	private final Size iconsize = Size.create(4.0, 4.0);
@@ -118,8 +120,7 @@ public class VancouverParking implements EntryPoint {
 	
 
 	private CheckBox checkboxSix = new CheckBox("$6");
-
-
+	private boolean showingTweets = false;
 	/**
 	 * The message displayed to the user when the server cannot be reached or
 	 * returns an error.
@@ -146,6 +147,7 @@ public class VancouverParking implements EntryPoint {
 	 */
 	public void onModuleLoad() {
 		
+		addTwitterButton();
 
 		// Setup Map Configurations
 		myOptions.setZoom(13.0);
@@ -171,19 +173,7 @@ public class VancouverParking implements EntryPoint {
 		}
 				);
 		
-		
-		//add search box
-//		
-//		addressBox.setStyleName("textbox");
-//		addressBox.setText("Search for an address");
-//		addressButton.setStyleName("searchbutton");
-//		addressButton.setText("search");
-//		addressButton.addClickHandler(this);
-//		searchPanel.add(addressBox);
-//		searchPanel.add(addressButton);
-//		searchPanel.setStyleName("search");
-//		
-//		RootPanel.get("search").add(searchPanel);
+
 		addressBox = new SuggestBox(oracle);
 		setUpAddressSearch();
 		
@@ -214,6 +204,25 @@ public class VancouverParking implements EntryPoint {
 					}
 
 				});
+	}
+
+	private void addTwitterButton() {
+		RootPanel.get("twitterBox").setVisible(false);
+		twitterButton.setStyleName("loadButton");
+		RootPanel.get("loadMeters").add(twitterButton);
+		twitterButton.addClickHandler((new com.google.gwt.event.dom.client.ClickHandler() {
+			public void onClick(ClickEvent event) {
+				if (showingTweets) {
+					RootPanel.get("twitterBox").setVisible(false);
+					showingTweets = false;
+					twitterButton.setText("Show Tweets");
+				} else {
+					RootPanel.get("twitterBox").setVisible(true);
+					showingTweets = true;
+					twitterButton.setText("Hide Tweets");
+				}
+			}
+		}));
 	}
 
 	// RPC SERVICE METHODS
@@ -255,7 +264,6 @@ public class VancouverParking implements EntryPoint {
 
 	private void getFavoritesServiceOnFailure() {
 		// do nothing
-
 	}
 
 	private void meterServiceOnSuccess(MeterInfo[] meters) {
@@ -713,51 +721,61 @@ public class VancouverParking implements EntryPoint {
 		}
 	}
 
-private void setUpAddressSearch() {
-	addressBox.setStyleName("textbox");
-	addressBox.setText("Search for an address");
-	
-	addressBox.getTextBox().addClickHandler(new com.google.gwt.event.dom.client.ClickHandler() {
-		@Override
-		public void onClick(ClickEvent event) {
-			addressBox.setFocus(true);
-			if ((addressBox.isEnabled()) && (addressBox.getText().equals("Search for an address"))) {
-				addressBox.setText("");
-			}
-		}
-	});
-	addressButton.setStyleName("searchbutton");
-	addressButton.setText("search");
-
-
-	addressButton.addClickHandler(new com.google.gwt.event.dom.client.ClickHandler() { 	
+	private void setUpAddressSearch() {
+		addressBox.setStyleName("textbox");
+		addressBox.setText("Search for an address");
 		
-		@Override
-	public void onClick(ClickEvent event) {
-		String location = addressBox.getText().toUpperCase().trim();
-		historyService.addHistory(location, new AsyncCallback<Void>() {
+		addressBox.getValueBox().addClickHandler(new com.google.gwt.event.dom.client.ClickHandler() {
 			@Override
-			public void onFailure(Throwable error) {
-				// TODO
-				Window.alert("Shit!!");
-			}
-
-			@Override
-			public void onSuccess(Void result) {
-				// TODO Auto-generated method
-				Window.alert("History added");
+			public void onClick(ClickEvent event) {
+				addressBox.setFocus(true);
+				if ((addressBox.isEnabled()) && (addressBox.getText().equals("Search for an address"))) {
+					addressBox.setText("");
+				}
 			}
 		});
+		addressButton.setStyleName("searchbutton");
+		addressButton.setText("search");
+		addressBox.addKeyPressHandler(new com.google.gwt.event.dom.client.KeyPressHandler() {
+
+			@Override
+			public void onKeyPress(KeyPressEvent event) {
+				if ( (!addressBox.isSuggestionListShowing()) && (event.getCharCode()==KeyCodes.KEY_ENTER) ) {
+					findlocation();
+				}
+				
+			}
+			
+		});
+
+
+		addressButton.addClickHandler(new com.google.gwt.event.dom.client.ClickHandler() { 	
+			
+			@Override
+		public void onClick(ClickEvent event) {
+				findlocation();
+				
+				
+			
+		}}); 
 		
-//		String symbol = location.substring(0, 5);
+		searchPanel.add(addressBox);
+		searchPanel.add(addressButton);
+		searchPanel.setStyleName("search");
+		
+		RootPanel.get("search").add(searchPanel);
+	}
+
+
+
+	public void findlocation() {
+		
+		location = addressBox.getText().toUpperCase().trim();
+
+		
+
 		geocode = Geocoder.create();
-//		if (stockstorage != null) {
-//			StorageMap stockmap = new StorageMap(stockstorage);
-//			if (stockmap.containsKey(symbol) != true) {
-//				 int numStocks = stockstorage.getLength();
-//				    stockstorage.setItem(symbol, location);
-//			}
-//		}
+
 		if (location.equals("")) {
 			Window.alert("Please enter a valid address");
 		} else {
@@ -774,8 +792,24 @@ private void setUpAddressSearch() {
 				
 				@Override
 				public void handle(JsArray<GeocoderResult> a, GeocoderStatus b) {
+					
 				
 					if (b == GeocoderStatus.OK) {
+						
+						historyService.addHistory(location, new AsyncCallback<Void>() {
+							@Override
+							public void onFailure(Throwable error) {
+								// TODO
+								Window.alert("Shit!!");
+							}
+
+							@Override
+							public void onSuccess(Void result) {
+								// TODO Auto-generated method
+							
+							}
+						});
+						oracle.add(location);
 						
 						GeocoderResult result = a.shift();
 						LatLng latlng = result.getGeometry().getLocation();
@@ -793,13 +827,6 @@ private void setUpAddressSearch() {
 			
 		}
 	}
-	});
-	searchPanel.add(addressBox);
-	searchPanel.add(addressButton);
-	searchPanel.setStyleName("search");
-	
-	RootPanel.get("search").add(searchPanel);
-		}
 
 
 }
