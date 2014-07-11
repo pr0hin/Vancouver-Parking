@@ -173,18 +173,6 @@ public class VancouverParking implements EntryPoint {
 				);
 		
 		
-		//add search box
-//		
-//		addressBox.setStyleName("textbox");
-//		addressBox.setText("Search for an address");
-//		addressButton.setStyleName("searchbutton");
-//		addressButton.setText("search");
-//		addressButton.addClickHandler(this);
-//		searchPanel.add(addressBox);
-//		searchPanel.add(addressButton);
-//		searchPanel.setStyleName("search");
-//		
-//		RootPanel.get("search").add(searchPanel);
 		addressBox = new SuggestBox(oracle);
 
 		setUpAddressSearch();
