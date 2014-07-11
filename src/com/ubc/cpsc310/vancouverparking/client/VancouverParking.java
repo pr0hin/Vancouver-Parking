@@ -69,7 +69,8 @@ public class VancouverParking implements EntryPoint {
 	private MeterCell metercell = new MeterCell();
 	private CellList<MeterInfo> cellList = new CellList<MeterInfo>(metercell);
 	// Data related fields
-
+	
+	private MeterInfo[] arrayOfMeters;
 	private LinkedHashMap<MeterInfo, Marker> allMeters = new LinkedHashMap<MeterInfo, Marker>();
 	private List<Long> favorites = new ArrayList<Long>();
 
@@ -231,12 +232,12 @@ public class VancouverParking implements EntryPoint {
 			}
 
 		});
-		meterService.getMeters(new AsyncCallback<List<MeterInfo>>() {
+		meterService.getMeters(new AsyncCallback<MeterInfo[]>() {
 			public void onFailure(Throwable error) {
 				meterServiceOnFailure();
 			}
 
-			public void onSuccess(List<MeterInfo> meters) {
+			public void onSuccess(MeterInfo[] meters) {
 				meterServiceOnSuccess(meters);
 			}
 		});
@@ -257,19 +258,21 @@ public class VancouverParking implements EntryPoint {
 
 	}
 
-	private void meterServiceOnSuccess(List<MeterInfo> meters) {
-		System.out.println("Meters on client: " + meters.size());
+	private void meterServiceOnSuccess(MeterInfo[] meters) {
+		System.out.println("Meters on client: " + meters.length);
 
-		// Adding meters to the cellList
-		displayCellList(meters);
+		List<MeterInfo> listOfMeters = new ArrayList<MeterInfo>();
 
 		// put meters into allMeters linkedHashmap
-		for (int i = 0; i < meters.size(); i++) {
-			MeterInfo meter = meters.get(i);
+		for (int i = 0; i < meters.length; i++) {
+			MeterInfo meter = meters[i];
+			listOfMeters.add(meter);
 			meter.setFavorite(favorites);
 			Marker marker = meterToMarker(meter, i);
 			allMeters.put(meter, marker);
 		}
+		// Adding meters to the cellList
+		displayCellList(listOfMeters);
 
 	}
 
