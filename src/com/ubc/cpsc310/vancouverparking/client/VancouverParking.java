@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -15,31 +16,40 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.AbsolutePanel; //
+import com.google.gwt.user.client.ui.Anchor; // 
+import com.google.gwt.user.client.ui.Button; //
+import com.google.gwt.user.client.ui.CheckBox; //
+import com.google.gwt.user.client.ui.FlexTable; //
+import com.google.gwt.user.client.ui.HorizontalPanel; //
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.maps.gwt.client.Geocoder;
+import com.google.maps.gwt.client.GeocoderRequest;
+import com.google.maps.gwt.client.GeocoderResult;
+import com.google.maps.gwt.client.GeocoderStatus;
 import com.google.maps.gwt.client.GoogleMap;
 import com.google.maps.gwt.client.InfoWindow;
 import com.google.maps.gwt.client.InfoWindow.CloseClickHandler;
 import com.google.maps.gwt.client.InfoWindowOptions;
 import com.google.maps.gwt.client.LatLng;
+import com.google.maps.gwt.client.LatLngBounds;
 import com.google.maps.gwt.client.MapOptions;
 import com.google.maps.gwt.client.MapTypeId;
 import com.google.maps.gwt.client.Marker;
 import com.google.maps.gwt.client.Marker.ClickHandler;
 import com.google.maps.gwt.client.MarkerImage;
-import com.google.maps.gwt.client.MarkerOptions;
 import com.google.maps.gwt.client.MouseEvent;
 import com.google.maps.gwt.client.Point;
 import com.google.maps.gwt.client.Size;
+
+
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -93,10 +103,20 @@ public class VancouverParking implements EntryPoint {
 	private CheckBox checkboxThree = new CheckBox("$3");
 	private CheckBox checkboxFour = new CheckBox("$4");
 	private CheckBox checkboxFive = new CheckBox("$5");
-	private ListBox hoursBox = new ListBox();
+
+	
+	private ListBox hoursBox = new ListBox(); 	
+	// Search UI objects
+	private AbsolutePanel searchPanel = new AbsolutePanel();
+	private SuggestBox addressBox;
+	private Button addressButton = new Button();
+	private Geocoder geocode;
+	private Marker locationmarker = Marker.create();
+	private MultiWordSuggestOracle oracle = new MultiWordSuggestOracle();
+	
+
 	private CheckBox checkboxSix = new CheckBox("$6");
 	private boolean showingTweets = false;
-	
 	/**
 	 * The message displayed to the user when the server cannot be reached or
 	 * returns an error.
@@ -114,7 +134,7 @@ public class VancouverParking implements EntryPoint {
 			.create(MeterService.class);
 	private final FavoritesServiceAsync favoritesService = GWT
 			.create(FavoritesService.class);
-	
+	private final SearchHistoryServiceAsync historyService = GWT.create(SearchHistoryService.class);
 
 	// ON MODULE LOAD
 
@@ -132,7 +152,40 @@ public class VancouverParking implements EntryPoint {
 
 		map = GoogleMap.create(Document.get().getElementById("map_canvas"),
 				myOptions);
+		historyService.getHistory(new AsyncCallback<List<String>>() {
+			@Override
+			public void onSuccess(List<String> history) {
+				for (int i = 0; i <history.size(); i++) {
+					oracle.add(history.get(i));
+				}
+			}
 
+			@Override
+			public void onFailure(Throwable caught) {
+				System.out.println(caught.getMessage());
+				
+			}
+			
+		}
+				);
+		
+		
+		//add search box
+//		
+//		addressBox.setStyleName("textbox");
+//		addressBox.setText("Search for an address");
+//		addressButton.setStyleName("searchbutton");
+//		addressButton.setText("search");
+//		addressButton.addClickHandler(this);
+//		searchPanel.add(addressBox);
+//		searchPanel.add(addressButton);
+//		searchPanel.setStyleName("search");
+//		
+//		RootPanel.get("search").add(searchPanel);
+		addressBox = new SuggestBox(oracle);
+		setUpAddressSearch();
+		
+		
 		// set icon size
 		icon1.setScaledSize(iconsize);
 		icon2.setScaledSize(iconsize);
@@ -146,6 +199,7 @@ public class VancouverParking implements EntryPoint {
 		displayFilterElements();
 
 		// Check login status using login service.
+
 		LoginServiceAsync loginService = GWT.create(LoginService.class);
 		loginService.login(GWT.getHostPageBaseURL(),
 				new AsyncCallback<LoginInfo>() {
@@ -218,7 +272,6 @@ public class VancouverParking implements EntryPoint {
 
 	private void getFavoritesServiceOnFailure() {
 		// do nothing
-
 	}
 
 	private void meterServiceOnSuccess(List<MeterInfo> meters) {
@@ -548,6 +601,8 @@ public class VancouverParking implements EntryPoint {
 	private void drawInfoWindow(final Marker marker,
 			final MouseEvent mouseEvent, final MeterInfo meter) {
 
+		
+		
 		// Close the existing info window
 		if (infoWindow != null) {
 			infoWindow.close();
@@ -559,9 +614,21 @@ public class VancouverParking implements EntryPoint {
 		}
 
 		// Button and HTMLPanel init
+		final FlexTable meterInfoTable = new FlexTable();
+		final HorizontalPanel hp1 = new HorizontalPanel();
+		final HorizontalPanel hp2 = new HorizontalPanel();
+		final HorizontalPanel hp3 = new HorizontalPanel();
 		final Button favoritesButton = new Button();
+
 		Label meterNumber = new Label("Meter #: "
 				+ String.valueOf(meter.getNumber()));
+		meterNumber.setStyleName("meterNumberLabel");
+		Label meterRate = new Label("Rate: $"
+				+ String.valueOf(meter.getRate()));
+		Label meterTimeInEffect = new Label("Time in Effect: "
+				+ String.valueOf(meter.getTimeInEffect()));
+
+		
 		final HTMLPanel infoHTMLPanel;
 
 		// Button Styling - Bootstrap
@@ -587,12 +654,21 @@ public class VancouverParking implements EntryPoint {
 				});
 		// HTML Panel init and adding button
 		infoHTMLPanel = new HTMLPanel(marker.getTitle());
-		infoHTMLPanel.add(meterNumber);
-		if (loginInfo.isLoggedIn()) {
-			infoHTMLPanel.add(favoritesButton);
-		}
-		fVirtualPanel.attach(infoHTMLPanel);
+//		infoHTMLPanel.add(meterNumber);
 
+		if (loginInfo.isLoggedIn()) {
+			hp1.add(favoritesButton);
+		}
+		hp1.add(meterNumber);
+		meterInfoTable.setWidget(0, 0, hp1);
+		meterInfoTable.setWidget(1, 0, meterRate);
+		meterInfoTable.setWidget(2, 0, meterTimeInEffect);
+		hp1.setStyleName("infoWindowFirstRow");
+		meterInfoTable.setCellPadding(2);
+		
+		infoHTMLPanel.add(meterInfoTable);
+		
+		fVirtualPanel.attach(infoHTMLPanel);
 		// InfoWindow init and content set
 		InfoWindowOptions options = InfoWindowOptions.create();
 		options.setContent(infoHTMLPanel.getElement());
@@ -650,4 +726,94 @@ public class VancouverParking implements EntryPoint {
 			return true;
 		}
 	}
+
+private void setUpAddressSearch() {
+	addressBox.setStyleName("textbox");
+	addressBox.setText("Search for an address");
+	
+	addressBox.getTextBox().addClickHandler(new com.google.gwt.event.dom.client.ClickHandler() {
+		@Override
+		public void onClick(ClickEvent event) {
+			addressBox.setFocus(true);
+			if ((addressBox.isEnabled()) && (addressBox.getText().equals("Search for an address"))) {
+				addressBox.setText("");
+			}
+		}
+	});
+	addressButton.setStyleName("searchbutton");
+	addressButton.setText("search");
+
+
+	addressButton.addClickHandler(new com.google.gwt.event.dom.client.ClickHandler() { 	
+		
+		@Override
+	public void onClick(ClickEvent event) {
+		String location = addressBox.getText().toUpperCase().trim();
+		historyService.addHistory(location, new AsyncCallback<Void>() {
+			@Override
+			public void onFailure(Throwable error) {
+				// TODO
+				Window.alert("Shit!!");
+			}
+
+			@Override
+			public void onSuccess(Void result) {
+				// TODO Auto-generated method
+				Window.alert("History added");
+			}
+		});
+		
+//		String symbol = location.substring(0, 5);
+		geocode = Geocoder.create();
+//		if (stockstorage != null) {
+//			StorageMap stockmap = new StorageMap(stockstorage);
+//			if (stockmap.containsKey(symbol) != true) {
+//				 int numStocks = stockstorage.getLength();
+//				    stockstorage.setItem(symbol, location);
+//			}
+//		}
+		if (location.equals("")) {
+			Window.alert("Please enter a valid address");
+		} else {
+			
+		
+			GeocoderRequest request = GeocoderRequest.create();
+			LatLng ne = LatLng.create(49.302265, -122.902679);
+			LatLng sw = LatLng.create(49.216910, -123.238449);
+			request.setRegion("ca");
+			request.setBounds(LatLngBounds.create(ne, sw));
+		
+			request.setAddress(location);
+			geocode.geocode(request, new Geocoder.Callback() {
+				
+				@Override
+				public void handle(JsArray<GeocoderResult> a, GeocoderStatus b) {
+				
+					if (b == GeocoderStatus.OK) {
+						
+						GeocoderResult result = a.shift();
+						LatLng latlng = result.getGeometry().getLocation();
+						
+						
+						locationmarker.setPosition(latlng);
+						locationmarker.setMap(map);
+						map.panTo(latlng);
+						map.setZoom(16);
+						
+						}
+					}
+				
+			});
+			
+		}
+	}
+	});
+	searchPanel.add(addressBox);
+	searchPanel.add(addressButton);
+	searchPanel.setStyleName("search");
+	
+	RootPanel.get("search").add(searchPanel);
+		}
+
+
 }

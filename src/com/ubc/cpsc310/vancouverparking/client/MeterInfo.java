@@ -8,9 +8,6 @@ import java.util.List;
 
 public class MeterInfo implements Serializable {
 
-	/**
-	 * 
-	 */
 	private long number;
 	private double latitude;
 	private double longitude;
@@ -21,7 +18,16 @@ public class MeterInfo implements Serializable {
 	private double tieEnd;
 	private double timeLimit;
 	private boolean favorite;
+	private String timeInEffect;
 
+
+	public String getTimeInEffect() {
+		return timeInEffect;
+	}
+
+	public void setTimeInEffect(String timeInEffect) {
+		this.timeInEffect = timeInEffect;
+	}
 
 	public boolean isFavorite() {
 		return favorite;

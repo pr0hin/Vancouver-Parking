@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry exported="true" kind="lib" path="war/WEB-INF/lib/gwt-maps.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/JavaAPIforKml.jar" sourcepath="/Users/rohinpatel/Downloads/javaapiforkml-master/target/JavaAPIforKml-sources.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/JavaAPIforKml.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxb-api.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxb-core-javadoc.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxb-core.jar"/>

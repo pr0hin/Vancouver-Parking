@@ -35,6 +35,16 @@
 		<servlet-name>favoritesService</servlet-name>
 		<url-pattern>/vancouverparking/favorites</url-pattern>
 	</servlet-mapping>
+	
+		<servlet>
+		<servlet-name>searchHistoryService</servlet-name>
+		<servlet-class>com.ubc.cpsc310.vancouverparking.server.SearchHistoryServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>searchHistoryService</servlet-name>
+		<url-pattern>/vancouverparking/history</url-pattern>
+	</servlet-mapping>
   
   <!-- Default page to serve -->
   <welcome-file-list>

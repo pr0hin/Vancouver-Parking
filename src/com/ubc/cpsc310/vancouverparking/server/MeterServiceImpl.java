@@ -12,6 +12,7 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 import javax.jdo.Transaction;
+import static javax.jdo.FetchPlan.FETCH_SIZE_OPTIMAL;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -38,10 +39,10 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 
 		// initializes an instance of the parser
 
-	KMLParser parser = new KMLParser();
-	List<Meter> meters = parser.parse();
+//		KMLParser parser = new KMLParser();
+//		List<Meter> meters = parser.parse();
 		
-		//List<Meter> meters = new MeterDataStub().getMetersList();
+		List<Meter> meters = new MeterDataStub().getMetersList();
 
 		removeMeters();
 
@@ -70,14 +71,15 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 	
 	//TODO change the return of this function to Meter[]
 	public List<MeterInfo> getMeters() {
-
+		
+		
 		PersistenceManager pm = PMF.getPersistenceManager();
 		List<Meter> meters = new LinkedList<Meter>();
 
 		try {
 			// gets a list of all meters from the datastore
 			Query q = pm.newQuery(Meter.class);
-			q.getFetchPlan().setFetchSize(15000);
+			q.getFetchPlan().setFetchSize(1000);
 			meters = (List<Meter>) q.execute();
 
 		} finally {
@@ -104,6 +106,7 @@ public class MeterServiceImpl extends RemoteServiceServlet implements
 				m.setTieEnd(meter.getTieEnd());
 				m.setTieStart(meter.getTieStart());
 				m.setTimeLimit(meter.getTimeLimit());
+				m.setTimeInEffect(meter.getTimeInEffect());
 				metersInfo.add(m);
 			}
 		}

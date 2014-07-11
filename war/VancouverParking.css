@@ -2,6 +2,7 @@
 html {
 	height: 100%
 }
+
 body {
 	margin: 0px;
 	padding: 0px;
@@ -9,36 +10,120 @@ body {
 	height: 100%;
 	overflow: hidden
 }
+
 :focus {outline:0 !important;}
+
+#search {
+	float:left;
+	padding:25px 90px;
+	position: absolute;
+	z-index: 2;
+}
+
+.textbox {
+margin-right: 0;
+padding: 8px 15px;
+font-size: 0.8em;
+border-top: 1px solid rgba(0, 0, 0, .1);
+border-bottom: 1px solid rgba(0, 0, 0, .1);
+border-left: 1px solid rgba(0, 0, 0, .1);
+border-right: none;
+border-top-left-radius: 5px 5px;
+border-bottom-left-radius: 5px 5px;
+color: #666;
+-webkit-background-clip: padding-box; /* for Safari */
+    background-clip: padding-box;
+width:200px;
+}
+
+
+.searchbutton {
+   	margin-left: 0;
+	padding: 8px 15px;
+	font-size: 0.8em;
+	outline: none;
+	cursor: pointer;
+	text-align: center;
+	text-decoration: none;
+	background-color: #6291d9;
+	border: 1px solid rgba(0, 0, 0, .1);
+	border-left: none;
+	border-top-right-radius: 5px 5px;
+	border-bottom-right-radius: 5px 5px;
+	background-size: auto;
+	color: #fff;
+	-webkit-background-clip: padding-box; /* for Safari */
+    background-clip: padding-box;
+ 
+}
+
+
+.gwt-SuggestBoxPopup {
+	margin: 0px;
+	padding:0px;
+	background-color: #fff;
+	border-bottom-right-radius: 5px 5px;
+	border-top-right-radius: 5px 5px;
+	border-bottom-left-radius: 5px 5px;
+	border-top-left-radius: 5px 5px;
+	font-size: 0.95em;
+}
+
+.gwt-SuggestBoxPopup .item {
+	margin: 0px;
+	background-color: #fff;
+	color: #666;
+	width: 300px;
+	
+}
+
+.gwt-SuggestBoxPopup .item-selected {
+	background-color: #eee;
+	border-bottom-right-radius: 2px 2px;
+	border-top-right-radius: 2px 2px;
+	border-bottom-left-radius: 2px 2px;
+	border-top-left-radius: 2px 2px;
+}
+.searchbutton:hover {
+   background-color: #5078b4;
+}
 
 #filterBox {
 	width: 200px;
 	height: 210px;
 	position: absolute;
-	bottom: 50px;
-	left: 50px;
+	bottom: 30px;
+	left: 30px;
 	background-color: white;
 	z-index: 1;
 	padding: 10px 20px 10px 20px;
-	box-shadow: 0px 0px 2px #999999;
-
+	border: 1px solid rgba(0, 0, 0, .1);
 	font-size: 0.8em;
 	color: #333333;
 	font-weight: 700;
-	
+	-webkit-background-clip: padding-box; /* for Safari */
+    background-clip: padding-box;
 }
+
 #filterBox span {
 	color: #aaaaaa;
 	font-weight: 200;
 }
 
+hr {
+	
+}
+#filterBox p {
+	margin:8px;
+}
 #filterBox ul {
 	color: #aaaaaa;
 	font-weight: 200;
 	list-style-type: none;
-	padding:0;
+	padding: 0;
 	margin: 0;
 }
+
 
 #filterBox ul li {
 	display: inline;
@@ -57,6 +142,7 @@ body {
 }
 
 #priceBox ,#hourBox {
+>>>>>>> ed1f3722ff9d6bda7b6e2e0717fe4047e3c096ec
 	color: #aaaaaa;
 	font-weight: 200;
 }
@@ -71,34 +157,37 @@ body {
 	font-size: 1.2em;
 	border-bottom: 1px solid #6d9154;
 }
+
 #loadingContainer {
 	width: 400px;
- 	height:30px;
- 	border: 1px solid #ccc;
-  	border-radius:30px;
-	position:absolute;
-	top:50vh;
-	right:50vh;
+	height: 30px;
+	border: 1px solid #ccc;
+	border-radius: 30px;
+	position: absolute;
+	top: 50vh;
+	right: 50vh;
 	background-color: #fff;
-	display:block;
+	display: block;
 	z-index: 2;
-	
 }
+
 #loadbar {
-  width: 60px;
-  height:28px;
-  background-color:#7ab94e;
-  border-radius:30px;
-  position: relative;
-  top:1px;
-  left: 1px;
+	width: 60px;
+	height: 28px;
+	background-color: #7ab94e;
+	border-radius: 30px;
+	position: relative;
+	top: 1px;
+	left: 1px;
 }
+
 #loginInfo {
 	position: relative;
 	float: right;
 	padding-right: 20px;
-	top: 10px;	
+	top: 10px;
 }
+
 #loadMeters {
 	position: relative;
 	float: left;
@@ -111,13 +200,13 @@ body {
 	top: 7px;
 }
 
-.loadButton{
+.loadButton {
 	font-family: 'Source Sans Pro', sans-serif;
 	background-color: #659b40;
-	border: 1px solid #588738; 
-	padding:5px 10px 5px 10px;
+	border: 1px solid #588738;
+	padding: 5px 10px 5px 10px;
 	color: #fff;
-	font-weight:100;
+	font-weight: 100;
 	border-radius: 3px;
 }
 
@@ -127,6 +216,16 @@ body {
 
 .invisible {
 	display: none;
+}
+
+.meterNumberLabel {
+	padding-left: 10px;
+	padding-top: 2px;
+	font-weight: bold;
+}
+
+.infoWindowFirstRow {
+	
 }
 
 .listMarkerIcon {
@@ -144,7 +243,7 @@ body {
 	width: 7px;
 	height: 7px;
 	position: relative;
-  	display: inline-block;
+	display: inline-block;
 }
 
 .favIcon {
@@ -163,64 +262,65 @@ body {
 }
 
 .marker1 {
-  background-color: #45803d;
+	background-color: #45803d;
 }
 
 .marker2 {
-  background-color: #f3c50f;
+	background-color: #f3c50f;
 }
 
 .marker3 {
-  background-color: #f38a0f;
+	background-color: #f38a0f;
 }
 
 .marker4 {
-  background-color: #ff0000;
+	background-color: #ff0000;
 }
 
 .marker5 {
-  background-color: #9d1be0;
+	background-color: #9d1be0;
 }
 
 .marker6 {
-  background-color: #005abf;
+	background-color: #005abf;
 }
 
 .markerFav {
-  	background:url(/bigStar.png);
+	background: url(/bigStar.png);
 }
 
 .mysteryMarker {
-  background-color: #333333;
+	background-color: #333333;
 }
 
 .doucheMarker {
-  background-color: #624339;
+	background-color: #624339;
 }
 
 .left {
 	float: left;
 	position: relative;
 }
+
 .right {
 	float: right;
 	position: relative;
 }
 
 .favButton {
-	background:url(/grayStar.png);
-	cursor:pointer;
-    border:none;
-    width:24px;
-    height:24px;
+	background: url(/grayStar.png);
+	cursor: pointer;
+	border: none;
+	width: 24px;
+	height: 24px;
 }
 
 .unFavButton {
-	background:url(/yellowStar.png);
-	cursor:pointer;
-    border:none;
-    width:24px;
-    height:24px;
+	background: url(/yellowStar.png);
+	cursor: pointer;
+	border: none;
+	width: 24px;
+	height: 24px;
 }
 
 .listMarkerIcon {
@@ -235,7 +335,7 @@ body {
 
 #map_canvas {
 	width: 78%;
-		/* Firefox */
+	/* Firefox */
 	height: -moz-calc(100vh - 45px);
 	/* WebKit */
 	height: -webkit-calc(100vh - 45px);
@@ -245,11 +345,10 @@ body {
 	height: calc(100vh - 45px);
 	position: absolute;
 	float: left;
-
 }
 
 #list_view {
-	width:22%; 
+	width: 22%;
 	/* Firefox */
 	height: -moz-calc(100vh - 45px);
 	/* WebKit */
@@ -277,6 +376,7 @@ body {
 	padding: 20px 10px 20px 10px;
 	color: #ccc;
 }
+
 .cell {
 	border-bottom: 1px solid #ddd;
 	padding: 12px 0px 25px 45px;
@@ -297,6 +397,7 @@ body {
 	font-size: 0.9em;
 	color: #aaaaaa;
 }
+
 .light {
 	font-weight: 100;
 }
@@ -308,31 +409,31 @@ body {
 
 /** Example rules used by the template application (remove for your app) */
 h1 {
-  font-size: 2em;
-  font-weight: bold;
-  color: #777777;
-  margin: 40px 0px 70px;
-  text-align: center;
+	font-size: 2em;
+	font-weight: bold;
+	color: #777777;
+	margin: 40px 0px 70px;
+	text-align: center;
 }
 
 .addButton {
-  display: block;
-  font-size: 16pt;
+	display: block;
+	font-size: 16pt;
 }
 
 .removeButton {
-  display: block;
-  font-size: 16pt;
+	display: block;
+	font-size: 16pt;
 }
 
 /** Most GWT widgets already have a style name defined */
 .gwt-DialogBox {
-  width: 400px;
+	width: 400px;
 }
 
 .gwt-TextCell {
-  background-color: white;
-  color: #fff;
+	background-color: white;
+	color: #fff;
 }
 
 .gwt-Anchor {
@@ -343,14 +444,14 @@ h1 {
 }
 
 .dialogVPanel {
-  margin: 5px;
+	margin: 5px;
 }
 
 .serverResponseLabelError {
-  color: red;
+	color: red;
 }
 
 /** Set ids using widget.getElement().setId("idOfElement") */
 #closeButton {
-  margin: 15px 6px 6px;
+	margin: 15px 6px 6px;
 }
